@@ -1287,17 +1287,17 @@
             btn.innerText = "Encrypting & Uploading...";
 
             try {
-                // Wait for libsodium loading
-                if (typeof libsodium === 'undefined') {
+                // Wait for sodium loading
+                if (typeof sodium === 'undefined') {
                     throw new Error("Sodium cryptography library loading timed out. Check connection.");
                 }
-                await libsodium.ready;
+                await sodium.ready;
                 
                 // Perform NaCl Sealed Box Encryption client-side
-                const pubKeyBin = libsodium.from_base64(gitHubPublicKey.key, libsodium.base64_variants.ORIGINAL);
-                const messageBin = libsodium.from_string(val);
-                const encryptedBin = libsodium.crypto_box_seal(messageBin, pubKeyBin);
-                const encryptedB64 = libsodium.to_base64(encryptedBin, libsodium.base64_variants.ORIGINAL);
+                const pubKeyBin = sodium.from_base64(gitHubPublicKey.key, sodium.base64_variants.ORIGINAL);
+                const messageBin = sodium.from_string(val);
+                const encryptedBin = sodium.crypto_box_seal(messageBin, pubKeyBin);
+                const encryptedB64 = sodium.to_base64(encryptedBin, sodium.base64_variants.ORIGINAL);
 
                 // Send encrypted secret to GitHub API
                 const payload = {
