@@ -9,8 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Libsodium Wrappers for Secure Secrets Encryption -->
-    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.13/dist/browsers/libsodium-wrappers.js"></script>
+    <!-- TweetNaCl + Sealed Box for Secure Secrets Encryption -->
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl-util@0.15.1/nacl-util.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl-sealedbox-js@1.2.0/sealedbox.web.js"></script>
     
     <style>
         :root {
@@ -1287,17 +1289,18 @@
             btn.innerText = "Encrypting & Uploading...";
 
             try {
-                // Wait for sodium loading
-                if (typeof sodium === 'undefined') {
-                    throw new Error("Sodium cryptography library loading timed out. Check connection.");
+                // Check that TweetNaCl libraries are loaded
+                if (typeof nacl === 'undefined' || typeof sealedBox === 'undefined') {
+                    throw new Error("Encryption library not loaded. Check your internet connection and refresh.");
                 }
-                await sodium.ready;
                 
+                // Decode the GitHub public key from base64
+                const pubKeyBin = nacl.util.decodeBase64(gitHubPublicKey.key);
+                // Encode the secret value to Uint8Array
+                const messageBin = nacl.util.decodeUTF8(val);
                 // Perform NaCl Sealed Box Encryption client-side
-                const pubKeyBin = sodium.from_base64(gitHubPublicKey.key, sodium.base64_variants.ORIGINAL);
-                const messageBin = sodium.from_string(val);
-                const encryptedBin = sodium.crypto_box_seal(messageBin, pubKeyBin);
-                const encryptedB64 = sodium.to_base64(encryptedBin, sodium.base64_variants.ORIGINAL);
+                const encryptedBin = sealedBox.seal(messageBin, pubKeyBin);
+                const encryptedB64 = nacl.util.encodeBase64(encryptedBin);
 
                 // Send encrypted secret to GitHub API
                 const payload = {
