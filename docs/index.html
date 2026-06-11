@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Poster - Control Panel</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Libsodium Wrappers for Secure Secrets Encryption -->
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.13/dist/active/sodium.js" defer></script>
+    
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at top, #18112c 0%, #08070d 100%);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #8a2be2;
+            --primary-glow: rgba(138, 43, 226, 0.4);
+            --accent: #ff007f;
+            --accent-glow: rgba(255, 0, 127, 0.4);
+            --text: #f5f5f7;
+            --text-secondary: #9ea4b0;
+            --success: #00ff88;
+            --danger: #ff3366;
+            --warning: #ffaa00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 260px;
+            background: rgba(8, 7, 13, 0.6);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #00ffff, #ff007f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text);
+            background: var(--card-bg);
+            border-color: var(--card-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(138, 43, 226, 0.15), rgba(255, 0, 127, 0.05));
+            border-color: rgba(138, 43, 226, 0.3);
+            color: var(--text);
+        }
+
+        .nav-item.active svg {
+            stroke: var(--accent);
+            filter: drop-shadow(0 0 5px var(--accent-glow));
+        }
+
+        .sidebar-footer {
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .status-dot.online {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        /* Main Workspace */
+        main {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px 50px;
+            max-width: 1400px;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards and Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h2 svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--primary);
+        }
+
+        /* Forms and Controls */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
+        }
+
+        select.form-control option {
+            background: #110f1a;
+            color: var(--text);
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #a04efc 100%);
+            color: var(--text);
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--text);
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        /* Tables & Lists */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 14px 16px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badge Styling */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-video {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .badge-image {
+            background: rgba(0, 191, 255, 0.1);
+            color: #00bfff;
+            border: 1px solid rgba(0, 191, 255, 0.2);
+        }
+
+        /* GitHub Action Runs List */
+        .run-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .run-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .run-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .run-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .run-status {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+        }
+
+        .status-success { color: var(--success); }
+        .status-failure { color: var(--danger); }
+        .status-running { color: var(--warning); }
+
+        .run-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(24, 17, 44, 0.95);
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+            border-radius: 12px;
+            padding: 15px 25px;
+            color: var(--text);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Editor Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            width: 550px;
+            max-width: 90%;
+            background: #110f1a;
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="logo">
+            AI Poster <span>V1.0</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="switchView('dashboard')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Dashboard
+            </li>
+            <li class="nav-item" onclick="switchView('pages')">
+                <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                Facebook Pages
+            </li>
+            <li class="nav-item" onclick="switchView('secrets')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                GitHub Secrets
+            </li>
+            <li class="nav-item" onclick="switchView('settings')">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Connection Config
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="status-badge">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Not Connected</span>
+            </div>
+            <div style="font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="sidebar-repo"></div>
+        </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <main>
+        <!-- HEADER -->
+        <header>
+            <h1 id="view-title">Dashboard</h1>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-secondary" onclick="fetchProjectData()">
+                    Refresh Data
+                </button>
+            </div>
+        </header>
+
+        <!-- ================= DASHBOARD VIEW ================= -->
+        <section id="view-dashboard" class="view active">
+            <div class="grid-2" style="margin-bottom: 40px;">
+                <!-- Controller Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Run Pipeline
+                        </h2>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                        Manually trigger the GitHub Actions video generator. It will run in the cloud and post automatically.
+                    </p>
+                    <div class="form-group">
+                        <label for="dispatch-count">Posts Count Per Page</label>
+                        <select class="form-control" id="dispatch-count">
+                            <option value="1">1 Post</option>
+                            <option value="2">2 Posts</option>
+                            <option value="3">3 Posts</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-trigger" onclick="triggerWorkflow()">
+                        Trigger Post Execution
+                    </button>
+                </div>
+
+                <!-- Stats/Summary Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                            Summary Status
+                        </h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
+                            <div style="font-size: 13px; color: var(--text-secondary);">Configured Pages</div>
+                            <div style="font-size: 32px; font-weight: 800; color: var(--primary);" id="stat-pages">0</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
+                            <div style="font-size: 13px; color: var(--text-secondary);">Last Run Status</div>
+                            <div style="font-size: 22px; font-weight: 800; margin-top: 10px;" id="stat-last-run">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GHA Workflow Runs Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Recent Execution Runs (Cloud Logs)
+                    </h2>
+                </div>
+                <div class="run-list" id="runs-container">
+                    <p style="color: var(--text-secondary);">Configure connection settings to load runs...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGES VIEW ================= -->
+        <section id="view-pages" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Configured Pages
+                    </h2>
+                    <button class="btn btn-primary" onclick="openPageModal()">+ Add Page</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Page Name</th>
+                                <th>Page ID</th>
+                                <th>Topic Niche</th>
+                                <th>Language</th>
+                                <th>Post Types</th>
+                                <th>Schedule (UTC)</th>
+                                <th>Token Env</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pages-table-body">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-secondary);">Connect your GitHub repo to fetch pages configuration.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECRETS VIEW ================= -->
+        <section id="view-secrets" class="view">
+            <div class="grid-2">
+                <!-- Secret List -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            Active Secrets
+                        </h2>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        The following secrets exist in your repository. For security, GitHub hides their values, but you can overwrite them.
+                    </p>
+                    <div id="secrets-list-container" class="run-list">
+                        <p style="color: var(--text-secondary);">Loading secrets from repository...</p>
+                    </div>
+                </div>
+
+                <!-- Update Secret -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Add / Update Secret
+                        </h2>
+                    </div>
+                    <form id="secret-form" onsubmit="saveSecret(event)">
+                        <div class="form-group">
+                            <label for="secret-name">Secret Name</label>
+                            <select class="form-control" id="secret-name" required>
+                                <option value="NVIDIA_API_KEY">NVIDIA_API_KEY</option>
+                                <option value="FB_PAGE_TOKEN_FACTS">FB_PAGE_TOKEN_FACTS</option>
+                                <option value="FB_PAGE_TOKEN_MOTIVATION">FB_PAGE_TOKEN_MOTIVATION</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="secret-value">Secret Value</label>
+                            <input type="password" class="form-control" id="secret-value" placeholder="Paste your API key or Page Access Token" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-save-secret">Save Secret Securely</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SETTINGS VIEW ================= -->
+        <section id="view-settings" class="view">
+            <div class="card" style="max-width: 700px; margin: 0 auto;">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        GitHub Connection Config
+                    </h2>
+                </div>
+                <div class="form-group">
+                    <label for="gh-pat">GitHub Personal Access Token (PAT)</label>
+                    <input type="password" class="form-control" id="gh-pat" placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX">
+                    <small style="color: var(--text-secondary); margin-top: 5px; display: block;">Requires <code>repo</code> permissions to modify config files and secrets.</small>
+                </div>
+                <div class="form-group">
+                    <label for="gh-owner">Repository Owner (Username / Org)</label>
+                    <input type="text" class="form-control" id="gh-owner" placeholder="github-username">
+                </div>
+                <div class="form-group">
+                    <label for="gh-repo">Repository Name</label>
+                    <input type="text" class="form-control" id="gh-repo" placeholder="ai-content-poster">
+                </div>
+                <button class="btn btn-primary" onclick="saveConnectionSettings()">Verify & Save Configuration</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE EDIT MODAL -->
+    <div class="modal" id="page-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title">Add Page</span>
+                <span style="cursor: pointer; font-size: 24px;" onclick="closePageModal()">&times;</span>
+            </div>
+            <form id="page-form" onsubmit="savePage(event)">
+                <input type="hidden" id="page-index">
+                <div class="form-group">
+                    <label for="page-name">Page Name</label>
+                    <input type="text" class="form-control" id="page-name" placeholder="Daily Facts Niche" required>
+                </div>
+                <div class="form-group">
+                    <label for="page-id">Facebook Page ID</label>
+                    <input type="text" class="form-control" id="page-id" placeholder="102384950293022" required>
+                </div>
+                <div class="form-group">
+                    <label for="page-topic">Topic Niche (LLM Prompts context)</label>
+                    <input type="text" class="form-control" id="page-topic" placeholder="Amazing history facts and cosmic news" required>
+                </div>
+                <div class="form-group">
+                    <label for="page-lang">Language</label>
+                    <select class="form-control" id="page-lang">
+                        <option value="Hinglish">Hinglish (Hindi written in English alphabets)</option>
+                        <option value="Hindi">Pure Hindi (Devanagari script)</option>
+                        <option value="English">English</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Post Types Supported</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="type-video" checked> Video (Reels)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="type-image"> Image Posts
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="page-schedule">Schedule Hours (UTC, comma-separated)</label>
+                    <input type="text" class="form-control" id="page-schedule" placeholder="e.g. 4, 12, 20 (leave empty for every hour)">
+                    <small style="color: var(--text-secondary); margin-top: 5px; display: block;">Enter hour numbers (0-23) separated by commas. E.g. 9 is 2:30 PM IST.</small>
+                </div>
+                
+                <!-- Advanced Custom Options for Ultimate Flexibility -->
+                <details style="margin-bottom: 20px; background: rgba(0,0,0,0.1); border: 1px dashed var(--card-border); padding: 12px; border-radius: 10px;">
+                    <summary style="cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-secondary); outline: none;">
+                        Advanced Config Options (Overrides)
+                    </summary>
+                    <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="page-text-model" style="font-size: 13px;">Text Model Override</label>
+                            <input type="text" class="form-control" id="page-text-model" placeholder="Default (llama-3.1-nemotron-70b)">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="page-image-model" style="font-size: 13px;">Image Model Override</label>
+                            <input type="text" class="form-control" id="page-image-model" placeholder="Default (flux-1-dev)">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="page-aspect-ratio" style="font-size: 13px;">Aspect Ratio</label>
+                            <select class="form-control" id="page-aspect-ratio">
+                                <option value="">Default (Video: 9:16, Image: 1:1)</option>
+                                <option value="9:16">9:16 Vertical (Reels/Shorts)</option>
+                                <option value="1:1">1:1 Square (Standard Post)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="page-voice" style="font-size: 13px;">Custom Neural Voice</label>
+                            <input type="text" class="form-control" id="page-voice" placeholder="e.g. hi-IN-SwararaNeural">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="page-bg-music" style="font-size: 13px;">Custom Background Music File</label>
+                            <input type="text" class="form-control" id="page-bg-music" placeholder="e.g. cinematic_beat.mp3">
+                        </div>
+                    </div>
+                </details>
+
+                <div class="form-group">
+                    <label for="page-token-env">Access Token Env Name</label>
+                    <input type="text" class="form-control" id="page-token-env" placeholder="FB_PAGE_TOKEN_FACTS" required>
+                    <small style="color: var(--text-secondary); margin-top: 5px; display: block;">The variable name you added to GitHub Secrets.</small>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px;">
+                    <button type="button" class="btn btn-secondary" onclick="closePageModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Config</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // Global State
+        let pagesConfig = [];
+        let pagesSHA = '';
+        let gitHubPublicKey = null;
+
+        // View Router
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById('view-' + viewName).classList.add('active');
+            
+            // Highlight nav item
+            const items = document.querySelectorAll('.nav-item');
+            if (viewName === 'dashboard') items[0].classList.add('active');
+            else if (viewName === 'pages') items[1].classList.add('active');
+            else if (viewName === 'secrets') items[2].classList.add('active');
+            else if (viewName === 'settings') items[3].classList.add('active');
+            
+            // Set title
+            document.getElementById('view-title').innerText = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+        }
+
+        // Show Toast Message
+        function showNotification(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = message;
+            
+            if (isError) {
+                toast.style.borderColor = 'var(--danger)';
+                toast.querySelector('svg').setAttribute('stroke', 'var(--danger)');
+            } else {
+                toast.style.borderColor = 'var(--primary)';
+                toast.querySelector('svg').setAttribute('stroke', 'var(--success)');
+            }
+            
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3500);
+        }
+
+        // Local Storage Helpers
+        function saveConnectionSettings() {
+            const pat = document.getElementById('gh-pat').value.trim();
+            const owner = document.getElementById('gh-owner').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            
+            if(!pat || !owner || !repo) {
+                showNotification("All connection fields are required!", true);
+                return;
+            }
+
+            localStorage.setItem('gh_pat', pat);
+            localStorage.setItem('gh_owner', owner);
+            localStorage.setItem('gh_repo', repo);
+            
+            verifyConnection().then(success => {
+                if (success) {
+                    showNotification("Connection established and verified successfully!");
+                    fetchProjectData();
+                    switchView('dashboard');
+                } else {
+                    showNotification("Failed to verify connection. Check token or repository details.", true);
+                }
+            });
+        }
+
+        function loadConnectionSettings() {
+            document.getElementById('gh-pat').value = localStorage.getItem('gh_pat') || '';
+            document.getElementById('gh-owner').value = localStorage.getItem('gh_owner') || '';
+            document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+            
+            verifyConnection().then(success => {
+                if (success) {
+                    fetchProjectData();
+                }
+            });
+        }
+
+        // GitHub API Client
+        async function githubRequest(endpoint, options = {}) {
+            const pat = localStorage.getItem('gh_pat');
+            const owner = localStorage.getItem('gh_owner');
+            const repo = localStorage.getItem('gh_repo');
+            
+            if(!pat || !owner || !repo) return null;
+
+            const url = `https://api.github.com/repos/${owner}/${repo}${endpoint}`;
+            const headers = {
+                "Authorization": `token ${pat}`,
+                "Accept": "application/vnd.github.v3+json",
+                ...options.headers
+            };
+
+            const response = await fetch(url, { ...options, headers });
+            
+            if (response.status === 204) return true; // No Content response
+            if (!response.ok) {
+                console.error(`GitHub API Error: ${response.status} ${response.statusText}`);
+                return null;
+            }
+            return await response.json();
+        }
+
+        async function verifyConnection() {
+            const user = await githubRequest('');
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            const sideRepo = document.getElementById('sidebar-repo');
+            
+            if (user) {
+                dot.className = "status-dot online";
+                text.innerText = "Online / Connected";
+                sideRepo.innerText = `${localStorage.getItem('gh_owner')}/${localStorage.getItem('gh_repo')}`;
+                return true;
+            } else {
+                dot.className = "status-dot";
+                text.innerText = "Disconnected";
+                sideRepo.innerText = "";
+                return false;
+            }
+        }
+
+        // Fetch Config, Runs, and Secrets
+        async function fetchProjectData() {
+            if (!await verifyConnection()) return;
+            
+            fetchPagesConfig();
+            fetchWorkflowRuns();
+            fetchSecrets();
+            fetchRepoPublicKey();
+        }
+
+        // 1. Pages Management
+        async function fetchPagesConfig() {
+            const data = await githubRequest('/contents/pages.json');
+            if (data) {
+                pagesSHA = data.sha;
+                const contentBase64 = data.content.replace(/\s/g, '');
+                const contentJson = atob(contentBase64);
+                pagesConfig = JSON.parse(contentJson);
+                
+                document.getElementById('stat-pages').innerText = pagesConfig.length;
+                renderPagesTable();
+            } else {
+                pagesConfig = [];
+                renderPagesTable();
+            }
+        }
+
+        function renderPagesTable() {
+            const tbody = document.getElementById('pages-table-body');
+            tbody.innerHTML = '';
+
+            if (pagesConfig.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No pages configured. Click "+ Add Page" to start.</td></tr>`;
+                return;
+            }
+
+            pagesConfig.forEach((page, idx) => {
+                const tr = document.createElement('tr');
+                
+                const postTypesBadges = (page.post_types || ['video']).map(type => 
+                    `<span class="badge badge-${type}">${type.toUpperCase()}</span>`
+                ).join(' ');
+
+                const scheduleText = page.schedule && page.schedule.length > 0 ? page.schedule.join(', ') : 'All Hours';
+
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${page.page_name}</td>
+                    <td><code>${page.page_id}</code></td>
+                    <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${page.topic}</td>
+                    <td>${page.language}</td>
+                    <td>${postTypesBadges}</td>
+                    <td><code>${scheduleText}</code></td>
+                    <td><code>${page.access_token_env || page.access_token_env_name || '-'}</code></td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" onclick="openPageModal(${idx})">Edit</button>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 13px;" onclick="deletePage(${idx})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openPageModal(index = null) {
+            const modal = document.getElementById('page-modal');
+            const title = document.getElementById('modal-title');
+            const form = document.getElementById('page-form');
+            form.reset();
+
+            if (index !== null) {
+                title.innerText = "Edit Page Config";
+                document.getElementById('page-index').value = index;
+                const page = pagesConfig[index];
+                
+                document.getElementById('page-name').value = page.page_name;
+                document.getElementById('page-id').value = page.page_id;
+                document.getElementById('page-topic').value = page.topic;
+                document.getElementById('page-lang').value = page.language;
+                
+                const types = page.post_types || ['video'];
+                document.getElementById('type-video').checked = types.includes('video');
+                document.getElementById('type-image').checked = types.includes('image');
+                
+                document.getElementById('page-schedule').value = page.schedule ? page.schedule.join(', ') : '';
+                document.getElementById('page-text-model').value = page.text_model || '';
+                document.getElementById('page-image-model').value = page.image_model || '';
+                document.getElementById('page-aspect-ratio').value = page.aspect_ratio || '';
+                document.getElementById('page-voice').value = page.voice || '';
+                document.getElementById('page-bg-music').value = page.bg_music || '';
+                document.getElementById('page-token-env').value = page.access_token_env || page.access_token_env_name || '';
+            } else {
+                title.innerText = "Add Page Config";
+                document.getElementById('page-index').value = "";
+                document.getElementById('type-video').checked = true;
+                document.getElementById('type-image').checked = false;
+                document.getElementById('page-schedule').value = "";
+                document.getElementById('page-text-model').value = "";
+                document.getElementById('page-image-model').value = "";
+                document.getElementById('page-aspect-ratio').value = "";
+                document.getElementById('page-voice').value = "";
+                document.getElementById('page-bg-music').value = "";
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closePageModal() {
+            document.getElementById('page-modal').style.display = 'none';
+        }
+
+        async function savePage(event) {
+            event.preventDefault();
+            
+            const index = document.getElementById('page-index').value;
+            const name = document.getElementById('page-name').value.trim();
+            const id = document.getElementById('page-id').value.trim();
+            const topic = document.getElementById('page-topic').value.trim();
+            const lang = document.getElementById('page-lang').value;
+            
+            const post_types = [];
+            if (document.getElementById('type-video').checked) post_types.push('video');
+            if (document.getElementById('type-image').checked) post_types.push('image');
+
+            if (post_types.length === 0) {
+                showNotification("Select at least one post type!", true);
+                return;
+            }
+
+            const token_env = document.getElementById('page-token-env').value.trim();
+            const scheduleInput = document.getElementById('page-schedule').value.trim();
+            const text_model = document.getElementById('page-text-model').value.trim();
+            const image_model = document.getElementById('page-image-model').value.trim();
+            const aspect_ratio = document.getElementById('page-aspect-ratio').value;
+            const voice = document.getElementById('page-voice').value.trim();
+            const bg_music = document.getElementById('page-bg-music').value.trim();
+            
+            // Parse schedule input into array of integers
+            let schedule = [];
+            if (scheduleInput) {
+                schedule = scheduleInput.split(',')
+                    .map(h => parseInt(h.trim()))
+                    .filter(h => !isNaN(h) && h >= 0 && h <= 23);
+            }
+
+            const newPage = {
+                page_name: name,
+                page_id: id,
+                access_token_env: token_env,
+                topic: topic,
+                language: lang,
+                post_types: post_types,
+                schedule: schedule,
+                text_model: text_model || undefined,
+                image_model: image_model || undefined,
+                aspect_ratio: aspect_ratio || undefined,
+                voice: voice || undefined,
+                bg_music: bg_music || undefined
+            };
+
+            if (index !== "") {
+                // Update
+                pagesConfig[parseInt(index)] = newPage;
+            } else {
+                // Add new
+                pagesConfig.push(newPage);
+            }
+
+            // Commit pages.json back to GitHub repo
+            const commitMessage = index !== "" ? `Update Facebook Page config: ${name}` : `Add Facebook Page config: ${name}`;
+            const success = await commitConfig(commitMessage);
+            
+            if (success) {
+                showNotification("Facebook page configurations saved and pushed to GitHub!");
+                closePageModal();
+                fetchPagesConfig();
+            } else {
+                showNotification("Error pushing configuration. Please verify PAT permissions.", true);
+            }
+        }
+
+        async function deletePage(index) {
+            if (!confirm(`Are you sure you want to delete "${pagesConfig[index].page_name}"?`)) return;
+
+            const name = pagesConfig[index].page_name;
+            pagesConfig.splice(index, 1);
+            
+            const success = await commitConfig(`Delete Facebook Page config: ${name}`);
+            if (success) {
+                showNotification("Page deleted successfully!");
+                fetchPagesConfig();
+            } else {
+                showNotification("Error deleting page from repository.", true);
+            }
+        }
+
+        async function commitConfig(message) {
+            const contentBase64 = btoa(JSON.stringify(pagesConfig, null, 2));
+            const payload = {
+                message: message,
+                content: contentBase64,
+                sha: pagesSHA
+            };
+
+            const result = await githubRequest('/contents/pages.json', {
+                method: 'PUT',
+                body: JSON.stringify(payload)
+            });
+
+            return result !== null;
+        }
+
+        // 2. Workflow Trigger & Runs
+        async function fetchWorkflowRuns() {
+            const data = await githubRequest('/actions/runs?workflow=publish.yml&per_page=5');
+            const container = document.getElementById('runs-container');
+            container.innerHTML = '';
+
+            if (data && data.workflow_runs && data.workflow_runs.length > 0) {
+                const lastRun = data.workflow_runs[0];
+                const lastStatus = lastRun.conclusion || lastRun.status;
+                
+                // Set stat value
+                const stat = document.getElementById('stat-last-run');
+                stat.innerText = lastStatus.toUpperCase();
+                stat.className = lastStatus === 'success' ? 'status-success' : (lastStatus === 'failure' ? 'status-danger' : 'status-running');
+
+                data.workflow_runs.forEach(run => {
+                    const runItem = document.createElement('div');
+                    runItem.className = 'run-item';
+
+                    const conclusion = run.conclusion || run.status;
+                    const statusClass = conclusion === 'success' ? 'status-success' : (conclusion === 'failure' ? 'status-danger' : 'status-running');
+                    
+                    const timeString = new Date(run.created_at).toLocaleString();
+                    const durationMins = run.run_started_at ? Math.round((new Date(run.updated_at) - new Date(run.run_started_at)) / 60000) : 0;
+
+                    runItem.innerHTML = `
+                        <div class="run-info">
+                            <div class="run-title">
+                                #${run.run_number} - ${run.head_commit.message.split('\n')[0]}
+                            </div>
+                            <div class="run-meta">
+                                Triggered via ${run.event} • ${timeString} (${durationMins} mins duration)
+                            </div>
+                        </div>
+                        <div class="run-status ${statusClass}">
+                            ● ${conclusion.toUpperCase()}
+                        </div>
+                    `;
+                    container.appendChild(runItem);
+                });
+            } else {
+                container.innerHTML = `<p style="color: var(--text-secondary); text-align:center;">No workflow runs found. Trigger the pipeline to start.</p>`;
+            }
+        }
+
+        async function triggerWorkflow() {
+            const count = document.getElementById('dispatch-count').value;
+            const btn = document.getElementById('btn-trigger');
+            
+            btn.disabled = true;
+            btn.innerText = "Triggering workflow...";
+
+            const payload = {
+                ref: 'main',
+                inputs: {
+                    count: count.toString()
+                }
+            };
+
+            const result = await githubRequest('/actions/workflows/publish.yml/dispatches', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            btn.disabled = false;
+            btn.innerText = "Trigger Post Execution";
+
+            if (result === true) {
+                showNotification("Pipeline triggered successfully! Please wait 1-2 minutes for the Action run to register.");
+                setTimeout(fetchWorkflowRuns, 5000);
+            } else {
+                showNotification("Failed to trigger pipeline. Verify workflow file exist on main branch.", true);
+            }
+        }
+
+        // 3. GitHub Secrets Management
+        async function fetchRepoPublicKey() {
+            const data = await githubRequest('/actions/secrets/public-key');
+            if (data) {
+                gitHubPublicKey = data;
+            }
+        }
+
+        async function fetchSecrets() {
+            const data = await githubRequest('/actions/secrets');
+            const container = document.getElementById('secrets-list-container');
+            container.innerHTML = '';
+
+            if (data && data.secrets) {
+                if (data.secrets.length === 0) {
+                    container.innerHTML = `<p style="color: var(--text-secondary); text-align:center;">No repository secrets found. Add secrets below.</p>`;
+                    return;
+                }
+
+                data.secrets.forEach(secret => {
+                    const item = document.createElement('div');
+                    item.className = 'run-item';
+                    
+                    const timeString = new Date(secret.updated_at).toLocaleDateString();
+
+                    item.innerHTML = `
+                        <div class="run-info">
+                            <div class="run-title" style="font-family: monospace; color: var(--primary);">
+                                ${secret.name}
+                            </div>
+                            <div class="run-meta">
+                                Last Updated: ${timeString}
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: var(--success); font-weight:600;">
+                            ✓ SECURED
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            } else {
+                container.innerHTML = `<p style="color: var(--text-secondary); text-align:center;">Failed to load secrets. Make sure PAT has admin/repo scope.</p>`;
+            }
+        }
+
+        async function saveSecret(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('secret-name').value;
+            const val = document.getElementById('secret-value').value.trim();
+            const btn = document.getElementById('btn-save-secret');
+
+            if (!val) {
+                showNotification("Secret value cannot be empty!", true);
+                return;
+            }
+
+            if (!gitHubPublicKey) {
+                showNotification("Repository public key not loaded yet. Refresh and try again.", true);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Encrypting & Uploading...";
+
+            try {
+                // Wait for sodium loading
+                if (typeof sodium === 'undefined') {
+                    throw new Error("Sodium cryptography library loading timed out. Check connection.");
+                }
+                await sodium.ready;
+                
+                // Perform NaCl Sealed Box Encryption client-side
+                const pubKeyBin = sodium.from_base64(gitHubPublicKey.key, sodium.base64_variants.ORIGINAL);
+                const messageBin = sodium.from_string(val);
+                const encryptedBin = sodium.crypto_box_seal(messageBin, pubKeyBin);
+                const encryptedB64 = sodium.to_base64(encryptedBin, sodium.base64_variants.ORIGINAL);
+
+                // Send encrypted secret to GitHub API
+                const payload = {
+                    encrypted_value: encryptedB64,
+                    key_id: gitHubPublicKey.key_id
+                };
+
+                const result = await githubRequest(`/actions/secrets/${name}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                btn.disabled = false;
+                btn.innerText = "Save Secret Securely";
+
+                if (result !== null) {
+                    showNotification(`Secret "${name}" updated successfully!`);
+                    document.getElementById('secret-value').value = '';
+                    fetchSecrets();
+                } else {
+                    showNotification("Failed to upload secret. Check PAT write permissions.", true);
+                }
+
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btn.innerText = "Save Secret Securely";
+                showNotification("Cryptography Error: " + err.message, true);
+            }
+        }
+
+        // Initialize Page
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConnectionSettings();
+        });
+    </script>
+</body>
+</html>

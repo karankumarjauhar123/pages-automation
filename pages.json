@@ -1,0 +1,18 @@
+[
+  {
+    "page_name": "Daily Facts Hub",
+    "page_id": "YOUR_FACEBOOK_PAGE_ID_1",
+    "access_token_env": "FB_PAGE_TOKEN_FACTS",
+    "topic": "Mind-blowing science and history facts that surprise everyone",
+    "language": "Hinglish",
+    "post_types": ["video", "image"]
+  },
+  {
+    "page_name": "Success Quotes",
+    "page_id": "YOUR_FACEBOOK_PAGE_ID_2",
+    "access_token_env": "FB_PAGE_TOKEN_MOTIVATION",
+    "topic": "Daily motivational and business growth quotes for entrepreneurs",
+    "language": "Hindi",
+    "post_types": ["video"]
+  }
+]
