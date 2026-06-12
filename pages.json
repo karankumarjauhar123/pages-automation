@@ -5,7 +5,10 @@
     "access_token_env": "FB_PAGE_TOKEN_FACTS",
     "topic": "Mind-blowing science and history facts that surprise everyone",
     "language": "Hinglish",
-    "post_types": ["video", "image"]
+    "post_types": [
+      "video",
+      "image"
+    ]
   },
   {
     "page_name": "Success Quotes",
@@ -13,6 +16,21 @@
     "access_token_env": "FB_PAGE_TOKEN_MOTIVATION",
     "topic": "Daily motivational and business growth quotes for entrepreneurs",
     "language": "Hindi",
-    "post_types": ["video"]
+    "post_types": [
+      "video"
+    ]
+  },
+  {
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "topic": "Psychology facts, brain hacks, human behavior secrets, love and relationship facts.",
+    "language": "English",
+    "post_types": [
+      "video"
+    ],
+    "schedule": [
+      11
+    ]
   }
 ]
