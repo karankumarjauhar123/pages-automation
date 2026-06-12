@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class ScriptGenerator:
-    def __init__(self, api_key=None, model="nvidia/llama-3.1-nemotron-70b-instruct"):
+    def __init__(self, api_key=None, model="meta/llama-3.1-70b-instruct"):
         """
         Initialize the script generator.
-        Default model: nvidia/llama-3.1-nemotron-70b-instruct (benchmark leader).
+        Default model: meta/llama-3.1-70b-instruct.
         """
         self.api_key = api_key or os.getenv("NVIDIA_API_KEY")
         if not self.api_key or self.api_key == "your_nvidia_api_key_here":
