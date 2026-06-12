@@ -552,22 +552,30 @@
                     <div class="card-header">
                         <h2>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            Run Pipeline
+                            Publish Instantly (Create & Post Now)
                         </h2>
                     </div>
-                    <p style="color: var(--text-secondary); margin-bottom: 25px;">
-                        Manually trigger the GitHub Actions video generator. It will run in the cloud and post automatically.
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Generate and publish a post immediately, bypassing the schedule. The AI will create content and upload it to Facebook right away.
                     </p>
-                    <div class="form-group">
-                        <label for="dispatch-count">Posts Count Per Page</label>
-                        <select class="form-control" id="dispatch-count">
-                            <option value="1">1 Post</option>
-                            <option value="2">2 Posts</option>
-                            <option value="3">3 Posts</option>
-                        </select>
+                    <div class="form-group" style="display: flex; gap: 15px; margin-bottom: 20px;">
+                        <div style="flex: 1.5;">
+                            <label for="dispatch-page">Select Page</label>
+                            <select class="form-control" id="dispatch-page">
+                                <option value="">All Configured Pages</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="dispatch-count">Posts Count</label>
+                            <select class="form-control" id="dispatch-count">
+                                <option value="1">1 Post</option>
+                                <option value="2">2 Posts</option>
+                                <option value="3">3 Posts</option>
+                            </select>
+                        </div>
                     </div>
-                    <button class="btn btn-primary" id="btn-trigger" onclick="triggerWorkflow()">
-                        Trigger Post Execution
+                    <button class="btn btn-primary" id="btn-trigger" onclick="triggerWorkflow()" style="width: 100%;">
+                        Publish Now ➔
                     </button>
                 </div>
 
@@ -973,9 +981,11 @@
                 
                 document.getElementById('stat-pages').innerText = pagesConfig.length;
                 renderPagesTable();
+                populatePageSelect();
             } else {
                 pagesConfig = [];
                 renderPagesTable();
+                populatePageSelect();
             }
         }
 
@@ -1011,6 +1021,18 @@
                     </td>
                 `;
                 tbody.appendChild(tr);
+            });
+        }
+
+        function populatePageSelect() {
+            const select = document.getElementById('dispatch-page');
+            if (!select) return;
+            select.innerHTML = '<option value="">All Configured Pages</option>';
+            pagesConfig.forEach(page => {
+                const opt = document.createElement('option');
+                opt.value = page.page_name;
+                opt.innerText = page.page_name;
+                select.appendChild(opt);
             });
         }
 
@@ -1264,15 +1286,17 @@
 
         async function triggerWorkflow() {
             const count = document.getElementById('dispatch-count').value;
+            const page = document.getElementById('dispatch-page').value;
             const btn = document.getElementById('btn-trigger');
             
             btn.disabled = true;
-            btn.innerText = "Triggering workflow...";
+            btn.innerText = "Publishing...";
 
             const payload = {
                 ref: 'main',
                 inputs: {
-                    count: count.toString()
+                    count: count.toString(),
+                    page: page
                 }
             };
 
@@ -1282,13 +1306,13 @@
             });
 
             btn.disabled = false;
-            btn.innerText = "Trigger Post Execution";
+            btn.innerText = "Publish Now ➔";
 
             if (result === true) {
-                showNotification("Pipeline triggered successfully! Please wait 1-2 minutes for the Action run to register.");
+                showNotification("Publishing process started! Please wait 1-2 minutes for the video to generate and post to Facebook.");
                 setTimeout(fetchWorkflowRuns, 5000);
             } else {
-                showNotification("Failed to trigger pipeline. Verify workflow file exist on main branch.", true);
+                showNotification("Failed to trigger publish workflow. Check connection config.", true);
             }
         }
 
