@@ -19,6 +19,8 @@ on:
 jobs:
   post-content:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout Repository
@@ -65,3 +67,11 @@ jobs:
         
         echo "Running command: $CMD"
         eval $CMD
+
+    - name: Commit and Push History
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add docs/history.json || true
+        git commit -m "Update post history [skip ci]" || true
+        git push origin main || true
