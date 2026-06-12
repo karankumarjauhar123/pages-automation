@@ -45,6 +45,7 @@ jobs:
         # Load secrets from GitHub Repository Secrets
         NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         # Pass page tokens. You should add these secrets in your repository settings.
+        FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
         FB_PAGE_TOKEN_FACTS: ${{ secrets.FB_PAGE_TOKEN_FACTS }}
         FB_PAGE_TOKEN_MOTIVATION: ${{ secrets.FB_PAGE_TOKEN_MOTIVATION }}
       run: |
