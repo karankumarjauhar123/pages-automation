@@ -604,6 +604,19 @@
                     <p style="color: var(--text-secondary);">Configure connection settings to load runs...</p>
                 </div>
             </div>
+
+            <!-- Facebook Upload History Card -->
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        Facebook Upload History (Live Reels)
+                    </h2>
+                </div>
+                <div class="run-list" id="history-container">
+                    <p style="color: var(--text-secondary);">Configure connection settings to load upload history...</p>
+                </div>
+            </div>
         </section>
 
         <!-- ================= PAGES VIEW ================= -->
@@ -946,6 +959,7 @@
             fetchWorkflowRuns();
             fetchSecrets();
             fetchRepoPublicKey();
+            fetchUploadHistory();
         }
 
         // 1. Pages Management
@@ -1188,9 +1202,64 @@
                     `;
                     container.appendChild(runItem);
                 });
+        async function fetchUploadHistory() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Loading upload history...</p>';
+            
+            const data = await githubRequest('/contents/docs/history.json');
+            if (data) {
+                try {
+                    const contentBase64 = data.content.replace(/\s/g, '');
+                    const contentJson = decodeURIComponent(escape(atob(contentBase64))); // Decode UTF-8 correctly
+                    const history = JSON.parse(contentJson);
+                    renderHistoryList(history);
+                } catch (e) {
+                    console.error("Error parsing history.json:", e);
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Error parsing upload history. Re-run workflow to overwrite.</p>';
+                }
             } else {
-                container.innerHTML = `<p style="color: var(--text-secondary); text-align:center;">No workflow runs found. Trigger the pipeline to start.</p>`;
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No upload history available yet. Uploads will appear here after your first run.</p>';
             }
+        }
+
+        function renderHistoryList(history) {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '';
+
+            if (!history || history.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No upload history found.</p>';
+                return;
+            }
+
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'run-item';
+                
+                const timeString = new Date(item.timestamp).toLocaleString();
+                const displayTitle = item.title || `Post on ${item.page_name}`;
+                
+                historyItem.innerHTML = `
+                    <div class="run-info" style="flex: 1; margin-right: 20px;">
+                        <div class="run-title" style="font-size: 15px;">
+                            <span class="badge badge-${item.post_type}" style="margin-right: 5px;">${item.post_type.toUpperCase()}</span>
+                            <strong>${displayTitle}</strong>
+                        </div>
+                        <div class="run-meta" style="margin-top: 5px; color: var(--text-secondary); line-height: 1.4;">
+                            <strong>Topic:</strong> ${item.topic}<br>
+                            <strong>Caption:</strong> ${item.caption.substring(0, 160)}${item.caption.length > 160 ? '...' : ''}
+                        </div>
+                        <div class="run-meta" style="margin-top: 5px; font-size: 11px;">
+                            Page ID: <code>${item.page_id}</code> • Published: ${timeString}
+                        </div>
+                    </div>
+                    <div style="flex-shrink: 0;">
+                        <a href="${item.fb_link}" target="_blank" class="btn btn-secondary" style="padding: 8px 14px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                            View Live Reel ➔
+                        </a>
+                    </div>
+                `;
+                container.appendChild(historyItem);
+            });
         }
 
         async function triggerWorkflow() {

@@ -130,6 +130,52 @@ def clean_temp_dir(temp_dir):
         shutil.rmtree(temp_dir)
     os.makedirs(temp_dir, exist_ok=True)
 
+def log_post_to_history(page_name, page_id, post_type, fb_id, title, caption, topic):
+    """
+    Logs successful uploads to a public docs/history.json file.
+    This file is displayed in the GitHub Pages control panel UI.
+    """
+    history_dir = "docs"
+    os.makedirs(history_dir, exist_ok=True)
+    history_path = os.path.join(history_dir, "history.json")
+    
+    history = []
+    if os.path.exists(history_path):
+        try:
+            with open(history_path, "r", encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception as e:
+            print(f"Error reading history.json: {e}")
+            history = []
+            
+    fb_link = ""
+    if post_type == "video":
+        fb_link = f"https://www.facebook.com/reel/{fb_id}"
+    else:
+        fb_link = f"https://www.facebook.com/photo.php?fbid={fb_id}"
+        
+    entry = {
+        "page_name": page_name,
+        "page_id": page_id,
+        "post_type": post_type,
+        "fb_id": fb_id,
+        "fb_link": fb_link,
+        "title": title,
+        "caption": caption,
+        "topic": topic,
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+    
+    history.insert(0, entry)
+    history = history[:100]  # Keep last 100 uploads
+    
+    try:
+        with open(history_path, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=2, ensure_ascii=False)
+        print(f"Log appended to history.json: {fb_link}")
+    except Exception as e:
+        print(f"Error writing to history.json: {e}")
+
 def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploader):
     page_name = page["page_name"]
     page_id = page["page_id"]
@@ -211,13 +257,15 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
                     if not access_token or access_token in ["YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_1", "YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_2"]:
                         print(f"Skipping FB upload: Default placeholders or empty access token found. Check page token.")
                     else:
-                        uploader.upload_video(
+                        fb_id = uploader.upload_video(
                             page_id=page_id,
                             access_token=access_token,
                             file_path=video_output_path,
                             title=script["title"],
                             caption=script["fb_caption"]
                         )
+                        if fb_id:
+                            log_post_to_history(page_name, page_id, "video", fb_id, script["title"], script["fb_caption"], topic)
                 else:
                     print(f"[DRY RUN] Generated video saved locally at: {video_output_path} (Facebook upload skipped)")
 
@@ -241,12 +289,14 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
                     if not access_token or access_token in ["YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_1", "YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_2"]:
                         print(f"Skipping FB upload: Default placeholders or empty access token found. Check page token.")
                     else:
-                        uploader.upload_photo(
+                        fb_id = uploader.upload_photo(
                             page_id=page_id,
                             access_token=access_token,
                             file_path=image_output_path,
                             caption=script["fb_caption"]
                         )
+                        if fb_id:
+                            log_post_to_history(page_name, page_id, "image", fb_id, "", script["fb_caption"], topic)
                 else:
                     print(f"[DRY RUN] Generated image saved locally at: {image_output_path} (Facebook upload skipped)")
 
