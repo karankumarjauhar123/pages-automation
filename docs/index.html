@@ -1222,8 +1222,12 @@
                             ● ${conclusion.toUpperCase()}
                         </div>
                     `;
-                    container.appendChild(runItem);
                 });
+            } else {
+                container.innerHTML = `<p style="color: var(--text-secondary); text-align:center;">No workflow runs found. Trigger the pipeline to start.</p>`;
+            }
+        }
+
         async function fetchUploadHistory() {
             const container = document.getElementById('history-container');
             container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Loading upload history...</p>';
