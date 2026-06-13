@@ -11,5 +11,19 @@
     "schedule": [
       11
     ]
+  },
+  {
+    "page_name": "chanakya niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "topic": "Chanakya Niti lessons in Hindi, relationship wisdom, success mindset quotes, and smart human behavior secrets.",
+    "language": "Hinglish",
+    "post_types": [
+      "video"
+    ],
+    "schedule": [
+      11
+    ],
+    "voice": "hi-IN-MadhurNeural (Strong, authoritative male voice)"
   }
 ]
