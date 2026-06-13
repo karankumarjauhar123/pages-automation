@@ -51,6 +51,14 @@ jobs:
         FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
         FB_PAGE_TOKEN_FACTS: ${{ secrets.FB_PAGE_TOKEN_FACTS }}
         FB_PAGE_TOKEN_MOTIVATION: ${{ secrets.FB_PAGE_TOKEN_MOTIVATION }}
+        FB_PAGE_TOKEN_3: ${{ secrets.FB_PAGE_TOKEN_3 }}
+        FB_PAGE_TOKEN_4: ${{ secrets.FB_PAGE_TOKEN_4 }}
+        FB_PAGE_TOKEN_5: ${{ secrets.FB_PAGE_TOKEN_5 }}
+        FB_PAGE_TOKEN_6: ${{ secrets.FB_PAGE_TOKEN_6 }}
+        FB_PAGE_TOKEN_7: ${{ secrets.FB_PAGE_TOKEN_7 }}
+        FB_PAGE_TOKEN_8: ${{ secrets.FB_PAGE_TOKEN_8 }}
+        FB_PAGE_TOKEN_9: ${{ secrets.FB_PAGE_TOKEN_9 }}
+        FB_PAGE_TOKEN_10: ${{ secrets.FB_PAGE_TOKEN_10 }}
       run: |
         # Build running command
         CMD="python main.py"
