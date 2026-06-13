@@ -91,10 +91,13 @@ class ScriptGenerator:
 
         user_prompt = (
             f"Generate a video script on the topic: '{topic}' in language: '{language}'.\n"
+            "To ensure variety, choose a highly specific, unique angle, sub-topic, or lesson under the main theme (do not just generate a generic summary). "
+            "For example, pick a single specific quote or one exact life situation (like dealing with fake friends, achieving success through silence, etc.).\n"
             "The script should be optimized for a 30-50 second Reels video. It must contain 3 to 5 scenes.\n"
             "The narration must flow naturally and sound engaging when converted to speech.\n"
             "The first scene must have a powerful hook (first 3 seconds).\n"
-            "The visual prompts for each scene will be sent to an AI Image Generator (Flux), so describe them in detail in English. Specify style (e.g., 'photorealistic', 'cinematic lighting', 'dramatic digital art'), subject, colors, and vertical framing (9:16).\n\n"
+            "The visual prompts for each scene will be sent to an AI Image Generator (Flux), so describe them in detail in English. "
+            "For this video, select a specific artistic style for all scenes (e.g. choose one of: realistic photography, historical ancient oil painting, moody dark fantasy, or dramatic digital art) so the visuals look cohesive across this video but unique compared to other runs. Use vertical framing (9:16).\n\n"
             "The JSON output MUST follow this exact schema:\n"
             "{\n"
             '  "title": "Short title of the video",\n'
@@ -150,7 +153,8 @@ class ScriptGenerator:
 
         user_prompt = (
             f"Generate a single-image post configuration on the topic: '{topic}' in language: '{language}'.\n"
-            "The visual prompt will be used with FLUX image generator, so make it highly detailed and descriptive (in English). Specify the style, setting, and mood.\n"
+            "To ensure variety, choose a highly specific, unique quote, tip, or lesson under the main theme (do not just generate a generic summary).\n"
+            "The visual prompt will be used with FLUX image generator, so make it highly detailed and descriptive (in English). Select a unique visual style (e.g., realistic photography, historical oil painting, minimalist concept art, or dramatic digital art) to keep it fresh and engaging. Specify the style, setting, and mood.\n"
             "The overlay text should be a short, punchy quote, fact, or tip that will be written directly on the image.\n\n"
             "The JSON output MUST follow this exact schema:\n"
             "{\n"
