@@ -45,7 +45,9 @@ class ImageGenerator:
 
         # Determine width and height based on aspect ratio
         if aspect_ratio == "9:16":
-            width, height = 720, 1280  # Ideal vertical resolution for mobile AI generation
+            width, height = 768, 1344  # Allowed vertical resolution close to 9:16 for FLUX
+        elif aspect_ratio == "16:9":
+            width, height = 1344, 768  # Allowed landscape resolution close to 16:9 for FLUX
         elif aspect_ratio == "1:1":
             width, height = 1024, 1024
         else:
