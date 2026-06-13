@@ -15,6 +15,11 @@ on:
         description: 'Specific page name to run for (leave empty for all)'
         required: false
         default: ''
+      retry_pending:
+        description: 'Retry failed pending uploads'
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   post-content:
@@ -60,18 +65,21 @@ jobs:
         FB_PAGE_TOKEN_9: ${{ secrets.FB_PAGE_TOKEN_9 }}
         FB_PAGE_TOKEN_10: ${{ secrets.FB_PAGE_TOKEN_10 }}
       run: |
-        # Build running command
-        CMD="python main.py"
-        
-        # Add count if triggered manually
-        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          CMD="$CMD --count ${{ github.event.inputs.count }} --force"
-          if [ -n "${{ github.event.inputs.page }}" ]; then
-            CMD="$CMD --page \"${{ github.event.inputs.page }}\""
-          fi
+        # Check if we should retry pending failed uploads
+        if [ "${{ github.event.inputs.retry_pending }}" = "true" ]; then
+          CMD="python main.py --retry-pending"
         else
-          # Default count for scheduled run (which will check pages.json schedule hours)
-          CMD="$CMD --count 1"
+          CMD="python main.py"
+          # Add count if triggered manually
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CMD="$CMD --count ${{ github.event.inputs.count }} --force"
+            if [ -n "${{ github.event.inputs.page }}" ]; then
+              CMD="$CMD --page \"${{ github.event.inputs.page }}\""
+            fi
+          else
+            # Default count for scheduled run (which will check pages.json schedule hours)
+            CMD="$CMD --count 1"
+          fi
         fi
         
         echo "Running command: $CMD"
@@ -81,6 +89,6 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add docs/history.json || true
-        git commit -m "Update post history [skip ci]" || true
+        git add docs/history.json docs/pending_uploads.json docs/pending_uploads/* || true
+        git commit -m "Update post history and pending uploads queue [skip ci]" || true
         git push origin main || true
