@@ -139,7 +139,7 @@ async function runDiagnostics() {
         const testModels = [
             "meta-llama/llama-3.3-70b-instruct:free",
             "google/gemma-4-31b-it:free",
-            "openrouter/free"
+            "meta-llama/llama-3.2-3b-instruct:free"
         ];
         
         let success = false;

@@ -19,7 +19,7 @@ class ScriptGenerator:
                 api_key=self.openrouter_key
             )
             # Default model for OpenRouter if not specified
-            self.model = model if model != "meta/llama-3.1-70b-instruct" else "openrouter/free"
+            self.model = model if model != "meta/llama-3.1-70b-instruct" else "meta-llama/llama-3.3-70b-instruct:free"
         else:
             self.api_key = api_key or os.getenv("NVIDIA_API_KEY")
             if not self.api_key or self.api_key == "your_nvidia_api_key_here":
@@ -44,7 +44,7 @@ class ScriptGenerator:
                 "google/gemma-4-31b-it:free",
                 "nousresearch/hermes-3-llama-3.1-405b:free",
                 "qwen/qwen3-next-80b-a3b-instruct:free",
-                "openrouter/free"
+                "meta-llama/llama-3.2-3b-instruct:free"
             ]
             
             if model_override:
