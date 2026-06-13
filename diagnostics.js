@@ -120,7 +120,22 @@ async function runDiagnostics() {
     const openRouterMatch = envContent.match(/OPENROUTER_API_KEY\s*=\s*([^\s#\r\n]+)/);
     if (openRouterMatch && openRouterMatch[1]) {
         const orKey = openRouterMatch[1].trim();
-        console.log(`\n--- Testing OpenRouter Generation (meta-llama/llama-3.1-8b-instruct:free) ---`);
+        console.log(`\n--- Fetching OpenRouter Free Models ---`);
+        try {
+            const modelsResponse = await fetch("https://openrouter.ai/api/v1/models");
+            if (modelsResponse.ok) {
+                const modelsJson = await modelsResponse.json();
+                const freeModels = modelsJson.data
+                    .filter(m => m.id.endsWith(":free") || m.id === "openrouter/free")
+                    .map(m => m.id);
+                console.log(`✅ Found ${freeModels.length} free models on OpenRouter.`);
+                console.log("Free models sample:", freeModels.slice(0, 10));
+            }
+        } catch (err) {
+            console.error("⚠️ Failed to fetch OpenRouter models list:", err.message);
+        }
+
+        console.log(`\n--- Testing OpenRouter Generation (openrouter/free) ---`);
         try {
             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
@@ -129,7 +144,7 @@ async function runDiagnostics() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "meta-llama/llama-3.1-8b-instruct:free",
+                    model: "openrouter/free",
                     messages: [
                         { role: "user", content: "Hi! Output the word 'OpenRouter OK'." }
                     ]
