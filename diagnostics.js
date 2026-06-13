@@ -135,31 +135,46 @@ async function runDiagnostics() {
             console.error("⚠️ Failed to fetch OpenRouter models list:", err.message);
         }
 
-        console.log(`\n--- Testing OpenRouter Generation (openrouter/free) ---`);
-        try {
-            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${orKey}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    model: "openrouter/free",
-                    messages: [
-                        { role: "user", content: "Hi! Output the word 'OpenRouter OK'." }
-                    ]
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status} - ${await response.text()}`);
+        console.log(`\n--- Testing OpenRouter Generation (with priority fallback) ---`);
+        const testModels = [
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "google/gemma-4-31b-it:free",
+            "openrouter/free"
+        ];
+        
+        let success = false;
+        for (const model of testModels) {
+            console.log(`Trying OpenRouter model: ${model}...`);
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${orKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: "user", content: "Hi! Output the word 'OpenRouter OK'." }
+                        ]
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status} - ${await response.text()}`);
+                }
+                
+                const result = await response.json();
+                const content = result.choices[0].message.content.trim();
+                console.log(`✅ OpenRouter Success with ${model}! Response: "${content}"`);
+                success = true;
+                break;
+            } catch (err) {
+                console.warn(`⚠️ OpenRouter model ${model} failed:`, err.message);
             }
-            
-            const result = await response.json();
-            const content = result.choices[0].message.content.trim();
-            console.log(`✅ OpenRouter Success! Response: "${content}"`);
-        } catch (err) {
-            console.error("❌ OpenRouter test failed:", err.message);
+        }
+        if (!success) {
+            console.error("❌ All OpenRouter models failed.");
         }
     } else {
         console.log("\nℹ️ OpenRouter test skipped (OPENROUTER_API_KEY not found in .env)");

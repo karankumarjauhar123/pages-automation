@@ -30,6 +30,52 @@ class ScriptGenerator:
                 api_key=self.api_key
             )
             self.model = model
+            
+    def _completion_with_fallback(self, messages, model_override=None, temperature=0.7):
+        """
+        Calls chat completions. If using OpenRouter, it tries a list of high-benchmark 
+        free models in order of priority if one fails (due to rate limits, server errors, etc.).
+        """
+        # Determine the initial model list
+        if self.openrouter_key:
+            # Priority list of best benchmarked free models on OpenRouter
+            default_free_models = [
+                "meta-llama/llama-3.3-70b-instruct:free",
+                "google/gemma-4-31b-it:free",
+                "nousresearch/hermes-3-llama-3.1-405b:free",
+                "qwen/qwen3-next-80b-a3b-instruct:free",
+                "openrouter/free"
+            ]
+            
+            if model_override:
+                # If user specified a model (e.g. override), try it first, then fall back to defaults
+                models_to_try = [model_override] + [m for m in default_free_models if m != model_override]
+            else:
+                models_to_try = default_free_models
+        else:
+            # For NVIDIA API, use the specified model or fallback to default
+            models_to_try = [model_override or self.model]
+
+        last_error = None
+        for model_name in models_to_try:
+            try:
+                print(f"Trying model: {model_name}...")
+                response = self.client.chat.completions.create(
+                    model=model_name,
+                    messages=messages,
+                    temperature=temperature
+                )
+                print(f"✅ Success with model: {model_name}")
+                return response
+            except Exception as e:
+                print(f"⚠️ Failed with model {model_name}: {str(e)}")
+                last_error = e
+                # Continue to next model
+                continue
+        
+        # If all failed, raise the last error
+        raise last_error
+
 
     def generate_video_script(self, topic, language, model=None):
         """
@@ -63,9 +109,9 @@ class ScriptGenerator:
             "}\n"
         )
 
-        print(f"Generating script for topic: '{topic}' in '{language}' using model '{model_to_use}'...")
-        response = self.client.chat.completions.create(
-            model=model_to_use,
+        print(f"Generating script for topic: '{topic}' in '{language}'...")
+        response = self._completion_with_fallback(
+            model_override=model_to_use,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -114,9 +160,9 @@ class ScriptGenerator:
             "}\n"
         )
 
-        print(f"Generating image post content for topic: '{topic}' in '{language}' using model '{model_to_use}'...")
-        response = self.client.chat.completions.create(
-            model=model_to_use,
+        print(f"Generating image post content for topic: '{topic}' in '{language}'...")
+        response = self._completion_with_fallback(
+            model_override=model_to_use,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
