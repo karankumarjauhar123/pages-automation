@@ -37,12 +37,18 @@
             font-family: 'Outfit', sans-serif;
         }
 
+        html {
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
         body {
             background: var(--bg-gradient);
             color: var(--text);
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Sidebar Navigation */
@@ -600,6 +606,25 @@
                 </div>
             </div>
 
+            <!-- Failed Pending Uploads Card -->
+            <div class="card" id="pending-uploads-card" style="display: none; margin-bottom: 40px; border-color: var(--danger);">
+                <div class="card-header">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        Pending Uploads Queue (Fails Requiring Action)
+                    </h2>
+                    <button class="btn btn-danger" id="btn-retry-pending" onclick="retryPendingUploads()" style="box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);">
+                        Retry All Uploads ➔
+                    </button>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    The following generated posts failed to upload to Facebook (typically due to expired access tokens). Fix the access token in GitHub Secrets first, then click "Retry All Uploads" to run the retry task.
+                </p>
+                <div class="run-list" id="pending-container">
+                    <!-- Dynamically filled list -->
+                </div>
+            </div>
+
             <!-- GHA Workflow Runs Card -->
             <div class="card">
                 <div class="card-header">
@@ -978,6 +1003,7 @@
             fetchSecrets();
             fetchRepoPublicKey();
             fetchUploadHistory();
+            fetchPendingUploads();
         }
 
         // 1. Pages Management
@@ -1327,6 +1353,95 @@
                 setTimeout(fetchWorkflowRuns, 5000);
             } else {
                 showNotification("Failed to trigger publish workflow. Check connection config.", true);
+            }
+        }
+
+        async function fetchPendingUploads() {
+            const card = document.getElementById('pending-uploads-card');
+            
+            const data = await githubRequest('/contents/docs/pending_uploads.json');
+            if (data) {
+                try {
+                    const contentBase64 = data.content.replace(/\s/g, '');
+                    const contentJson = decodeURIComponent(escape(atob(contentBase64)));
+                    const pendingList = JSON.parse(contentJson);
+                    
+                    if (pendingList && pendingList.length > 0) {
+                        card.style.display = 'block';
+                        renderPendingUploadsList(pendingList);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.error("Error parsing pending_uploads.json:", e);
+                    card.style.display = 'none';
+                }
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        function renderPendingUploadsList(pendingList) {
+            const container = document.getElementById('pending-container');
+            container.innerHTML = '';
+            
+            pendingList.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'run-item';
+                itemDiv.style.borderColor = 'rgba(255, 51, 102, 0.2)';
+                itemDiv.style.background = 'rgba(255, 51, 102, 0.02)';
+                
+                const timeString = new Date(item.timestamp).toLocaleString();
+                const displayTitle = item.title || `Post on ${item.page_name}`;
+                
+                itemDiv.innerHTML = `
+                    <div class="run-info" style="flex: 1; margin-right: 20px;">
+                        <div class="run-title" style="font-size: 15px;">
+                            <span class="badge badge-${item.post_type}" style="margin-right: 5px;">${item.post_type.toUpperCase()}</span>
+                            <strong>${displayTitle}</strong>
+                            <span style="font-size: 12px; color: var(--danger); font-weight: 600; margin-left: 8px;">(Upload Failed)</span>
+                        </div>
+                        <div class="run-meta" style="margin-top: 5px; color: var(--text-secondary); line-height: 1.4;">
+                            <strong>Page:</strong> ${item.page_name} (ID: <code>${item.page_id}</code>)<br>
+                            <strong>Required Secret Variable:</strong> <code style="color: var(--warning); font-weight: 600;">${item.access_token_env}</code><br>
+                            <strong style="color: var(--danger);">Error:</strong> <span style="font-family: monospace; font-size: 13px;">${item.error_message}</span>
+                        </div>
+                        <div class="run-meta" style="margin-top: 5px; font-size: 11px;">
+                            Asset Path: <code>${item.file_path}</code> • Failed At: ${timeString}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        async function retryPendingUploads() {
+            const btn = document.getElementById('btn-retry-pending');
+            btn.disabled = true;
+            btn.innerText = "Retrying Uploads...";
+            
+            const payload = {
+                ref: 'main',
+                inputs: {
+                    count: '1',
+                    page: '',
+                    retry_pending: true
+                }
+            };
+            
+            const result = await githubRequest('/actions/workflows/publish.yml/dispatches', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            
+            btn.disabled = false;
+            btn.innerText = "Retry All Uploads ➔";
+            
+            if (result === true) {
+                showNotification("Retry workflow triggered successfully! Check cloud logs in a few minutes.");
+                setTimeout(fetchWorkflowRuns, 5000);
+            } else {
+                showNotification("Failed to trigger retry workflow. Check connection config.", true);
             }
         }
 

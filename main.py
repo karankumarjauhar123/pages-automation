@@ -22,6 +22,7 @@ def parse_args():
     parser.add_argument("--page", type=str, default=None, help="Name of a specific page in pages.json to process")
     parser.add_argument("--type", type=str, choices=["video", "image"], default=None, help="Force a specific post type (video or image)")
     parser.add_argument("--force", action="store_true", help="Force execution regardless of scheduled hours")
+    parser.add_argument("--retry-pending", action="store_true", help="Retry failed uploads saved in the pending queue")
     return parser.parse_args()
 
 def load_pages():
@@ -176,6 +177,139 @@ def log_post_to_history(page_name, page_id, post_type, fb_id, title, caption, to
     except Exception as e:
         print(f"Error writing to history.json: {e}")
 
+def save_to_pending_uploads(page_name, page_id, access_token_env, file_path, post_type, title, caption, error_message):
+    pending_dir = os.path.join("docs", "pending_uploads")
+    os.makedirs(pending_dir, exist_ok=True)
+    
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    file_ext = os.path.splitext(file_path)[1]
+    pending_filename = f"{page_name.replace(' ', '_')}_{post_type}_{timestamp}{file_ext}"
+    pending_file_path = os.path.join(pending_dir, pending_filename)
+    
+    try:
+        shutil.copy2(file_path, pending_file_path)
+        print(f"Copied failed post file to pending queue: {pending_file_path}")
+    except Exception as e:
+        print(f"Failed to copy file to pending directory: {e}")
+        return
+        
+    queue_path = os.path.join("docs", "pending_uploads.json")
+    queue = []
+    if os.path.exists(queue_path):
+        try:
+            with open(queue_path, "r", encoding="utf-8") as f:
+                queue = json.load(f)
+        except Exception:
+            queue = []
+            
+    entry = {
+        "id": f"pending_{timestamp}_{random.randint(1000, 9999)}",
+        "page_name": page_name,
+        "page_id": page_id,
+        "access_token_env": access_token_env,
+        "file_path": f"docs/pending_uploads/{pending_filename}",
+        "post_type": post_type,
+        "title": title,
+        "caption": caption,
+        "error_message": str(error_message),
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+    queue.insert(0, entry)
+    
+    try:
+        with open(queue_path, "w", encoding="utf-8") as f:
+            json.dump(queue, f, indent=2, ensure_ascii=False)
+        print(f"Added upload to docs/pending_uploads.json for page {page_name}")
+    except Exception as e:
+        print(f"Failed to write to pending_uploads.json: {e}")
+
+def retry_pending_uploads(uploader):
+    queue_path = os.path.join("docs", "pending_uploads.json")
+    if not os.path.exists(queue_path):
+        print("No pending uploads queue found.")
+        return
+        
+    try:
+        with open(queue_path, "r", encoding="utf-8") as f:
+            queue = json.load(f)
+    except Exception as e:
+        print(f"Failed to read pending_uploads.json: {e}")
+        return
+        
+    if not queue:
+        print("Pending uploads queue is empty.")
+        return
+        
+    print(f"Found {len(queue)} pending uploads. Retrying...")
+    remaining_queue = []
+    changes_made = False
+    
+    for entry in queue:
+        page_name = entry["page_name"]
+        page_id = entry["page_id"]
+        env_var_name = entry["access_token_env"]
+        file_path = entry["file_path"]
+        post_type = entry["post_type"]
+        title = entry["title"]
+        caption = entry["caption"]
+        
+        print(f"\nRetrying upload for page '{page_name}' ({post_type})...")
+        
+        access_token = os.getenv(env_var_name)
+        if not access_token:
+            print(f"❌ Error: Environment variable {env_var_name} is empty or not set. Skipping.")
+            remaining_queue.append(entry)
+            continue
+            
+        if not os.path.exists(file_path):
+            print(f"❌ Error: File {file_path} not found. Skipping.")
+            remaining_queue.append(entry)
+            continue
+            
+        try:
+            if post_type == "video":
+                fb_id = uploader.upload_video(
+                    page_id=page_id,
+                    access_token=access_token,
+                    file_path=file_path,
+                    title=title,
+                    caption=caption
+                )
+            else:
+                fb_id = uploader.upload_photo(
+                    page_id=page_id,
+                    access_token=access_token,
+                    file_path=file_path,
+                    caption=caption
+                )
+                
+            if fb_id:
+                print(f"✅ Successful retry upload for {page_name}! FB ID: {fb_id}")
+                log_post_to_history(page_name, page_id, post_type, fb_id, title, caption, "Retried from pending queue")
+                try:
+                    os.remove(file_path)
+                    print(f"Removed retried file from pending queue: {file_path}")
+                except Exception as del_err:
+                    print(f"Failed to delete {file_path}: {del_err}")
+                changes_made = True
+            else:
+                print(f"❌ Failed retry for {page_name}: Uploader returned no ID.")
+                remaining_queue.append(entry)
+        except Exception as retry_err:
+            print(f"❌ Failed retry for {page_name}: {retry_err}")
+            entry["error_message"] = str(retry_err)
+            remaining_queue.append(entry)
+            
+    if changes_made:
+        try:
+            with open(queue_path, "w", encoding="utf-8") as f:
+                json.dump(remaining_queue, f, indent=2, ensure_ascii=False)
+            print("\nUpdated pending_uploads.json successfully.")
+        except Exception as e:
+            print(f"Failed to write updated pending_uploads.json: {e}")
+    else:
+        print("\nNo retry uploads succeeded. Queue remains unchanged.")
+
 def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploader):
     page_name = page["page_name"]
     page_id = page["page_id"]
@@ -257,15 +391,29 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
                     if not access_token or access_token in ["YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_1", "YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_2"]:
                         print(f"Skipping FB upload: Default placeholders or empty access token found. Check page token.")
                     else:
-                        fb_id = uploader.upload_video(
-                            page_id=page_id,
-                            access_token=access_token,
-                            file_path=video_output_path,
-                            title=script["title"],
-                            caption=script["fb_caption"]
-                        )
-                        if fb_id:
-                            log_post_to_history(page_name, page_id, "video", fb_id, script["title"], script["fb_caption"], topic)
+                        try:
+                            fb_id = uploader.upload_video(
+                                page_id=page_id,
+                                access_token=access_token,
+                                file_path=video_output_path,
+                                title=script["title"],
+                                caption=script["fb_caption"]
+                            )
+                            if fb_id:
+                                log_post_to_history(page_name, page_id, "video", fb_id, script["title"], script["fb_caption"], topic)
+                        except Exception as upload_err:
+                            print(f"❌ Video upload failed for {page_name}: {upload_err}")
+                            save_to_pending_uploads(
+                                page_name=page_name,
+                                page_id=page_id,
+                                access_token_env=page.get("access_token_env", "FB_PAGE_TOKEN"),
+                                file_path=video_output_path,
+                                post_type="video",
+                                title=script["title"],
+                                caption=script["fb_caption"],
+                                error_message=upload_err
+                            )
+                            raise upload_err
                 else:
                     print(f"[DRY RUN] Generated video saved locally at: {video_output_path} (Facebook upload skipped)")
 
@@ -289,14 +437,28 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
                     if not access_token or access_token in ["YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_1", "YOUR_FACEBOOK_PAGE_ACCESS_TOKEN_2"]:
                         print(f"Skipping FB upload: Default placeholders or empty access token found. Check page token.")
                     else:
-                        fb_id = uploader.upload_photo(
-                            page_id=page_id,
-                            access_token=access_token,
-                            file_path=image_output_path,
-                            caption=script["fb_caption"]
-                        )
-                        if fb_id:
-                            log_post_to_history(page_name, page_id, "image", fb_id, "", script["fb_caption"], topic)
+                        try:
+                            fb_id = uploader.upload_photo(
+                                page_id=page_id,
+                                access_token=access_token,
+                                file_path=image_output_path,
+                                caption=script["fb_caption"]
+                            )
+                            if fb_id:
+                                log_post_to_history(page_name, page_id, "image", fb_id, "", script["fb_caption"], topic)
+                        except Exception as upload_err:
+                            print(f"❌ Image upload failed for {page_name}: {upload_err}")
+                            save_to_pending_uploads(
+                                page_name=page_name,
+                                page_id=page_id,
+                                access_token_env=page.get("access_token_env", "FB_PAGE_TOKEN"),
+                                file_path=image_output_path,
+                                post_type="image",
+                                title="",
+                                caption=script["fb_caption"],
+                                error_message=upload_err
+                            )
+                            raise upload_err
                 else:
                     print(f"[DRY RUN] Generated image saved locally at: {image_output_path} (Facebook upload skipped)")
 
@@ -331,6 +493,12 @@ def main():
         return
     except Exception as e:
         print(f"Error initializing modules: {e}")
+        return
+
+    # Handle retry pending uploads if flag is set
+    if args.retry_pending:
+        retry_pending_uploads(uploader)
+        print("\nRetry process completed.")
         return
 
     # Filter pages if --page argument is provided
