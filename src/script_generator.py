@@ -11,15 +11,25 @@ class ScriptGenerator:
         Initialize the script generator.
         Default model: meta/llama-3.1-70b-instruct.
         """
-        self.api_key = api_key or os.getenv("NVIDIA_API_KEY")
-        if not self.api_key or self.api_key == "your_nvidia_api_key_here":
-            raise ValueError("NVIDIA_API_KEY is not set. Please set it in the .env file.")
-        
-        self.client = OpenAI(
-            base_url="https://integrate.api.nvidia.com/v1",
-            api_key=self.api_key
-        )
-        self.model = model
+        self.openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        if self.openrouter_key:
+            print("Using OpenRouter for Script Generation.")
+            self.client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=self.openrouter_key
+            )
+            # Default model for OpenRouter if not specified
+            self.model = model if model != "meta/llama-3.1-70b-instruct" else "meta-llama/llama-3.1-8b-instruct:free"
+        else:
+            self.api_key = api_key or os.getenv("NVIDIA_API_KEY")
+            if not self.api_key or self.api_key == "your_nvidia_api_key_here":
+                raise ValueError("NVIDIA_API_KEY or OPENROUTER_API_KEY is not set. Please set it in the .env file.")
+            
+            self.client = OpenAI(
+                base_url="https://integrate.api.nvidia.com/v1",
+                api_key=self.api_key
+            )
+            self.model = model
 
     def generate_video_script(self, topic, language, model=None):
         """
