@@ -12,6 +12,7 @@ from src.image_generator import ImageGenerator
 from src.voice_generator import VoiceGenerator
 from src.video_composer import VideoComposer
 from src.fb_uploader import FBUploader
+from src.stock_video import StockVideoGenerator
 
 load_dotenv()
 
@@ -310,7 +311,7 @@ def retry_pending_uploads(uploader):
     else:
         print("\nNo retry uploads succeeded. Queue remains unchanged.")
 
-def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploader):
+def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploader, stock_video_gen):
     page_name = page["page_name"]
     page_id = page["page_id"]
     
@@ -338,6 +339,7 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
     bg_music = page.get("bg_music")
     aspect_ratio_video = page.get("aspect_ratio", "9:16")
     aspect_ratio_image = page.get("aspect_ratio", "1:1")
+    video_source = page.get("video_source", "ai_images")
     
     print("\n" + "="*50)
     print(f"PROCESSING FACEBOOK PAGE: {page_name} (Active Hour)")
@@ -368,19 +370,42 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
                 print(f"Title: {script['title']}")
                 print(f"Caption: {script['fb_caption'][:100]}...")
 
-                # 2. Generate Assets (Voice & Images) per scene
+                # 2. Generate Assets (Voice & Images/Videos) per scene
                 scene_audio_paths = []
                 for idx, scene in enumerate(script["scenes"]):
                     scene_img_path = os.path.join(temp_dir, f"scene_{idx}.png")
+                    scene_video_path = os.path.join(temp_dir, f"scene_{idx}.mp4")
                     scene_aud_path = os.path.join(temp_dir, f"scene_{idx}.mp3")
                     
-                    # Generate AI image
-                    image_gen.generate_image(scene["image_prompt"], scene_img_path, aspect_ratio=aspect_ratio_video, model=image_model)
                     # Generate TTS narration
                     voice_gen.generate_voice(scene["narration"], scene_aud_path, language=language, voice=custom_voice)
-                    
-                    scene["image_path"] = scene_img_path
                     scene_audio_paths.append(scene_aud_path)
+                    
+                    # Decide if this scene uses video or image
+                    use_video = False
+                    if video_source == "stock_videos":
+                        use_video = True
+                    elif video_source == "hybrid":
+                        # Alternate: even index scenes use video, odd use images
+                        use_video = (idx % 2 == 0)
+                        
+                    downloaded_video = False
+                    if use_video:
+                        query = scene.get("video_query")
+                        if query:
+                            success = stock_video_gen.search_and_download_video(query, scene_video_path)
+                            if success:
+                                scene["video_path"] = scene_video_path
+                                scene["media_type"] = "video"
+                                downloaded_video = True
+                                
+                    if not downloaded_video:
+                        # Fallback to AI image or primary image choice
+                        if use_video:
+                            print(f"Pexels fallback: Generating AI image for scene {idx}...")
+                        image_gen.generate_image(scene["image_prompt"], scene_img_path, aspect_ratio=aspect_ratio_video, model=image_model)
+                        scene["image_path"] = scene_img_path
+                        scene["media_type"] = "image"
 
                 # 3. Compose Video
                 video_output_path = os.path.join(output_dir, f"{page_name.replace(' ', '_')}_post_{i+1}.mp4")
@@ -487,6 +512,7 @@ def main():
         voice_gen = VoiceGenerator()
         composer = VideoComposer()
         uploader = FBUploader()
+        stock_video_gen = StockVideoGenerator()
     except ValueError as e:
         print(f"Configuration Error: {e}")
         print("Please make sure NVIDIA_API_KEY is set in your .env file.")
@@ -510,10 +536,9 @@ def main():
 
     # Run loop
     for page in pages:
-        process_page(page, args, script_gen, image_gen, voice_gen, composer, uploader)
+        process_page(page, args, script_gen, image_gen, voice_gen, composer, uploader, stock_video_gen)
 
     print("\nAutomation task completed successfully!")
 
 if __name__ == "__main__":
     main()
-

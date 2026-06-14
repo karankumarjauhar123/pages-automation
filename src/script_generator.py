@@ -105,7 +105,8 @@ class ScriptGenerator:
             '  "scenes": [\n'
             "    {\n"
             '      "narration": "Narration text for this scene (in the requested language)",\n'
-            '      "image_prompt": "Detailed visual description in English for AI image generator, vertical 9:16 aspect ratio"\n'
+            '      "image_prompt": "Detailed visual description in English for AI image generator, vertical 9:16 aspect ratio",\n'
+            '      "video_query": "A simple 2-3 word English search query for stock video clips representing this scene (e.g. \'thoughtful man\', \'stressed student\', \'meditation forest\'). Keep it simple, common, and conceptual to ensure high search success on stock video sites."\n'
             "    }\n"
             "  ],\n"
             '  "fb_caption": "Engaging Facebook post caption with relevant emojis and hashtags"\n'

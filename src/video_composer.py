@@ -18,6 +18,7 @@ class VideoComposer:
         self.fps = fps
         self.font_dir = os.path.join("assets", "fonts")
         self.music_dir = os.path.join("assets", "background_music")
+        self._temp_clips_to_close = []
         
         # Ensure directories exist
         os.makedirs(self.font_dir, exist_ok=True)
@@ -55,19 +56,27 @@ class VideoComposer:
                 pass
         return ImageFont.load_default()
 
-    def _create_scene_clip(self, image_path, audio_path, narration_text):
+    def _create_scene_clip(self, media_path, media_type, audio_path, narration_text):
         """
-        Creates a single video scene with Ken Burns effect and highlighted subtitles.
+        Creates a single video scene with Ken Burns effect (for images) 
+        or raw video frames (for videos), and overlays highlighted subtitles.
         """
         # Load audio and get duration
         audio_clip = AudioFileClip(audio_path)
         duration = audio_clip.duration
         
-        # Load image
-        pil_img = Image.open(image_path)
-        # Convert to RGB if needed
-        if pil_img.mode != "RGB":
-            pil_img = pil_img.convert("RGB")
+        # Setup video source
+        raw_video_clip = None
+        pil_img = None
+        if media_type == "video":
+            from moviepy.editor import VideoFileClip
+            raw_video_clip = VideoFileClip(media_path)
+            self._temp_clips_to_close.append(raw_video_clip)
+        else:
+            # Load image
+            pil_img = Image.open(media_path)
+            if pil_img.mode != "RGB":
+                pil_img = pil_img.convert("RGB")
 
         # Split narration into words for word-by-word highlights
         words = narration_text.split()
@@ -84,29 +93,59 @@ class VideoComposer:
 
         # Dynamic frame generator to run Ken Burns + Subtitles in memory
         def make_frame(t):
-            # 1. Ken Burns Zoom Effect (Slow zoom-in from 1.0 to 1.12)
-            zoom = 1.0 + 0.12 * (t / duration)
-            w_orig, h_orig = pil_img.size
-            
-            # Crop center box based on zoom and vertical aspect ratio (9:16)
-            crop_w = w_orig / zoom
-            crop_h = crop_w * (self.height / self.width)
-            
-            # Handle height overflow
-            if crop_h > h_orig:
-                crop_h = h_orig
-                crop_w = crop_h * (self.width / self.height)
+            if media_type == "video":
+                # Get the frame from video at t (loop if video is shorter than duration)
+                v_t = t % raw_video_clip.duration
+                frame_array = raw_video_clip.get_frame(v_t)
                 
-            x_offset = (w_orig - crop_w) / 2
-            y_offset = (h_orig - crop_h) / 2
-            
-            cropped = pil_img.crop((
-                x_offset, y_offset, 
-                x_offset + crop_w, y_offset + crop_h
-            ))
-            
-            # Resize cropped section to target resolution
-            frame_img = cropped.resize((self.width, self.height), Image.Resampling.LANCZOS)
+                # Convert to PIL Image for drawing and resizing/cropping
+                frame_img_pil = Image.fromarray(frame_array)
+                if frame_img_pil.mode != "RGB":
+                    frame_img_pil = frame_img_pil.convert("RGB")
+                
+                w_orig, h_orig = frame_img_pil.size
+                
+                # Crop center box to vertical aspect ratio (9:16)
+                crop_w = w_orig
+                crop_h = crop_w * (self.height / self.width)
+                
+                if crop_h > h_orig:
+                    crop_h = h_orig
+                    crop_w = crop_h * (self.width / self.height)
+                    
+                x_offset = (w_orig - crop_w) / 2
+                y_offset = (h_orig - crop_h) / 2
+                
+                cropped = frame_img_pil.crop((
+                    x_offset, y_offset, 
+                    x_offset + crop_w, y_offset + crop_h
+                ))
+                frame_img = cropped.resize((self.width, self.height), Image.Resampling.LANCZOS)
+            else:
+                # 1. Ken Burns Zoom Effect (Slow zoom-in from 1.0 to 1.12)
+                zoom = 1.0 + 0.12 * (t / duration)
+                w_orig, h_orig = pil_img.size
+                
+                # Crop center box based on zoom and vertical aspect ratio (9:16)
+                crop_w = w_orig / zoom
+                crop_h = crop_w * (self.height / self.width)
+                
+                # Handle height overflow
+                if crop_h > h_orig:
+                    crop_h = h_orig
+                    crop_w = crop_h * (self.width / self.height)
+                    
+                x_offset = (w_orig - crop_w) / 2
+                y_offset = (h_orig - crop_h) / 2
+                
+                cropped = pil_img.crop((
+                    x_offset, y_offset, 
+                    x_offset + crop_w, y_offset + crop_h
+                ))
+                
+                # Resize cropped section to target resolution
+                frame_img = cropped.resize((self.width, self.height), Image.Resampling.LANCZOS)
+
             draw = ImageDraw.Draw(frame_img)
             
             # 2. Draw Subtitles (Hormozi style)
@@ -162,14 +201,16 @@ class VideoComposer:
         """
         print(f"Starting compilation of {len(scenes)} scenes into {output_path}...")
         
+        self._temp_clips_to_close = []
         scene_clips = []
         for i, scene in enumerate(scenes):
-            img_path = scene["image_path"]
+            media_type = scene.get("media_type", "image")
+            media_path = scene.get("video_path") if media_type == "video" else scene.get("image_path")
             aud_path = scene_audio_paths[i]
             narr = scene["narration"]
             
             # Create individual scene video clip
-            clip = self._create_scene_clip(img_path, aud_path, narr)
+            clip = self._create_scene_clip(media_path, media_type, aud_path, narr)
             scene_clips.append(clip)
             
         # Concatenate all clips with method compose
@@ -210,19 +251,30 @@ class VideoComposer:
 
         # Write output video file
         print("Rendering video (this may take a few moments)...")
-        final_video.write_videofile(
-            output_path, 
-            fps=self.fps, 
-            codec="libx264", 
-            audio_codec="aac",
-            temp_audiofile=os.path.join("assets", "temp_audio.m4a"),
-            remove_temp=True,
-            logger=None # Hide moviepy verbose logs for clean CLI output
-        )
-        print(f"Rendering complete! Video saved to: {output_path}")
-        
-        # Close all clip handlers
-        final_video.close()
-        for c in scene_clips:
-            c.close()
+        try:
+            final_video.write_videofile(
+                output_path, 
+                fps=self.fps, 
+                codec="libx264", 
+                audio_codec="aac",
+                temp_audiofile=os.path.join("assets", "temp_audio.m4a"),
+                remove_temp=True,
+                logger=None # Hide moviepy verbose logs for clean CLI output
+            )
+            print(f"Rendering complete! Video saved to: {output_path}")
+        finally:
+            # Close all clip handlers
+            final_video.close()
+            for c in scene_clips:
+                try:
+                    c.close()
+                except Exception:
+                    pass
+            for c in self._temp_clips_to_close:
+                try:
+                    c.close()
+                except Exception:
+                    pass
+            self._temp_clips_to_close = []
+            
         return True

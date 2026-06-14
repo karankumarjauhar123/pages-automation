@@ -5,6 +5,7 @@
     "access_token_env": "FB_PAGE_TOKEN",
     "topic": "Psychology facts, brain hacks, human behavior secrets, love and relationship facts.",
     "language": "English",
+    "video_source": "hybrid",
     "post_types": [
       "video"
     ],

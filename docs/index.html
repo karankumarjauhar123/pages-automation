@@ -838,6 +838,14 @@
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
+                            <label for="page-video-source" style="font-size: 13px;">Video Background Source</label>
+                            <select class="form-control" id="page-video-source">
+                                <option value="ai_images">AI Generated Images (Flux - Default)</option>
+                                <option value="stock_videos">Pexels Stock Video Clips (Free)</option>
+                                <option value="hybrid">Hybrid (Mix: Video & Image Alternating)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
                             <label for="page-voice" style="font-size: 13px;">Custom Neural Voice</label>
                             <input type="text" class="form-control" id="page-voice" placeholder="e.g. hi-IN-SwararaNeural">
                         </div>
@@ -1096,6 +1104,7 @@
                 document.getElementById('page-text-model').value = page.text_model || '';
                 document.getElementById('page-image-model').value = page.image_model || '';
                 document.getElementById('page-aspect-ratio').value = page.aspect_ratio || '';
+                document.getElementById('page-video-source').value = page.video_source || 'ai_images';
                 document.getElementById('page-voice').value = page.voice || '';
                 document.getElementById('page-bg-music').value = page.bg_music || '';
                 document.getElementById('page-token-env').value = page.access_token_env || page.access_token_env_name || '';
@@ -1108,6 +1117,7 @@
                 document.getElementById('page-text-model').value = "";
                 document.getElementById('page-image-model').value = "";
                 document.getElementById('page-aspect-ratio').value = "";
+                document.getElementById('page-video-source').value = "ai_images";
                 document.getElementById('page-voice').value = "";
                 document.getElementById('page-bg-music').value = "";
             }
@@ -1142,6 +1152,7 @@
             const text_model = document.getElementById('page-text-model').value.trim();
             const image_model = document.getElementById('page-image-model').value.trim();
             const aspect_ratio = document.getElementById('page-aspect-ratio').value;
+            const video_source = document.getElementById('page-video-source').value;
             const voice = document.getElementById('page-voice').value.trim();
             const bg_music = document.getElementById('page-bg-music').value.trim();
             
@@ -1164,6 +1175,7 @@
                 text_model: text_model || undefined,
                 image_model: image_model || undefined,
                 aspect_ratio: aspect_ratio || undefined,
+                video_source: video_source || undefined,
                 voice: voice || undefined,
                 bg_music: bg_music || undefined
             };
