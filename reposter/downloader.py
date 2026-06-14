@@ -91,6 +91,9 @@ class Downloader:
             'extractor_args': {
                 'youtube': {
                     'player_client': ['default', '-android_sdkless']
+                },
+                'youtubetab': {
+                    'skip': ['authcheck']
                 }
             }
         }
@@ -153,6 +156,9 @@ class Downloader:
                         'extractor_args': {
                             'youtube': {
                                 'player_client': ['default', '-android_sdkless']
+                            },
+                            'youtubetab': {
+                                'skip': ['authcheck']
                             }
                         }
                     }
@@ -247,13 +253,16 @@ class Downloader:
         print(f"[Downloader] Downloading {video_url} to {output_path}...")
         
         ydl_opts = {
-            'format': 'mp4',
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
             'outtmpl': output_path,
             'quiet': False,
             'no_warnings': True,
             'extractor_args': {
                 'youtube': {
                     'player_client': ['default', '-android_sdkless']
+                },
+                'youtubetab': {
+                    'skip': ['authcheck']
                 }
             }
         }
