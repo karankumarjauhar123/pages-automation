@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import time
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -122,36 +123,46 @@ class ScriptGenerator:
     def __init__(self, api_key=None, model="meta/llama-3.1-70b-instruct"):
         """
         Initialize the script generator.
-        Default model: meta/llama-3.1-70b-instruct.
+        Supports dual initialization of OpenRouter and NVIDIA clients for robust fallback.
         """
         self.openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        self.nvidia_key = api_key or os.getenv("NVIDIA_API_KEY")
+        
+        self.openrouter_client = None
+        self.nvidia_client = None
+        
         if self.openrouter_key:
-            print("Using OpenRouter for Script Generation.")
-            self.client = OpenAI(
+            print("OpenRouter API key detected.")
+            self.openrouter_client = OpenAI(
                 base_url="https://openrouter.ai/api/v1",
                 api_key=self.openrouter_key
             )
-            # Default model for OpenRouter if not specified
-            self.model = model if model != "meta/llama-3.1-70b-instruct" else "meta-llama/llama-3.3-70b-instruct:free"
-        else:
-            self.api_key = api_key or os.getenv("NVIDIA_API_KEY")
-            if not self.api_key or self.api_key == "your_nvidia_api_key_here":
-                raise ValueError("NVIDIA_API_KEY or OPENROUTER_API_KEY is not set. Please set it in the .env file.")
             
-            self.client = OpenAI(
+        if self.nvidia_key and self.nvidia_key != "your_nvidia_api_key_here":
+            print("NVIDIA API key detected.")
+            self.nvidia_client = OpenAI(
                 base_url="https://integrate.api.nvidia.com/v1",
-                api_key=self.api_key
+                api_key=self.nvidia_key
             )
-            self.model = model
             
+        if not self.openrouter_client and not self.nvidia_client:
+            raise ValueError("Neither NVIDIA_API_KEY nor OPENROUTER_API_KEY is set. Please set at least one in the .env file.")
+            
+        # Backward compatibility for direct access:
+        self.client = self.openrouter_client or self.nvidia_client
+        self.model = model if model != "meta/llama-3.1-70b-instruct" else ("meta-llama/llama-3.3-70b-instruct:free" if self.openrouter_key else "meta/llama-3.1-70b-instruct")
+
     def _completion_with_fallback(self, messages, model_override=None, temperature=0.7):
         """
         Calls chat completions. If using OpenRouter, it tries a list of high-benchmark 
-        free models in order of priority if one fails (due to rate limits, server errors, etc.).
+        free models in order of priority. If a model fails with 429, it sleeps and retries.
+        If all OpenRouter models fail, it falls back to NVIDIA API models if available.
         """
-        # Determine the initial model list
-        if self.openrouter_key:
-            # Priority list of best benchmarked free models on OpenRouter
+        # 1. Gather all candidates we want to try
+        candidates = []
+        
+        # Add OpenRouter models if client exists
+        if self.openrouter_client:
             default_free_models = [
                 "meta-llama/llama-3.3-70b-instruct:free",
                 "google/gemma-4-31b-it:free",
@@ -159,32 +170,77 @@ class ScriptGenerator:
                 "qwen/qwen3-next-80b-a3b-instruct:free",
                 "meta-llama/llama-3.2-3b-instruct:free"
             ]
-            
-            if model_override:
-                # If user specified a model (e.g. override), try it first, then fall back to defaults
-                models_to_try = [model_override] + [m for m in default_free_models if m != model_override]
+            if model_override and model_override.endswith(":free"):
+                or_models = [model_override] + [m for m in default_free_models if m != model_override]
             else:
-                models_to_try = default_free_models
-        else:
-            # For NVIDIA API, use the specified model or fallback to default
-            models_to_try = [model_override or self.model]
+                or_models = default_free_models
+                
+            for m in or_models:
+                candidates.append({
+                    "client": self.openrouter_client,
+                    "model_name": m,
+                    "type": "OpenRouter"
+                })
+                
+        # Add NVIDIA models if client exists
+        if self.nvidia_client:
+            nvidia_models = [
+                "meta/llama-3.3-70b-instruct",
+                "nvidia/llama-3.1-nemotron-70b-instruct",
+                "meta/llama-3.1-70b-instruct",
+                "nvidia/nemotron-4-340b-instruct"
+            ]
+            if model_override and not model_override.endswith(":free"):
+                nv_models = [model_override] + [m for m in nvidia_models if m != model_override]
+            else:
+                nv_models = nvidia_models
+                
+            for m in nv_models:
+                candidates.append({
+                    "client": self.nvidia_client,
+                    "model_name": m,
+                    "type": "NVIDIA"
+                })
+                
+        if not candidates:
+            raise ValueError("No API clients or models are configured.")
 
         last_error = None
-        for model_name in models_to_try:
-            try:
-                print(f"Trying model: {model_name}...")
-                response = self.client.chat.completions.create(
-                    model=model_name,
-                    messages=messages,
-                    temperature=temperature
-                )
-                print(f"✅ Success with model: {model_name}")
-                return response
-            except Exception as e:
-                print(f"⚠️ Failed with model {model_name}: {str(e)}")
-                last_error = e
-                # Continue to next model
-                continue
+        for i, candidate in enumerate(candidates):
+            client = candidate["client"]
+            model_name = candidate["model_name"]
+            client_type = candidate["type"]
+            
+            # We will try each model up to 2 times, sleeping on 429
+            for attempt in range(2):
+                try:
+                    print(f"Trying model: {model_name} ({client_type}) - Attempt {attempt + 1}...")
+                    response = client.chat.completions.create(
+                        model=model_name,
+                        messages=messages,
+                        temperature=temperature
+                    )
+                    print(f"✅ Success with model: {model_name} ({client_type})")
+                    return response
+                except Exception as e:
+                    err_msg = str(e)
+                    last_error = e
+                    print(f"⚠️ Failed with model {model_name} ({client_type}): {err_msg}")
+                    
+                    # If it's a rate limit error (429), sleep for 6 seconds and retry
+                    if "429" in err_msg or "rate-limited" in err_msg.lower() or "rate limit" in err_msg.lower():
+                        if attempt == 0:
+                            sleep_time = 6
+                            print(f"Rate limited. Sleeping for {sleep_time} seconds before retrying this model...")
+                            time.sleep(sleep_time)
+                            continue
+                    
+                    # For other errors or if second attempt fails, move to the next candidate
+                    break
+            
+            # Add a small delay between trying different models to avoid triggering IP/global limits
+            if i < len(candidates) - 1:
+                time.sleep(2)
         
         # If all failed, raise the last error
         raise last_error
