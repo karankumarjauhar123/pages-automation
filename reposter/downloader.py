@@ -26,6 +26,13 @@ class Downloader:
                 return True
         return False
 
+    def _get_cookie_path(self):
+        """Returns the path to the cookies file if available."""
+        for cookie_path in ["reposter/cookies.txt", "cookies.txt"]:
+            if os.path.exists(cookie_path):
+                return cookie_path
+        return None
+
     def get_video_age_days(self, upload_date_str):
         """Parses YYYYMMDD string and returns age in days."""
         if not upload_date_str:
@@ -74,6 +81,17 @@ class Downloader:
         score = (view_ratio * 0.40) + (scaled_likes * 0.25) + (scaled_comments * 0.20) + (recency_factor * 0.15)
         return round(score, 3)
 
+    def _is_valid_video_url(self, url):
+        """Check if URL points to an individual video, not a channel/playlist page."""
+        if not url:
+            return False
+        # Reject channel, playlist, and tab URLs
+        invalid_patterns = ['/@', '/channel/', '/playlist?', '/c/', '/user/', '/videos', '/shorts', '/streams']
+        for pattern in invalid_patterns:
+            if pattern in url and 'watch?v=' not in url and 'shorts/' not in url.split('/')[-1]:
+                return False
+        return True
+
     def scrape_source(self, source_url, platform="youtube", source_type="channel"):
         """
         Scrapes a source and extracts metadata for candidate short-form videos.
@@ -81,7 +99,7 @@ class Downloader:
         """
         candidates = []
         
-        # Configure yt-dlp options
+        # Configure yt-dlp options for flat listing
         ydl_opts = {
             'quiet': True,
             'skip_download': True,
@@ -91,7 +109,7 @@ class Downloader:
             'check_formats': False,
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['default', '-android_sdkless']
+                    'player_client': ['web_creator']
                 },
                 'youtubetab': {
                     'skip': ['authcheck']
@@ -100,11 +118,10 @@ class Downloader:
         }
 
         # Load cookies if available
-        for cookie_path in ["reposter/cookies.txt", "cookies.txt"]:
-            if os.path.exists(cookie_path):
-                ydl_opts['cookiefile'] = cookie_path
-                print(f"[Downloader] Using cookies file: {cookie_path}")
-                break
+        cookie_path = self._get_cookie_path()
+        if cookie_path:
+            ydl_opts['cookiefile'] = cookie_path
+            print(f"[Downloader] Using cookies file: {cookie_path}")
 
         # If IG, FB, or TikTok, make sure we use standard headers/cookies/agents
         if platform != "youtube":
@@ -125,13 +142,20 @@ class Downloader:
                 if 'entries' in info:
                     entries = [e for e in info['entries'] if e]
                 else:
-                    entries = [info]
+                    # Only treat single results as entries if they look like individual videos
+                    if info.get('id') and info.get('_type') not in ('playlist', 'multi_video', 'channel'):
+                        entries = [info]
+
+                if not entries:
+                    print(f"[Downloader] No entries found for source: {source_url}")
+                    return []
 
                 # Limit candidates to evaluate (to save requests and time)
                 # Take up to 10 entries
                 eval_entries = entries[:10]
                 
-                # Fetch full detail for these entries
+                # Fetch full detail for these entries using process=False
+                # to avoid format selection errors on datacenter IPs
                 detailed_entries = []
                 for entry in eval_entries:
                     video_url = entry.get('url') or entry.get('webpage_url')
@@ -143,12 +167,20 @@ class Downloader:
                         
                     if not video_url:
                         continue
+
+                    # Skip channel/playlist URLs that aren't individual videos
+                    if not self._is_valid_video_url(video_url):
+                        print(f"[Downloader] Skipping non-video URL: {video_url}")
+                        continue
                         
                     if self._is_processed(video_id):
                         # Skip already processed
                         continue
 
                     # Extract full metadata for the specific video
+                    # KEY FIX: Use process=False to get raw metadata WITHOUT
+                    # triggering format selection. Format selection fails on
+                    # datacenter IPs because YouTube returns zero format streams.
                     detail_opts = {
                         'quiet': True,
                         'skip_download': True,
@@ -157,24 +189,34 @@ class Downloader:
                         'check_formats': False,
                         'extractor_args': {
                             'youtube': {
-                                'player_client': ['default', '-android_sdkless']
+                                'player_client': ['web_creator']
                             },
                             'youtubetab': {
                                 'skip': ['authcheck']
                             }
                         }
                     }
-                    if 'cookiefile' in ydl_opts:
-                        detail_opts['cookiefile'] = ydl_opts['cookiefile']
+                    if cookie_path:
+                        detail_opts['cookiefile'] = cookie_path
+
                     try:
                         with yt_dlp.YoutubeDL(detail_opts) as ydl_detail:
-                            det_info = ydl_detail.extract_info(video_url, download=False)
-                            if det_info:
+                            # process=False skips format selection entirely,
+                            # returning raw metadata (view_count, like_count, etc.)
+                            det_info = ydl_detail.extract_info(video_url, download=False, process=False)
+                            if det_info and det_info.get('id'):
+                                # Skip if this turned out to be a playlist/channel
+                                entry_type = det_info.get('_type', 'video')
+                                if entry_type in ('playlist', 'multi_video'):
+                                    print(f"[Downloader] Skipping playlist/channel entry: {det_info.get('title', 'N/A')}")
+                                    continue
                                 detailed_entries.append(det_info)
+                                print(f"[Downloader] ✅ Got metadata for: {det_info.get('title', 'N/A')} (Views: {det_info.get('view_count', 'N/A')})")
                     except Exception as e:
                         print(f"[Downloader] Error extracting details for {video_url}: {e}")
 
                 if not detailed_entries:
+                    print(f"[Downloader] No detailed entries could be extracted for: {source_url}")
                     return []
 
                 # Calculate baseline views for the source (channel average)
@@ -196,7 +238,15 @@ class Downloader:
                     comments = entry.get('comment_count', 0) or 0
                     upload_date = entry.get('upload_date', '') # YYYYMMDD
                     age_days = self.get_video_age_days(upload_date)
-                    video_url = entry.get('webpage_url') or entry.get('url')
+                    
+                    # Construct proper video URL for download
+                    video_dl_url = entry.get('webpage_url') or entry.get('url')
+                    if not video_dl_url and video_id:
+                        video_dl_url = f"https://www.youtube.com/watch?v={video_id}"
+
+                    # Final validation: ensure we have a proper video URL
+                    if not self._is_valid_video_url(video_dl_url):
+                        continue
 
                     # Compute score
                     score = self.calculate_viral_score(views, likes, comments, age_days, avg_views)
@@ -209,7 +259,7 @@ class Downloader:
                         "likes": likes,
                         "comments": comments,
                         "age_days": age_days,
-                        "url": video_url,
+                        "url": video_dl_url,
                         "viral_score": score,
                         "platform": platform,
                         "duration": duration
@@ -245,6 +295,7 @@ class Downloader:
     def download_video(self, video_url, output_path="reposter/temp_download.mp4"):
         """
         Downloads a video from url using yt-dlp.
+        Tries multiple strategies to handle datacenter IP restrictions.
         """
         if os.path.exists(output_path):
             try:
@@ -254,39 +305,93 @@ class Downloader:
 
         print(f"[Downloader] Downloading {video_url} to {output_path}...")
         
-        ydl_opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-            'outtmpl': output_path,
-            'quiet': False,
-            'no_warnings': True,
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['default', '-android_sdkless']
-                },
-                'youtubetab': {
-                    'skip': ['authcheck']
+        cookie_path = self._get_cookie_path()
+
+        # Define multiple download strategies to try in order.
+        # Different player_client and format combos work differently
+        # on datacenter IPs vs residential IPs.
+        strategies = [
+            {
+                'name': 'Strategy 1: web_creator client',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+                'player_client': ['web_creator'],
+            },
+            {
+                'name': 'Strategy 2: ios client',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+                'player_client': ['ios'],
+            },
+            {
+                'name': 'Strategy 3: mweb + permissive format',
+                'format': 'best[ext=mp4]/best',
+                'player_client': ['mweb'],
+            },
+            {
+                'name': 'Strategy 4: default client, most permissive',
+                'format': 'worst[ext=mp4]/worst/best',
+                'player_client': ['default'],
+            },
+        ]
+
+        for strategy in strategies:
+            print(f"[Downloader] Trying {strategy['name']}...")
+            
+            # Clean up any partial download from previous attempt
+            if os.path.exists(output_path):
+                try:
+                    os.remove(output_path)
+                except Exception:
+                    pass
+
+            ydl_opts = {
+                'format': strategy['format'],
+                'outtmpl': output_path,
+                'quiet': False,
+                'no_warnings': True,
+                'check_formats': False,
+                'merge_output_format': 'mp4',
+                'extractor_args': {
+                    'youtube': {
+                        'player_client': strategy['player_client']
+                    },
+                    'youtubetab': {
+                        'skip': ['authcheck']
+                    }
                 }
             }
-        }
 
-        # Load cookies if available
-        for cookie_path in ["reposter/cookies.txt", "cookies.txt"]:
-            if os.path.exists(cookie_path):
+            if cookie_path:
                 ydl_opts['cookiefile'] = cookie_path
-                break
 
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([video_url])
-            
-            if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
-                print(f"[Downloader] ✅ Download completed successfully. Size: {os.path.getsize(output_path)} bytes.")
-                return output_path
-            else:
-                raise FileNotFoundError("Downloaded file does not exist or is empty")
-        except Exception as e:
-            print(f"[Downloader] ❌ Download failed: {e}")
-            return None
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([video_url])
+                
+                # Check for output file (yt-dlp may append .mkv or other ext)
+                actual_path = output_path
+                if not os.path.exists(output_path):
+                    # yt-dlp might have saved with a different extension
+                    base = os.path.splitext(output_path)[0]
+                    for ext in ['.mp4', '.mkv', '.webm', '.mp4.part']:
+                        candidate = base + ext
+                        if os.path.exists(candidate) and os.path.getsize(candidate) > 0:
+                            actual_path = candidate
+                            break
+
+                if os.path.exists(actual_path) and os.path.getsize(actual_path) > 0:
+                    # Rename to expected output path if different
+                    if actual_path != output_path:
+                        os.rename(actual_path, output_path)
+                    print(f"[Downloader] ✅ Download completed successfully with {strategy['name']}. Size: {os.path.getsize(output_path)} bytes.")
+                    return output_path
+                else:
+                    print(f"[Downloader] ⚠️ {strategy['name']} produced no output file.")
+            except Exception as e:
+                print(f"[Downloader] ⚠️ {strategy['name']} failed: {e}")
+                continue
+
+        print(f"[Downloader] ❌ All download strategies failed for: {video_url}")
+        return None
 
 if __name__ == "__main__":
     # Small test
