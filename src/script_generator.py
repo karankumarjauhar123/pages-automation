@@ -291,8 +291,21 @@ class ScriptGenerator:
             "code blocks or backticks. Ensure the JSON is completely valid."
         )
 
+        lang_instruction = ""
+        if "hinglish" in language.lower():
+            lang_instruction = (
+                "LANGUAGE RULE: You MUST write the narration in the Devnagari script (Hindi alphabet, e.g. "
+                "'ज़िंदगी में सक्सेस पाने के लिए...'). Do NOT write in the Roman alphabet (e.g. 'zindagi me success...'). "
+                "Use a natural blend of Hindi and English words, but written entirely in Devnagari."
+            )
+        elif "hindi" in language.lower():
+            lang_instruction = (
+                "LANGUAGE RULE: You MUST write the narration in the Devnagari script (Hindi alphabet)."
+            )
+
         user_prompt = (
             f"Generate a video script on the main topic: '{topic}' in language: '{language}'.\n"
+            f"{lang_instruction}\n"
             f"FOCUS SUB-THEME: '{selected_theme}' — adapt this sub-theme to naturally fit within the main topic '{topic}'. "
             "Do NOT write a generic summary. Pick ONE hyper-specific lesson, rule, or life situation.\n"
             f"NARRATIVE TONE: '{selected_tone}' — the entire narration should follow this emotional tone.\n"

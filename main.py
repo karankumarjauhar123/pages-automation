@@ -336,6 +336,10 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
     text_model = page.get("text_model")
     image_model = page.get("image_model")
     custom_voice = page.get("voice")
+    voice_gender = page.get("voice_gender", "male")
+    voice_provider = page.get("voice_provider")
+    voice_rate = page.get("voice_rate")
+    voice_pitch = page.get("voice_pitch")
     bg_music = page.get("bg_music")
     aspect_ratio_video = page.get("aspect_ratio", "9:16")
     aspect_ratio_image = page.get("aspect_ratio", "1:1")
@@ -378,7 +382,16 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
                     scene_aud_path = os.path.join(temp_dir, f"scene_{idx}.mp3")
                     
                     # Generate TTS narration
-                    voice_gen.generate_voice(scene["narration"], scene_aud_path, language=language, voice=custom_voice)
+                    voice_gen.generate_voice(
+                        scene["narration"], 
+                        scene_aud_path, 
+                        language=language, 
+                        voice=custom_voice,
+                        gender=voice_gender,
+                        provider=voice_provider,
+                        rate=voice_rate,
+                        pitch=voice_pitch
+                    )
                     scene_audio_paths.append(scene_aud_path)
                     
                     # Decide if this scene uses video or image
