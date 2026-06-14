@@ -88,6 +88,7 @@ class Downloader:
             'extract_flat': True,
             'ignoreerrors': True,
             'no_warnings': True,
+            'check_formats': False,
             'extractor_args': {
                 'youtube': {
                     'player_client': ['default', '-android_sdkless']
@@ -153,6 +154,7 @@ class Downloader:
                         'skip_download': True,
                         'ignoreerrors': True,
                         'no_warnings': True,
+                        'check_formats': False,
                         'extractor_args': {
                             'youtube': {
                                 'player_client': ['default', '-android_sdkless']
