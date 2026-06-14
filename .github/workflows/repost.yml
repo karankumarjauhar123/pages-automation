@@ -47,6 +47,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r reposter/requirements.txt
+        pip install -U yt-dlp
+
+    - name: Setup YouTube Cookies
+      env:
+        YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+      run: |
+        if [ -n "$YOUTUBE_COOKIES" ]; then
+          echo "$YOUTUBE_COOKIES" | base64 -d > reposter/cookies.txt
+          echo "YouTube Cookies configured successfully."
+        else
+          echo "No YouTube Cookies secret found. Running in anonymous mode."
+        fi
 
     - name: Run Reels Reposter
       env:
