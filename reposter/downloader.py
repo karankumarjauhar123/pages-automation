@@ -1,10 +1,32 @@
 import os
 import json
+import re
 import datetime
+import subprocess
 import yt_dlp
+import requests
 import numpy as np
 
 class Downloader:
+    # Minimum views to consider a video as a viral candidate.
+    # Prevents selecting brand-new videos with 1-2 views that get
+    # inflated viral scores from the recency factor.
+    MIN_VIEWS_THRESHOLD = 500
+
+    # Piped API instances (proxied YouTube streams - works from datacenter IPs)
+    PIPED_INSTANCES = [
+        'https://pipedapi.kavin.rocks',
+        'https://pipedapi.r4fo.com',
+        'https://pipedapi.in.projectsegfau.lt',
+    ]
+
+    # Invidious API instances (another YouTube proxy network)
+    INVIDIOUS_INSTANCES = [
+        'https://inv.nadeko.net',
+        'https://invidious.nerdvpn.de',
+        'https://invidious.privacyredirect.com',
+    ]
+
     def __init__(self, history_file="reposter/history.json"):
         self.history_file = history_file
         self.history = self._load_history()
@@ -31,6 +53,60 @@ class Downloader:
         for cookie_path in ["reposter/cookies.txt", "cookies.txt"]:
             if os.path.exists(cookie_path):
                 return cookie_path
+        return None
+
+    def _is_valid_video_url(self, url):
+        """
+        Check if URL points to an individual video.
+        
+        VALID:
+          - https://www.youtube.com/watch?v=VIDEO_ID
+          - https://www.youtube.com/shorts/VIDEO_ID  (individual Short)
+          - https://youtu.be/VIDEO_ID
+        
+        INVALID:
+          - https://www.youtube.com/@channel/videos   (channel tab)
+          - https://www.youtube.com/@channel/shorts    (channel shorts tab)
+          - https://www.youtube.com/@channel            (channel home)
+          - https://www.youtube.com/playlist?list=XXX   (playlist)
+        """
+        if not url:
+            return False
+        # Standard watch URL
+        if 'watch?v=' in url:
+            return True
+        # YouTube Shorts individual video: /shorts/VIDEO_ID
+        # A real video ID is 11 chars of [a-zA-Z0-9_-].
+        # Channel tabs like /@channel/shorts do NOT have a video ID after /shorts.
+        if re.search(r'youtube\.com/shorts/[a-zA-Z0-9_-]{8,}', url):
+            return True
+        # youtu.be short links
+        if re.search(r'youtu\.be/[a-zA-Z0-9_-]{8,}', url):
+            return True
+        return False
+
+    def _normalize_video_url(self, url):
+        """Convert /shorts/ID to standard /watch?v=ID for consistent handling."""
+        if not url:
+            return url
+        match = re.search(r'youtube\.com/shorts/([a-zA-Z0-9_-]+)', url)
+        if match:
+            return f"https://www.youtube.com/watch?v={match.group(1)}"
+        return url
+
+    def _extract_video_id(self, url):
+        """Extract YouTube video ID from various URL formats."""
+        if not url:
+            return None
+        match = re.search(r'[?&]v=([a-zA-Z0-9_-]+)', url)
+        if match:
+            return match.group(1)
+        match = re.search(r'/shorts/([a-zA-Z0-9_-]+)', url)
+        if match:
+            return match.group(1)
+        match = re.search(r'youtu\.be/([a-zA-Z0-9_-]+)', url)
+        if match:
+            return match.group(1)
         return None
 
     def get_video_age_days(self, upload_date_str):
@@ -80,17 +156,6 @@ class Downloader:
         # Final Score Formula
         score = (view_ratio * 0.40) + (scaled_likes * 0.25) + (scaled_comments * 0.20) + (recency_factor * 0.15)
         return round(score, 3)
-
-    def _is_valid_video_url(self, url):
-        """Check if URL points to an individual video, not a channel/playlist page."""
-        if not url:
-            return False
-        # Reject channel, playlist, and tab URLs
-        invalid_patterns = ['/@', '/channel/', '/playlist?', '/c/', '/user/', '/videos', '/shorts', '/streams']
-        for pattern in invalid_patterns:
-            if pattern in url and 'watch?v=' not in url and 'shorts/' not in url.split('/')[-1]:
-                return False
-        return True
 
     def scrape_source(self, source_url, platform="youtube", source_type="channel"):
         """
@@ -151,7 +216,6 @@ class Downloader:
                     return []
 
                 # Limit candidates to evaluate (to save requests and time)
-                # Take up to 10 entries
                 eval_entries = entries[:10]
                 
                 # Fetch full detail for these entries using process=False
@@ -168,19 +232,18 @@ class Downloader:
                     if not video_url:
                         continue
 
-                    # Skip channel/playlist URLs that aren't individual videos
+                    # Validate: must be an individual video URL
                     if not self._is_valid_video_url(video_url):
                         print(f"[Downloader] Skipping non-video URL: {video_url}")
                         continue
+
+                    # Normalize shorts URLs to watch URLs
+                    video_url = self._normalize_video_url(video_url)
                         
                     if self._is_processed(video_id):
-                        # Skip already processed
                         continue
 
-                    # Extract full metadata for the specific video
-                    # KEY FIX: Use process=False to get raw metadata WITHOUT
-                    # triggering format selection. Format selection fails on
-                    # datacenter IPs because YouTube returns zero format streams.
+                    # Extract full metadata using process=False to skip format selection
                     detail_opts = {
                         'quiet': True,
                         'skip_download': True,
@@ -201,14 +264,10 @@ class Downloader:
 
                     try:
                         with yt_dlp.YoutubeDL(detail_opts) as ydl_detail:
-                            # process=False skips format selection entirely,
-                            # returning raw metadata (view_count, like_count, etc.)
                             det_info = ydl_detail.extract_info(video_url, download=False, process=False)
                             if det_info and det_info.get('id'):
-                                # Skip if this turned out to be a playlist/channel
                                 entry_type = det_info.get('_type', 'video')
                                 if entry_type in ('playlist', 'multi_video'):
-                                    print(f"[Downloader] Skipping playlist/channel entry: {det_info.get('title', 'N/A')}")
                                     continue
                                 detailed_entries.append(det_info)
                                 print(f"[Downloader] ✅ Got metadata for: {det_info.get('title', 'N/A')} (Views: {det_info.get('view_count', 'N/A')})")
@@ -225,10 +284,10 @@ class Downloader:
 
                 # Analyze candidates
                 for entry in detailed_entries:
-                    # Validate duration (Must be Reels/Shorts - < 60s)
+                    # Validate duration (Must be Reels/Shorts - < 90s, giving some margin)
                     duration = entry.get('duration', 0)
-                    if duration and duration > 60:
-                        continue # Skip longer videos
+                    if duration and duration > 90:
+                        continue
 
                     video_id = entry.get('id')
                     title = entry.get('title', '')
@@ -236,16 +295,20 @@ class Downloader:
                     views = entry.get('view_count', 0) or 0
                     likes = entry.get('like_count', 0) or 0
                     comments = entry.get('comment_count', 0) or 0
-                    upload_date = entry.get('upload_date', '') # YYYYMMDD
+                    upload_date = entry.get('upload_date', '')
                     age_days = self.get_video_age_days(upload_date)
                     
                     # Construct proper video URL for download
                     video_dl_url = entry.get('webpage_url') or entry.get('url')
                     if not video_dl_url and video_id:
                         video_dl_url = f"https://www.youtube.com/watch?v={video_id}"
+                    video_dl_url = self._normalize_video_url(video_dl_url)
 
-                    # Final validation: ensure we have a proper video URL
                     if not self._is_valid_video_url(video_dl_url):
+                        continue
+
+                    # Skip videos below minimum view threshold
+                    if views < self.MIN_VIEWS_THRESHOLD:
                         continue
 
                     # Compute score
@@ -292,10 +355,16 @@ class Downloader:
         print(f"[Downloader] 🏆 Winner chosen: '{best['title']}' (Score: {best['viral_score']}, Views: {best['views']}, Platform: {best['platform']})")
         return best
 
+    # ─────────────────────────────────────────────────────────────
+    #  DOWNLOAD METHODS (multi-strategy with proxy fallbacks)
+    # ─────────────────────────────────────────────────────────────
+
     def download_video(self, video_url, output_path="reposter/temp_download.mp4"):
         """
-        Downloads a video from url using yt-dlp.
-        Tries multiple strategies to handle datacenter IP restrictions.
+        Downloads a video using multiple strategies:
+        1. yt-dlp (direct, multiple player clients)
+        2. Piped API (proxied YouTube streams)
+        3. Invidious API (another proxy network)
         """
         if os.path.exists(output_path):
             try:
@@ -303,40 +372,54 @@ class Downloader:
             except Exception:
                 pass
 
-        print(f"[Downloader] Downloading {video_url} to {output_path}...")
+        video_id = self._extract_video_id(video_url)
+        print(f"[Downloader] Downloading {video_url} (ID: {video_id}) to {output_path}...")
         
+        # Strategy 1: yt-dlp direct (tries multiple player clients)
+        result = self._download_via_ytdlp(video_url, output_path)
+        if result:
+            return result
+
+        # Strategy 2: Piped API (proxied streams - bypasses datacenter IP blocks)
+        if video_id:
+            result = self._download_via_piped(video_id, output_path)
+            if result:
+                return result
+
+        # Strategy 3: Invidious API (another proxy network)
+        if video_id:
+            result = self._download_via_invidious(video_id, output_path)
+            if result:
+                return result
+
+        print(f"[Downloader] ❌ All download strategies exhausted for: {video_url}")
+        return None
+
+    def _download_via_ytdlp(self, video_url, output_path):
+        """Try downloading via yt-dlp with multiple player client strategies."""
         cookie_path = self._get_cookie_path()
 
-        # Define multiple download strategies to try in order.
-        # Different player_client and format combos work differently
-        # on datacenter IPs vs residential IPs.
         strategies = [
             {
-                'name': 'Strategy 1: web_creator client',
+                'name': 'yt-dlp web_creator',
                 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
                 'player_client': ['web_creator'],
             },
             {
-                'name': 'Strategy 2: ios client',
-                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+                'name': 'yt-dlp ios',
+                'format': 'bestvideo+bestaudio/best[ext=mp4]/best',
                 'player_client': ['ios'],
             },
             {
-                'name': 'Strategy 3: mweb + permissive format',
+                'name': 'yt-dlp mweb',
                 'format': 'best[ext=mp4]/best',
                 'player_client': ['mweb'],
-            },
-            {
-                'name': 'Strategy 4: default client, most permissive',
-                'format': 'worst[ext=mp4]/worst/best',
-                'player_client': ['default'],
             },
         ]
 
         for strategy in strategies:
             print(f"[Downloader] Trying {strategy['name']}...")
             
-            # Clean up any partial download from previous attempt
             if os.path.exists(output_path):
                 try:
                     os.remove(output_path)
@@ -367,22 +450,11 @@ class Downloader:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([video_url])
                 
-                # Check for output file (yt-dlp may append .mkv or other ext)
-                actual_path = output_path
-                if not os.path.exists(output_path):
-                    # yt-dlp might have saved with a different extension
-                    base = os.path.splitext(output_path)[0]
-                    for ext in ['.mp4', '.mkv', '.webm', '.mp4.part']:
-                        candidate = base + ext
-                        if os.path.exists(candidate) and os.path.getsize(candidate) > 0:
-                            actual_path = candidate
-                            break
-
-                if os.path.exists(actual_path) and os.path.getsize(actual_path) > 0:
-                    # Rename to expected output path if different
+                actual_path = self._find_downloaded_file(output_path)
+                if actual_path:
                     if actual_path != output_path:
                         os.rename(actual_path, output_path)
-                    print(f"[Downloader] ✅ Download completed successfully with {strategy['name']}. Size: {os.path.getsize(output_path)} bytes.")
+                    print(f"[Downloader] ✅ Downloaded via {strategy['name']}. Size: {os.path.getsize(output_path)} bytes.")
                     return output_path
                 else:
                     print(f"[Downloader] ⚠️ {strategy['name']} produced no output file.")
@@ -390,7 +462,194 @@ class Downloader:
                 print(f"[Downloader] ⚠️ {strategy['name']} failed: {e}")
                 continue
 
-        print(f"[Downloader] ❌ All download strategies failed for: {video_url}")
+        return None
+
+    def _download_via_piped(self, video_id, output_path):
+        """
+        Download via Piped API instances. Piped proxies YouTube streams
+        through its own servers, bypassing YouTube's datacenter IP blocks.
+        """
+        for instance in self.PIPED_INSTANCES:
+            try:
+                print(f"[Downloader] Trying Piped: {instance}")
+                api_url = f"{instance}/streams/{video_id}"
+                resp = requests.get(api_url, timeout=30, headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'
+                })
+                if resp.status_code != 200:
+                    print(f"[Downloader] ⚠️ Piped {instance} returned HTTP {resp.status_code}")
+                    continue
+                
+                data = resp.json()
+
+                # ── Method A: Download via HLS stream (simplest) ──
+                hls_url = data.get('hls')
+                if hls_url:
+                    print(f"[Downloader] Trying HLS download from Piped...")
+                    try:
+                        result = subprocess.run(
+                            ['ffmpeg', '-y', '-i', hls_url, '-c', 'copy', '-bsf:a', 'aac_adtstoasc', output_path],
+                            capture_output=True, timeout=180
+                        )
+                        if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+                            print(f"[Downloader] ✅ Downloaded via Piped HLS ({instance}). Size: {os.path.getsize(output_path)} bytes.")
+                            return output_path
+                    except Exception as e:
+                        print(f"[Downloader] ⚠️ Piped HLS failed: {e}")
+
+                # ── Method B: Download video + audio streams separately and merge ──
+                video_streams = data.get('videoStreams', [])
+                audio_streams = data.get('audioStreams', [])
+
+                # Pick the best MP4 video stream (prefer 720p or closest)
+                best_video = None
+                for s in sorted(video_streams, key=lambda x: x.get('height', 0), reverse=True):
+                    if not s.get('url'):
+                        continue
+                    mime = s.get('mimeType', '')
+                    if 'video/mp4' in mime or s.get('format') == 'MPEG_4':
+                        if s.get('height', 0) <= 1080:  # cap at 1080p
+                            best_video = s
+                            break
+
+                # Pick the best M4A/AAC audio stream
+                best_audio = None
+                for s in sorted(audio_streams, key=lambda x: x.get('bitrate', 0), reverse=True):
+                    if not s.get('url'):
+                        continue
+                    mime = s.get('mimeType', '')
+                    if 'audio/mp4' in mime or 'audio/m4a' in mime:
+                        best_audio = s
+                        break
+                # Fallback: any audio
+                if not best_audio:
+                    for s in sorted(audio_streams, key=lambda x: x.get('bitrate', 0), reverse=True):
+                        if s.get('url'):
+                            best_audio = s
+                            break
+
+                if best_video and best_audio:
+                    print(f"[Downloader] Downloading Piped streams (V: {best_video.get('quality', '?')}, A: {best_audio.get('quality', '?')})...")
+                    video_tmp = output_path + '.v.tmp'
+                    audio_tmp = output_path + '.a.tmp'
+
+                    try:
+                        self._download_file(best_video['url'], video_tmp)
+                        self._download_file(best_audio['url'], audio_tmp)
+
+                        # Merge with ffmpeg
+                        subprocess.run(
+                            ['ffmpeg', '-y', '-i', video_tmp, '-i', audio_tmp,
+                             '-c:v', 'copy', '-c:a', 'aac', '-shortest', output_path],
+                            capture_output=True, timeout=120
+                        )
+                    finally:
+                        for tmp in [video_tmp, audio_tmp]:
+                            if os.path.exists(tmp):
+                                os.remove(tmp)
+
+                    if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+                        print(f"[Downloader] ✅ Downloaded via Piped streams ({instance}). Size: {os.path.getsize(output_path)} bytes.")
+                        return output_path
+                    
+            except Exception as e:
+                print(f"[Downloader] ⚠️ Piped instance {instance} failed: {e}")
+                continue
+        
+        return None
+
+    def _download_via_invidious(self, video_id, output_path):
+        """
+        Download via Invidious API instances. Similar to Piped, Invidious
+        proxies YouTube streams through its own servers.
+        """
+        for instance in self.INVIDIOUS_INSTANCES:
+            try:
+                print(f"[Downloader] Trying Invidious: {instance}")
+                api_url = f"{instance}/api/v1/videos/{video_id}"
+                resp = requests.get(api_url, timeout=30, headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'
+                })
+                if resp.status_code != 200:
+                    print(f"[Downloader] ⚠️ Invidious {instance} returned HTTP {resp.status_code}")
+                    continue
+                
+                data = resp.json()
+
+                # Invidious provides 'formatStreams' (pre-muxed) and 'adaptiveFormats' (separate)
+                format_streams = data.get('formatStreams', [])
+                adaptive_formats = data.get('adaptiveFormats', [])
+
+                # ── Method A: Pre-muxed stream (has both video + audio) ──
+                for stream in format_streams:
+                    if not stream.get('url'):
+                        continue
+                    container = stream.get('container', '')
+                    if container == 'mp4' or 'video/mp4' in stream.get('type', ''):
+                        print(f"[Downloader] Downloading pre-muxed stream ({stream.get('qualityLabel', '?')})...")
+                        self._download_file(stream['url'], output_path)
+                        if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+                            print(f"[Downloader] ✅ Downloaded via Invidious ({instance}). Size: {os.path.getsize(output_path)} bytes.")
+                            return output_path
+
+                # ── Method B: Adaptive formats (separate video + audio) ──
+                best_video = None
+                best_audio = None
+                for fmt in adaptive_formats:
+                    if not fmt.get('url'):
+                        continue
+                    ftype = fmt.get('type', '')
+                    if 'video/mp4' in ftype and (best_video is None or fmt.get('bitrate', 0) > best_video.get('bitrate', 0)):
+                        best_video = fmt
+                    elif 'audio' in ftype and (best_audio is None or fmt.get('bitrate', 0) > best_audio.get('bitrate', 0)):
+                        best_audio = fmt
+
+                if best_video and best_audio:
+                    print(f"[Downloader] Downloading Invidious adaptive streams...")
+                    video_tmp = output_path + '.v.tmp'
+                    audio_tmp = output_path + '.a.tmp'
+                    try:
+                        self._download_file(best_video['url'], video_tmp)
+                        self._download_file(best_audio['url'], audio_tmp)
+                        subprocess.run(
+                            ['ffmpeg', '-y', '-i', video_tmp, '-i', audio_tmp,
+                             '-c:v', 'copy', '-c:a', 'aac', '-shortest', output_path],
+                            capture_output=True, timeout=120
+                        )
+                    finally:
+                        for tmp in [video_tmp, audio_tmp]:
+                            if os.path.exists(tmp):
+                                os.remove(tmp)
+
+                    if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+                        print(f"[Downloader] ✅ Downloaded via Invidious adaptive ({instance}). Size: {os.path.getsize(output_path)} bytes.")
+                        return output_path
+                    
+            except Exception as e:
+                print(f"[Downloader] ⚠️ Invidious instance {instance} failed: {e}")
+                continue
+        
+        return None
+
+    def _download_file(self, url, dest_path, timeout=120):
+        """Download a file from URL to local path using requests."""
+        with requests.get(url, stream=True, timeout=timeout, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'
+        }) as r:
+            r.raise_for_status()
+            with open(dest_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=65536):
+                    f.write(chunk)
+
+    def _find_downloaded_file(self, expected_path):
+        """Find the actual downloaded file (yt-dlp may change the extension)."""
+        if os.path.exists(expected_path) and os.path.getsize(expected_path) > 0:
+            return expected_path
+        base = os.path.splitext(expected_path)[0]
+        for ext in ['.mp4', '.mkv', '.webm']:
+            candidate = base + ext
+            if os.path.exists(candidate) and os.path.getsize(candidate) > 0:
+                return candidate
         return None
 
 if __name__ == "__main__":
