@@ -366,7 +366,7 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
         try:
             if post_type == "video":
                 # 1. Generate Script
-                script = script_gen.generate_video_script(topic, language, model=text_model)
+                script = script_gen.generate_video_script(topic, language, model=text_model, page_name=page_name)
                 print(f"Title: {script['title']}")
                 print(f"Caption: {script['fb_caption'][:100]}...")
 
@@ -444,7 +444,7 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
 
             elif post_type == "image":
                 # 1. Generate Image Post Script
-                script = script_gen.generate_image_post(topic, language, model=text_model)
+                script = script_gen.generate_image_post(topic, language, model=text_model, page_name=page_name)
                 print(f"Overlay text: {script['overlay_text']}")
                 print(f"Caption: {script['fb_caption'][:100]}...")
 
