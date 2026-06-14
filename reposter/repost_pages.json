@@ -6,8 +6,8 @@
     "language": "English",
     "topic": "Psychology facts, human behavior secrets, brain hacks, relationships, and mind tricks.",
     "sources": [
-      {"url": "https://www.youtube.com/@ThePsychologyPocket/shorts", "platform": "youtube", "type": "channel"},
-      {"url": "https://www.youtube.com/@BrainyQuote/shorts", "platform": "youtube", "type": "channel"},
+      {"url": "https://www.youtube.com/@ThePsychologyPocket", "platform": "youtube", "type": "channel"},
+      {"url": "https://www.youtube.com/@BrainyQuote", "platform": "youtube", "type": "channel"},
       {"url": "ytsearch10:psychology facts shorts", "platform": "youtube", "type": "search"},
       {"url": "ytsearch10:dark psychology mind tricks shorts", "platform": "youtube", "type": "search"}
     ],
@@ -32,8 +32,8 @@
     "language": "Hinglish",
     "topic": "Chanakya Niti, ancient wisdom, life lessons, Hindi motivation, success quotes.",
     "sources": [
-      {"url": "https://www.youtube.com/@ChanakyaQuotesHindi/shorts", "platform": "youtube", "type": "channel"},
-      {"url": "https://www.youtube.com/@AncientWisdomHindi/shorts", "platform": "youtube", "type": "channel"},
+      {"url": "https://www.youtube.com/@ChanakyaQuotesHindi", "platform": "youtube", "type": "channel"},
+      {"url": "https://www.youtube.com/@AncientWisdomHindi", "platform": "youtube", "type": "channel"},
       {"url": "ytsearch10:chanakya niti shorts in hindi", "platform": "youtube", "type": "search"},
       {"url": "ytsearch10:hindi motivational quotes status shorts", "platform": "youtube", "type": "search"}
     ],

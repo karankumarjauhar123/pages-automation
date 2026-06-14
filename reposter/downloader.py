@@ -88,7 +88,19 @@ class Downloader:
             'extract_flat': True,
             'ignoreerrors': True,
             'no_warnings': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['default', '-android_sdkless']
+                }
+            }
         }
+
+        # Load cookies if available
+        for cookie_path in ["reposter/cookies.txt", "cookies.txt"]:
+            if os.path.exists(cookie_path):
+                ydl_opts['cookiefile'] = cookie_path
+                print(f"[Downloader] Using cookies file: {cookie_path}")
+                break
 
         # If IG, FB, or TikTok, make sure we use standard headers/cookies/agents
         if platform != "youtube":
@@ -138,7 +150,14 @@ class Downloader:
                         'skip_download': True,
                         'ignoreerrors': True,
                         'no_warnings': True,
+                        'extractor_args': {
+                            'youtube': {
+                                'player_client': ['default', '-android_sdkless']
+                            }
+                        }
                     }
+                    if 'cookiefile' in ydl_opts:
+                        detail_opts['cookiefile'] = ydl_opts['cookiefile']
                     try:
                         with yt_dlp.YoutubeDL(detail_opts) as ydl_detail:
                             det_info = ydl_detail.extract_info(video_url, download=False)
@@ -232,7 +251,18 @@ class Downloader:
             'outtmpl': output_path,
             'quiet': False,
             'no_warnings': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['default', '-android_sdkless']
+                }
+            }
         }
+
+        # Load cookies if available
+        for cookie_path in ["reposter/cookies.txt", "cookies.txt"]:
+            if os.path.exists(cookie_path):
+                ydl_opts['cookiefile'] = cookie_path
+                break
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
