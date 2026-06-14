@@ -81,6 +81,34 @@ class ScriptGenerator:
         """
         Generates a multi-scene video script with narration and image prompts.
         """
+        import random
+        
+        visual_styles = [
+            "Moody cinematic photography (35mm lens, high contrast, dramatic shadows, realistic)",
+            "Ancient historical oil painting (Chiaroscuro style, warm candle lighting, deep classical textures)",
+            "Mystical dark fantasy digital art (surreal landscapes, glowing particles, deep purples and blues)",
+            "Modern minimalist editorial concept (clean backgrounds, sharp focus, high-fashion aesthetic)",
+            "Gritty street photography (neon lights, reflections in rain, raw and atmospheric)",
+            "Vintage retro film look (faded colors, warm light leaks, 1970s film grain)",
+            "Epic dramatic digital art (dynamic action poses, volumetric lighting, rich color palette)"
+        ]
+        
+        focus_themes = [
+            "Unspoken rules of social dynamics (reading between the lines, body language secrets)",
+            "The power of silence and mystery (why talking less makes you more powerful)",
+            "Spotting hidden manipulation (identifying fake friends, gaslighting signs, dark psychology defense)",
+            "Ego vs. Self-respect (knowing when to walk away, setting boundaries)",
+            "Mindset shifts for success (overcoming laziness, dopamine detox, discipline over motivation)",
+            "Dealing with difficult emotions (stoic advice, control your reaction, letting go of anger)",
+            "Love and relationship psychological facts (what attracts people, subtle signs of interest)",
+            "Subconscious brain hacks (how to study better, memory tricks, sleeping hacks)",
+            "How to handle disrespect (calm confidence, psychological reverse psychology hacks)"
+        ]
+        
+        selected_style = random.choice(visual_styles)
+        selected_theme = random.choice(focus_themes)
+        random_seed = random.randint(100000, 999999)
+
         model_to_use = model or self.model
         system_prompt = (
             "You are a professional content creator and scriptwriter for viral social media videos (Facebook Reels, TikTok, YouTube Shorts).\n"
@@ -90,14 +118,15 @@ class ScriptGenerator:
         )
 
         user_prompt = (
-            f"Generate a video script on the topic: '{topic}' in language: '{language}'.\n"
-            "To ensure variety, choose a highly specific, unique angle, sub-topic, or lesson under the main theme (do not just generate a generic summary). "
-            "For example, pick a single specific quote or one exact life situation (like dealing with fake friends, achieving success through silence, etc.).\n"
+            f"Generate a video script on the main topic: '{topic}' in language: '{language}'.\n"
+            f"To ensure ultimate variety, write the script specifically focusing on the sub-theme: '{selected_theme}' (adapt this sub-theme to fit the main topic '{topic}'). "
+            "Do not write a generic summary of the main topic. Pick a highly specific, unique lesson, rule, or life situation.\n"
             "The script should be optimized for a 30-50 second Reels video. It must contain 3 to 5 scenes.\n"
             "The narration must flow naturally and sound engaging when converted to speech.\n"
             "The first scene must have a powerful hook (first 3 seconds).\n"
-            "The visual prompts for each scene will be sent to an AI Image Generator (Flux), so describe them in detail in English. "
-            "For this video, select a specific artistic style for all scenes (e.g. choose one of: realistic photography, historical ancient oil painting, moody dark fantasy, or dramatic digital art) so the visuals look cohesive across this video but unique compared to other runs. Use vertical framing (9:16).\n\n"
+            f"For the visual prompts of this video, use the artistic style: '{selected_style}' for all scenes. "
+            "Describe the scene visuals in detail in English (vertical 9:16 format).\n"
+            f"Use this unique run seed to diversify your writing style and avoid repeating past scripts: {random_seed}.\n\n"
             "The JSON output MUST follow this exact schema:\n"
             "{\n"
             '  "title": "Short title of the video",\n'
@@ -113,7 +142,7 @@ class ScriptGenerator:
             "}\n"
         )
 
-        print(f"Generating script for topic: '{topic}' in '{language}'...")
+        print(f"Generating script for topic: '{topic}' in '{language}' (Style: '{selected_style[:30]}...', Theme: '{selected_theme[:30]}...')...")
         response = self._completion_with_fallback(
             model_override=model_to_use,
             messages=[
@@ -145,6 +174,31 @@ class ScriptGenerator:
         """
         Generates a single-image post with text overlay and caption.
         """
+        import random
+        
+        visual_styles = [
+            "Moody cinematic photography (35mm lens, high contrast, dramatic shadows, realistic)",
+            "Ancient historical oil painting (Chiaroscuro style, warm candle lighting, deep classical textures)",
+            "Mystical dark fantasy digital art (surreal landscapes, glowing particles, deep purples and blues)",
+            "Modern minimalist editorial concept (clean backgrounds, sharp focus, high-fashion aesthetic)",
+            "Gritty street photography (neon lights, reflections in rain, raw and atmospheric)",
+            "Vintage retro film look (faded colors, warm light leaks, 1970s film grain)",
+            "Epic dramatic digital art (dynamic action poses, volumetric lighting, rich color palette)"
+        ]
+        
+        focus_themes = [
+            "A rare, deep life lesson or wisdom rule",
+            "A shocking psychological human behavior secret",
+            "A critical self-respect or stoic rule for life",
+            "A dark psychology manipulation warning signs list",
+            "A powerful relationship or attraction fact",
+            "A mindset shift for focus, study, or success"
+        ]
+        
+        selected_style = random.choice(visual_styles)
+        selected_theme = random.choice(focus_themes)
+        random_seed = random.randint(100000, 999999)
+
         model_to_use = model or self.model
         system_prompt = (
             "You are a professional social media content creator.\n"
@@ -154,9 +208,10 @@ class ScriptGenerator:
 
         user_prompt = (
             f"Generate a single-image post configuration on the topic: '{topic}' in language: '{language}'.\n"
-            "To ensure variety, choose a highly specific, unique quote, tip, or lesson under the main theme (do not just generate a generic summary).\n"
-            "The visual prompt will be used with FLUX image generator, so make it highly detailed and descriptive (in English). Select a unique visual style (e.g., realistic photography, historical oil painting, minimalist concept art, or dramatic digital art) to keep it fresh and engaging. Specify the style, setting, and mood.\n"
-            "The overlay text should be a short, punchy quote, fact, or tip that will be written directly on the image.\n\n"
+            f"To ensure ultimate variety, focus specifically on this sub-theme: '{selected_theme}'. Do not write a generic summary.\n"
+            f"The visual prompt will be used with FLUX image generator, so make it highly detailed and descriptive (in English), square 1:1 format, using the specific style: '{selected_style}'. Specify the setting and mood.\n"
+            "The overlay text should be a short, punchy quote, fact, or tip that will be written directly on the image.\n"
+            f"Use this unique run seed to diversify your writing style and avoid repeating past content: {random_seed}.\n\n"
             "The JSON output MUST follow this exact schema:\n"
             "{\n"
             '  "image_prompt": "Highly detailed visual description in English for FLUX image generator, 1:1 square ratio, high resolution",\n'
@@ -165,7 +220,7 @@ class ScriptGenerator:
             "}\n"
         )
 
-        print(f"Generating image post content for topic: '{topic}' in '{language}'...")
+        print(f"Generating image post content for topic: '{topic}' in '{language}' (Style: '{selected_style[:30]}...', Theme: '{selected_theme[:30]}...')...")
         response = self._completion_with_fallback(
             model_override=model_to_use,
             messages=[
