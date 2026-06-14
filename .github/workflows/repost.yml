@@ -1,0 +1,84 @@
+name: Viral Reels Reposter
+
+on:
+  schedule:
+    # Runs on the 0th minute of every hour, 24/7
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    # Allows manual triggering from the Actions tab
+    inputs:
+      page:
+        description: 'Specific page name to run for (leave empty for all)'
+        required: false
+        default: ''
+      force:
+        description: 'Force run regardless of scheduling hour'
+        type: boolean
+        required: false
+        default: false
+      dry_run:
+        description: 'Dry run (download & edit but do not upload)'
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  repost-content:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r reposter/requirements.txt
+
+    - name: Run Reels Reposter
+      env:
+        # Load API keys and page tokens from repository secrets
+        NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        FB_PAGE_TOKEN_3: ${{ secrets.FB_PAGE_TOKEN_3 }}
+      run: |
+        CMD="python reposter/main.py"
+        
+        # Build command based on triggers and inputs
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            CMD="$CMD --force"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+          if [ -n "${{ github.event.inputs.page }}" ]; then
+            CMD="$CMD --page \"${{ github.event.inputs.page }}\""
+          fi
+        fi
+        
+        echo "Running command: $CMD"
+        eval $CMD
+
+    - name: Commit and Push Reposter History
+      if: always()
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add reposter/history.json reposter/pending_reposts.json || true
+        git commit -m "Update reposter history and pending queue [skip ci]" || true
+        git push origin main || true
