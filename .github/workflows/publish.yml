@@ -1,28 +1,29 @@
-name: Daily AI Content Poster
+name: Viral Reels Reposter
 
 on:
   schedule:
     # Runs on the 0th minute of every hour, 24/7
     - cron: '0 * * * *'
   workflow_dispatch:
-    # Allows manual triggering of the workflow from GitHub Actions tab
+    # Allows manual triggering from the Actions tab
     inputs:
-      count:
-        description: 'Number of posts to generate per page'
-        required: true
-        default: '1'
       page:
         description: 'Specific page name to run for (leave empty for all)'
         required: false
         default: ''
-      retry_pending:
-        description: 'Retry failed pending uploads'
+      force:
+        description: 'Force run regardless of scheduling hour'
+        type: boolean
+        required: false
+        default: false
+      dry_run:
+        description: 'Dry run (download & edit but do not upload)'
         type: boolean
         required: false
         default: false
 
 jobs:
-  post-content:
+  repost-content:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -45,52 +46,39 @@ jobs:
     - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r reposter/requirements.txt
 
-    - name: Run Auto Publisher
+    - name: Run Reels Reposter
       env:
-        # Load secrets from GitHub Repository Secrets
+        # Load API keys and page tokens from repository secrets
         NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        # Pass page tokens. You should add these secrets in your repository settings.
         FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
-        FB_PAGE_TOKEN_FACTS: ${{ secrets.FB_PAGE_TOKEN_FACTS }}
-        FB_PAGE_TOKEN_MOTIVATION: ${{ secrets.FB_PAGE_TOKEN_MOTIVATION }}
         FB_PAGE_TOKEN_3: ${{ secrets.FB_PAGE_TOKEN_3 }}
-        FB_PAGE_TOKEN_4: ${{ secrets.FB_PAGE_TOKEN_4 }}
-        FB_PAGE_TOKEN_5: ${{ secrets.FB_PAGE_TOKEN_5 }}
-        FB_PAGE_TOKEN_6: ${{ secrets.FB_PAGE_TOKEN_6 }}
-        FB_PAGE_TOKEN_7: ${{ secrets.FB_PAGE_TOKEN_7 }}
-        FB_PAGE_TOKEN_8: ${{ secrets.FB_PAGE_TOKEN_8 }}
-        FB_PAGE_TOKEN_9: ${{ secrets.FB_PAGE_TOKEN_9 }}
-        FB_PAGE_TOKEN_10: ${{ secrets.FB_PAGE_TOKEN_10 }}
       run: |
-        # Check if we should retry pending failed uploads
-        if [ "${{ github.event.inputs.retry_pending }}" = "true" ]; then
-          CMD="python main.py --retry-pending"
-        else
-          CMD="python main.py"
-          # Add count if triggered manually
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            CMD="$CMD --count ${{ github.event.inputs.count }} --force"
-            if [ -n "${{ github.event.inputs.page }}" ]; then
-              CMD="$CMD --page \"${{ github.event.inputs.page }}\""
-            fi
-          else
-            # Default count for scheduled run (which will check pages.json schedule hours)
-            CMD="$CMD --count 1"
+        CMD="python reposter/main.py"
+        
+        # Build command based on triggers and inputs
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            CMD="$CMD --force"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+          if [ -n "${{ github.event.inputs.page }}" ]; then
+            CMD="$CMD --page \"${{ github.event.inputs.page }}\""
           fi
         fi
         
         echo "Running command: $CMD"
         eval $CMD
 
-    - name: Commit and Push History
+    - name: Commit and Push Reposter History
       if: always()
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add docs/history.json docs/pending_uploads.json docs/pending_uploads/* || true
-        git commit -m "Update post history and pending uploads queue [skip ci]" || true
+        git add reposter/history.json reposter/pending_reposts.json || true
+        git commit -m "Update reposter history and pending queue [skip ci]" || true
         git push origin main || true
