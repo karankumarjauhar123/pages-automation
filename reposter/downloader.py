@@ -425,9 +425,29 @@ class Downloader:
         cookie_path = self._get_cookie_path()
 
         strategies = [
-            {'name': 'yt-dlp web_creator+PO', 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best', 'player_client': ['web_creator']},
-            {'name': 'yt-dlp default+PO', 'format': 'bestvideo+bestaudio/best[ext=mp4]/best', 'player_client': ['default']},
-            {'name': 'yt-dlp mweb+PO', 'format': 'best[ext=mp4]/best', 'player_client': ['mweb']},
+            {
+                'name': 'yt-dlp default clients',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best'
+            },
+            {
+                'name': 'yt-dlp pre-merged best (no ffmpeg req)',
+                'format': 'best[ext=mp4]/best'
+            },
+            {
+                'name': 'yt-dlp web_creator+PO',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+                'player_client': ['web_creator']
+            },
+            {
+                'name': 'yt-dlp default+PO',
+                'format': 'bestvideo+bestaudio/best[ext=mp4]/best',
+                'player_client': ['default']
+            },
+            {
+                'name': 'yt-dlp mweb+PO',
+                'format': 'best[ext=mp4]/best',
+                'player_client': ['mweb']
+            },
         ]
 
         for strategy in strategies:
@@ -437,6 +457,12 @@ class Downloader:
                 try: os.remove(output_path)
                 except: pass
 
+            extractor_args = {
+                'youtubetab': {'skip': ['authcheck']}
+            }
+            if 'player_client' in strategy:
+                extractor_args['youtube'] = {'player_client': strategy['player_client']}
+
             ydl_opts = {
                 'format': strategy['format'],
                 'outtmpl': output_path,
@@ -444,10 +470,7 @@ class Downloader:
                 'no_warnings': True,
                 'check_formats': False,
                 'merge_output_format': 'mp4',
-                'extractor_args': {
-                    'youtube': {'player_client': strategy['player_client']},
-                    'youtubetab': {'skip': ['authcheck']}
-                }
+                'extractor_args': extractor_args
             }
             if cookie_path:
                 ydl_opts['cookiefile'] = cookie_path
