@@ -349,10 +349,11 @@ class Downloader:
             if resp.status_code == 200:
                 instances = resp.json()
                 for entry in instances:
-                    if len(entry) >= 2 and isinstance(entry[1], dict):
+                    if entry and len(entry) >= 2 and isinstance(entry[1], dict):
                         info = entry[1]
                         is_https = info.get('type') == 'https'
-                        last_status = info.get('monitor', {}).get('last_status')
+                        monitor = info.get('monitor') or {}
+                        last_status = monitor.get('last_status')
                         if is_https and last_status == 200:
                             uri = info.get('uri', '').rstrip('/')
                             if uri:
@@ -425,14 +426,29 @@ class Downloader:
         cookie_path = self._get_cookie_path()
 
         strategies = [
+            # 1. Try android/ios clients first (extremely robust for bypassing signature blocks)
+            {
+                'name': 'yt-dlp android+ios',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+                'player_client': ['android', 'ios']
+            },
+            # 2. Pre-merged formats using android/ios (failsafe if ffmpeg is missing)
+            {
+                'name': 'yt-dlp pre-merged android+ios',
+                'format': 'best[ext=mp4]/best',
+                'player_client': ['android', 'ios']
+            },
+            # 3. Default yt-dlp client fallback list (highly robust in modern yt-dlp)
             {
                 'name': 'yt-dlp default clients',
                 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best'
             },
+            # 4. Pre-merged format with default clients
             {
-                'name': 'yt-dlp pre-merged best (no ffmpeg req)',
+                'name': 'yt-dlp pre-merged default',
                 'format': 'best[ext=mp4]/best'
             },
+            # 5. Creator clients with PO token (existing fallback)
             {
                 'name': 'yt-dlp web_creator+PO',
                 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
@@ -451,45 +467,51 @@ class Downloader:
         ]
 
         for strategy in strategies:
-            print(f"[Downloader] Trying {strategy['name']}...")
+            # We will try both with cookies (if available) and without cookies (anonymous fallback)
+            # This is critical if the cookies file is expired/invalid, which blocks authenticated requests.
+            cookie_options = [True, False] if cookie_path else [False]
             
-            if os.path.exists(output_path):
-                try: os.remove(output_path)
-                except: pass
-
-            extractor_args = {
-                'youtubetab': {'skip': ['authcheck']}
-            }
-            if 'player_client' in strategy:
-                extractor_args['youtube'] = {'player_client': strategy['player_client']}
-
-            ydl_opts = {
-                'format': strategy['format'],
-                'outtmpl': output_path,
-                'quiet': False,
-                'no_warnings': True,
-                'check_formats': False,
-                'merge_output_format': 'mp4',
-                'extractor_args': extractor_args
-            }
-            if cookie_path:
-                ydl_opts['cookiefile'] = cookie_path
-
-            try:
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([video_url])
+            for use_cookies in cookie_options:
+                cookie_desc = "with cookies" if use_cookies else "without cookies"
+                print(f"[Downloader] Trying {strategy['name']} ({cookie_desc})...")
                 
-                actual_path = self._find_downloaded_file(output_path)
-                if actual_path:
-                    if actual_path != output_path:
-                        os.rename(actual_path, output_path)
-                    print(f"[Downloader] ✅ Downloaded via {strategy['name']}. Size: {os.path.getsize(output_path)} bytes.")
-                    return output_path
-                else:
-                    print(f"[Downloader] ⚠️ {strategy['name']} produced no output file.")
-            except Exception as e:
-                print(f"[Downloader] ⚠️ {strategy['name']} failed: {e}")
-                continue
+                if os.path.exists(output_path):
+                    try: os.remove(output_path)
+                    except: pass
+
+                extractor_args = {
+                    'youtubetab': {'skip': ['authcheck']}
+                }
+                if 'player_client' in strategy:
+                    extractor_args['youtube'] = {'player_client': strategy['player_client']}
+
+                ydl_opts = {
+                    'format': strategy['format'],
+                    'outtmpl': output_path,
+                    'quiet': False,
+                    'no_warnings': True,
+                    'check_formats': False,
+                    'merge_output_format': 'mp4',
+                    'extractor_args': extractor_args
+                }
+                if use_cookies and cookie_path:
+                    ydl_opts['cookiefile'] = cookie_path
+
+                try:
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        ydl.download([video_url])
+                    
+                    actual_path = self._find_downloaded_file(output_path)
+                    if actual_path:
+                        if actual_path != output_path:
+                            os.rename(actual_path, output_path)
+                        print(f"[Downloader] ✅ Downloaded via {strategy['name']} ({cookie_desc}). Size: {os.path.getsize(output_path)} bytes.")
+                        return output_path
+                    else:
+                        print(f"[Downloader] ⚠️ {strategy['name']} ({cookie_desc}) produced no output file.")
+                except Exception as e:
+                    print(f"[Downloader] ⚠️ {strategy['name']} ({cookie_desc}) failed: {e}")
+                    continue
         return None
 
     def _download_via_piped(self, video_id, output_path):
