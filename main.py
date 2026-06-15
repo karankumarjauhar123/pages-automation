@@ -33,6 +33,25 @@ def load_pages():
     with open(pages_path, "r") as f:
         return json.load(f)
 
+def is_recent_post(history, page_name, window_minutes=45):
+    """Checks if a post was made for this page in the last window_minutes."""
+    now = datetime.utcnow()
+    for entry in history:
+        if entry.get("page_name", "").lower() == page_name.lower():
+            timestamp_str = entry.get("timestamp")
+            if timestamp_str:
+                try:
+                    # Remove Z and trailing fractional seconds if any for parsing
+                    clean_ts = timestamp_str.replace("Z", "")
+                    if "." in clean_ts:
+                        clean_ts = clean_ts.split(".")[0]
+                    posted_at = datetime.strptime(clean_ts, "%Y-%m-%dT%H:%M:%S")
+                    if (now - posted_at).total_seconds() < (window_minutes * 60):
+                        return True
+                except Exception as e:
+                    print(f"Error parsing timestamp {timestamp_str}: {e}")
+    return False
+
 def overlay_text_on_image(image_path, text, output_path, font_path=None):
     """
     Renders text centered on the image with a semi-transparent dark rounded card behind it.
@@ -319,8 +338,38 @@ def process_page(page, args, script_gen, image_gen, voice_gen, composer, uploade
     schedule = page.get("schedule", [])
     if schedule and not args.force and not args.page:
         current_hour_utc = datetime.utcnow().hour
-        if current_hour_utc not in schedule:
-            print(f"\nSKIPPING PAGE '{page_name}': Current UTC hour {current_hour_utc} is not in schedule hours {schedule}.")
+        
+        # Load history to check how many posts have been made today
+        history_path = os.path.join("docs", "history.json")
+        history = []
+        if os.path.exists(history_path):
+            try:
+                with open(history_path, "r", encoding="utf-8") as f:
+                    history = json.load(f)
+            except Exception as e:
+                print(f"Error reading history.json for schedule check: {e}")
+        
+        # Count posts made today in UTC
+        today_str = datetime.utcnow().strftime("%Y-%m-%d")
+        posts_today = 0
+        for entry in history:
+            if entry.get("page_name", "").lower() == page_name.lower():
+                timestamp = entry.get("timestamp")
+                if timestamp and timestamp.startswith(today_str):
+                    posts_today += 1
+                    
+        # Determine how many posts should have been made by the current hour
+        max_posts = page.get("max_posts_per_day", len(schedule))
+        target_posts = len([sh for sh in schedule if sh <= current_hour_utc])
+        target_posts = min(target_posts, max_posts)
+        
+        if posts_today >= target_posts:
+            print(f"\nSKIPPING PAGE '{page_name}': Has posted {posts_today} times today, target is {target_posts} posts by hour {current_hour_utc} UTC.")
+            return
+
+        # Rate limiting check (min 45 minutes between posts)
+        if is_recent_post(history, page_name, window_minutes=45):
+            print(f"\nSKIPPING PAGE '{page_name}': Posted too recently (within the last 45 minutes).")
             return
             
     # Load access token from environment variable if configured

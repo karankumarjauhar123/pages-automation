@@ -430,6 +430,10 @@ class Downloader:
     def _download_via_cobalt(self, video_url, output_path):
         """Final failsafe: Download via public Cobalt API instance."""
         instances = [
+            'https://nuko-c.meowing.de',
+            'https://subito-c.meowing.de',
+            'https://cobalt.alpha.wolfy.love',
+            'https://melon.clxxped.lol',
             'https://api.cobalt.tools',
             'https://cobalt.sh1tr.me',
             'https://cobalt.protodev.ru'
