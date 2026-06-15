@@ -320,11 +320,22 @@ class Downloader:
             print(f"[Downloader] Could not fetch Piped instances: {e}")
         
         # Hardcoded fallbacks
-        fallbacks = ['https://api.piped.private.coffee', 'https://pipedapi.kavin.rocks']
+        fallbacks = [
+            'https://api.piped.private.coffee',
+            'https://pipedapi.kavin.rocks',
+            'https://pipedapi.tokhmi.xyz',
+            'https://pipedapi.extravi.dev',
+            'https://pipedapi.ox.gy',
+            'https://pipedapi.hostux.net',
+            'https://pipedapi.adminforge.de',
+            'https://pipedapi.suyu.lgbt'
+        ]
         for fb in fallbacks:
             if fb not in self._piped_instances:
                 self._piped_instances.append(fb)
         
+        import random
+        random.shuffle(self._piped_instances)
         return self._piped_instances
 
     def _get_invidious_instances(self):
@@ -340,7 +351,9 @@ class Downloader:
                 for entry in instances:
                     if len(entry) >= 2 and isinstance(entry[1], dict):
                         info = entry[1]
-                        if info.get('type') == 'https' and info.get('api'):
+                        is_https = info.get('type') == 'https'
+                        last_status = info.get('monitor', {}).get('last_status')
+                        if is_https and last_status == 200:
                             uri = info.get('uri', '').rstrip('/')
                             if uri:
                                 self._invidious_instances.append(uri)
@@ -349,11 +362,22 @@ class Downloader:
             print(f"[Downloader] Could not fetch Invidious instances: {e}")
         
         # Hardcoded fallbacks
-        fallbacks = ['https://inv.nadeko.net', 'https://yewtu.be', 'https://invidious.nerdvpn.de']
+        fallbacks = [
+            'https://inv.nadeko.net',
+            'https://yewtu.be',
+            'https://invidious.nerdvpn.de',
+            'https://invidious.no-logs.com',
+            'https://invidious.projectsegfau.lt',
+            'https://invidious.privacydev.net',
+            'https://invidious.lunar.icu',
+            'https://iv.melmac.space'
+        ]
         for fb in fallbacks:
             if fb not in self._invidious_instances:
                 self._invidious_instances.append(fb)
         
+        import random
+        random.shuffle(self._invidious_instances)
         return self._invidious_instances
 
     # ─────────────────────────────────────────────────────────────
@@ -449,7 +473,7 @@ class Downloader:
         """Download via dynamically discovered Piped API instances."""
         instances = self._get_piped_instances()
         
-        for instance in instances[:5]:  # Try up to 5 instances
+        for instance in instances[:15]:  # Try up to 15 instances
             try:
                 print(f"[Downloader] Trying Piped: {instance}")
                 api_url = f"{instance}/streams/{video_id}"
@@ -529,7 +553,7 @@ class Downloader:
         """Download via dynamically discovered Invidious API instances with ?local=true."""
         instances = self._get_invidious_instances()
         
-        for instance in instances[:5]:  # Try up to 5 instances
+        for instance in instances[:15]:  # Try up to 15 instances
             try:
                 print(f"[Downloader] Trying Invidious: {instance}")
                 # ?local=true makes Invidious proxy the video data through its server
