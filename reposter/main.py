@@ -339,8 +339,24 @@ def main():
             
         # Check scheduling
         if not args.page and not args.force:
-            if utc_hour not in p.get("schedule", []):
-                print(f"[Main] Page '{p_name}' is not scheduled for UTC hour {utc_hour}. Skipping.")
+            schedule = p.get("schedule", [])
+            max_posts = p.get("max_posts_per_day", 3)
+            
+            # Count posts made today in UTC
+            today_str = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+            posts_today = 0
+            for entry in history:
+                if entry.get("page_name", "").lower() == p_name.lower():
+                    posted_at_str = entry.get("posted_at")
+                    if posted_at_str and posted_at_str.startswith(today_str):
+                        posts_today += 1
+            
+            # Determine how many posts should have been made by the current hour
+            target_posts = len([sh for sh in schedule if sh <= utc_hour])
+            target_posts = min(target_posts, max_posts)
+            
+            if posts_today >= target_posts:
+                print(f"[Main] Page '{p_name}' has posted {posts_today} times today, target is {target_posts} posts by hour {utc_hour} UTC. Skipping.")
                 continue
                 
             # Rate limiting check
