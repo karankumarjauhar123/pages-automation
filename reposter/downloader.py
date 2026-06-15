@@ -391,6 +391,7 @@ class Downloader:
         1. yt-dlp with PO Token plugin (auto-generates Proof of Origin)
         2. Piped API (dynamically discovered instances)
         3. Invidious API (dynamically discovered, with ?local=true proxy)
+        4. Cobalt API (failsafe public instance proxy)
         """
         if os.path.exists(output_path):
             try:
@@ -401,7 +402,7 @@ class Downloader:
         video_id = self._extract_video_id(video_url)
         print(f"[Downloader] Downloading {video_url} (ID: {video_id}) to {output_path}...")
         
-        # Strategy 1: yt-dlp (now with PO Token plugin)
+        # Strategy 1: yt-dlp
         result = self._download_via_ytdlp(video_url, output_path)
         if result:
             return result
@@ -418,7 +419,55 @@ class Downloader:
             if result:
                 return result
 
+        # Strategy 4: Cobalt API
+        result = self._download_via_cobalt(video_url, output_path)
+        if result:
+            return result
+
         print(f"[Downloader] ❌ All download strategies exhausted for: {video_url}")
+        return None
+
+    def _download_via_cobalt(self, video_url, output_path):
+        """Final failsafe: Download via public Cobalt API instance."""
+        instances = [
+            'https://api.cobalt.tools',
+            'https://cobalt.sh1tr.me',
+            'https://cobalt.protodev.ru'
+        ]
+        
+        for instance in instances:
+            try:
+                print(f"[Downloader] Trying Cobalt API: {instance}")
+                headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'
+                }
+                payload = {
+                    'url': video_url,
+                    'videoQuality': '720',  # 720p is perfect and reliable
+                    'filenameStyle': 'basic'
+                }
+                resp = requests.post(instance, json=payload, headers=headers, timeout=30)
+                if resp.status_code != 200:
+                    print(f"[Downloader] ⚠️ Cobalt {instance} returned HTTP {resp.status_code}")
+                    continue
+                
+                data = resp.json()
+                if data.get('status') == 'error':
+                    print(f"[Downloader] ⚠️ Cobalt error: {data.get('text')}")
+                    continue
+                
+                download_url = data.get('url')
+                if download_url:
+                    print(f"[Downloader] Downloading file from Cobalt redirect...")
+                    self._download_file(download_url, output_path)
+                    if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+                        print(f"[Downloader] ✅ Downloaded via Cobalt ({instance}). Size: {os.path.getsize(output_path)} bytes.")
+                        return output_path
+            except Exception as e:
+                print(f"[Downloader] ⚠️ Cobalt instance {instance} failed: {e}")
+                continue
         return None
 
     def _download_via_ytdlp(self, video_url, output_path):
@@ -426,13 +475,23 @@ class Downloader:
         cookie_path = self._get_cookie_path()
 
         strategies = [
-            # 1. Try android/ios clients first (extremely robust for bypassing signature blocks)
+            # 1. Try android_embedded / web_embedded / ios_embedded (best for bypassing signature blocks without cookies)
+            {
+                'name': 'yt-dlp android_embedded+web_embedded',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+                'player_client': ['android_embedded', 'web_embedded', 'ios_embedded']
+            },
+            {
+                'name': 'yt-dlp pre-merged embedded',
+                'format': 'best[ext=mp4]/best',
+                'player_client': ['android_embedded', 'web_embedded', 'ios_embedded']
+            },
+            # 2. Try standard android/ios clients
             {
                 'name': 'yt-dlp android+ios',
                 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
                 'player_client': ['android', 'ios']
             },
-            # 2. Pre-merged formats using android/ios (failsafe if ffmpeg is missing)
             {
                 'name': 'yt-dlp pre-merged android+ios',
                 'format': 'best[ext=mp4]/best',
