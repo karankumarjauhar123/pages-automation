@@ -430,13 +430,14 @@ class Downloader:
     def _download_via_cobalt(self, video_url, output_path):
         """Final failsafe: Download via public Cobalt API instance."""
         instances = [
+            'https://dog.kittycat.boo',
+            'https://fox.kittycat.boo',
+            'https://rue-cobalt.xenon.zone',
             'https://nuko-c.meowing.de',
             'https://subito-c.meowing.de',
             'https://cobalt.alpha.wolfy.love',
             'https://melon.clxxped.lol',
-            'https://api.cobalt.tools',
-            'https://cobalt.sh1tr.me',
-            'https://cobalt.protodev.ru'
+            'https://api.cobalt.tools'
         ]
         
         for instance in instances:
@@ -454,12 +455,14 @@ class Downloader:
                 }
                 resp = requests.post(instance, json=payload, headers=headers, timeout=30)
                 if resp.status_code != 200:
-                    print(f"[Downloader] ⚠️ Cobalt {instance} returned HTTP {resp.status_code}")
+                    print(f"[Downloader] ⚠️ Cobalt {instance} returned HTTP {resp.status_code}: {resp.text}")
                     continue
                 
                 data = resp.json()
                 if data.get('status') == 'error':
-                    print(f"[Downloader] ⚠️ Cobalt error: {data.get('text')}")
+                    err_info = data.get('error', {})
+                    err_msg = err_info.get('code') or data.get('text') or str(err_info)
+                    print(f"[Downloader] ⚠️ Cobalt error from {instance}: {err_msg}")
                     continue
                 
                 download_url = data.get('url')
