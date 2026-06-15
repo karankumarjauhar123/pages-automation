@@ -6,3 +6,9 @@ __pycache__/
 *.mp3
 *.png
 *.ttf
+
+# Face Swapper Exceptions
+!swapped_reels/
+!swapped_reels/*
+!influencer_faces/
+!influencer_faces/*
