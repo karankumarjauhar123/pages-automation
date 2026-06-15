@@ -48,7 +48,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r reposter/requirements.txt
         pip install -U yt-dlp
-        pip install -U yt-dlp-getpot-wpc
 
     - name: Setup YouTube Cookies
       env:
