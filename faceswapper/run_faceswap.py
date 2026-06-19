@@ -91,7 +91,7 @@ def init_face_analyser():
     """Initialize InsightFace face analyser with buffalo_l model."""
     print("[FaceSwapper] 🔧 Initializing face detection engine...")
     app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
-    app.prepare(ctx_id=0, det_size=(640, 640))
+    app.prepare(ctx_id=0, det_thresh=0.4, det_size=(640, 640))
     print("[FaceSwapper] ✅ Face detection engine ready!")
     return app
 
@@ -135,6 +135,7 @@ def swap_face_in_video(face_app, swapper, source_face, input_video, output_video
     frame_count = 0
     swapped_count = 0
     
+    error_log_count = 0
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -150,8 +151,16 @@ def swap_face_in_video(face_app, swapper, source_face, input_video, output_video
                 target_faces = sorted(target_faces, key=lambda x: (x.bbox[2] - x.bbox[0]) * (x.bbox[3] - x.bbox[1]), reverse=True)
                 frame = swapper.get(frame, target_faces[0], source_face, paste_back=True)
                 swapped_count += 1
-        except Exception:
+        except Exception as e:
             # If face detection/swap fails for a frame, keep the original
+            if error_log_count < 5:
+                print(f"[FaceSwapper] ⚠️ Error at frame {frame_count}: {e}")
+                import traceback
+                traceback.print_exc()
+                error_log_count += 1
+            elif error_log_count == 5:
+                print("[FaceSwapper] ⚠️ Suppressing further frame-level errors...")
+                error_log_count += 1
             pass
         
         writer.write(frame)
