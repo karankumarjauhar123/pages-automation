@@ -877,17 +877,17 @@
 
         <!-- ================= FACESWAPPER VIEW ================= -->
         <section id="view-faceswapper" class="view">
-            <div class="grid-2" style="margin-bottom: 40px;">
+            <div class="grid-2" style="margin-bottom: 30px;">
                 <!-- Controller Card -->
                 <div class="card">
                     <div class="card-header">
                         <h2>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-                            Trigger Face Swapper
+                            Trigger Face Swapper (Manual)
                         </h2>
                     </div>
                     <p style="color: var(--text-secondary); margin-bottom: 20px;">
-                        Paste Reels URLs and choose an uploaded influencer face photo to trigger the cloud face-swapping pipeline.
+                        Paste Reels URLs and choose an influencer photo to trigger a manual, direct face-swapping run.
                     </p>
                     <div class="form-group">
                         <label for="faceswap-urls">Reels URLs (One per line)</label>
@@ -914,47 +914,94 @@
                     </button>
                 </div>
 
-                <!-- Info and Instructions Card -->
+                <!-- Auto Poster & Queue Manager Card -->
                 <div class="card">
                     <div class="card-header">
                         <h2>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-                            Instructions & Setup
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            Auto Poster & Queue Manager
                         </h2>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
-                        <div>📷 <strong>How to add new faces:</strong> Go to the <code>influencer_faces/</code> folder in your repo on GitHub, upload high-quality face pictures, and commit them. Refresh this page to see them in the dropdown!</div>
-                        <div>💎 <strong>Resilient Features:</strong> Swapped videos preserve original audio tracks, utilize multi-host fallback uploaders for processing, and automatically save to <code>swapped_reels/</code>.</div>
-                        <div style="margin-top: 10px; padding: 12px; border-radius: 8px; background: rgba(138, 43, 226, 0.05); border: 1px dashed rgba(138, 43, 226, 0.2);">
-                            🔒 Ensure you configure your Replicate token as a GitHub Secret called <code>REPLICATE_API_TOKEN</code> inside Actions settings.
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Add dance reels to the queue or trigger the automated posting cycle for scheduled influencers.
+                    </p>
+                    <div class="form-group">
+                        <label for="queue-urls">Reels URLs to Queue (One per line)</label>
+                        <textarea class="form-control" id="queue-urls" rows="4" placeholder="https://www.instagram.com/reel/...&#10;https://www.youtube.com/shorts/..."></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 15px;">
+                        <div style="flex: 1.5;">
+                            <label for="queue-influencer">Assign to Influencer (Optional)</label>
+                            <select class="form-control" id="queue-influencer">
+                                <option value="">All Influencers (General Queue)</option>
+                            </select>
                         </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-primary" id="btn-add-queue" onclick="addVideoToQueue()" style="flex: 1;">
+                            Add to Queue ➔
+                        </button>
+                        <button class="btn btn-secondary" id="btn-trigger-autopost" onclick="triggerAutoPosterCycle()" style="flex: 1;">
+                            Run Auto Poster ⚡
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Face Swapper Runs Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h2>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        Face Swapper Cloud Execution Runs
-                    </h2>
+            <!-- Queue List & Auto Poster Runs -->
+            <div class="grid-2" style="margin-bottom: 30px;">
+                <!-- Video Queue Display -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                            Current Video Queue
+                        </h2>
+                    </div>
+                    <div class="run-list" id="queue-list-container" style="max-height: 250px; overflow-y: auto;">
+                        <p style="color: var(--text-secondary);">Loading queue items...</p>
+                    </div>
                 </div>
-                <div class="run-list" id="faceswap-runs-container">
-                    <p style="color: var(--text-secondary);">Loading execution runs...</p>
+
+                <!-- Auto Poster Runs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Auto Poster Cloud Execution Runs
+                        </h2>
+                    </div>
+                    <div class="run-list" id="autopost-runs-container" style="max-height: 250px; overflow-y: auto;">
+                        <p style="color: var(--text-secondary);">Loading execution runs...</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Face Swapper History Card -->
-            <div class="card" style="margin-top: 30px;">
-                <div class="card-header">
-                    <h2>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="10"></circle></svg>
-                        Swapped Reels History
-                    </h2>
+            <div class="grid-2">
+                <!-- Manual Runs Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Manual Face Swapper Cloud Runs
+                        </h2>
+                    </div>
+                    <div class="run-list" id="faceswap-runs-container" style="max-height: 250px; overflow-y: auto;">
+                        <p style="color: var(--text-secondary);">Loading execution runs...</p>
+                    </div>
                 </div>
-                <div class="run-list" id="faceswap-history-container">
-                    <p style="color: var(--text-secondary);">Loading swap history...</p>
+
+                <!-- History Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="10"></circle></svg>
+                            Swapped Reels History
+                        </h2>
+                    </div>
+                    <div class="run-list" id="faceswap-history-container" style="max-height: 250px; overflow-y: auto;">
+                        <p style="color: var(--text-secondary);">Loading swap history...</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1945,8 +1992,100 @@
         // 5. Face Swapper Management
         async function fetchFaceSwapperData() {
             fetchFaceSwapperRuns();
+            fetchAutoPosterRuns();
             fetchFaceSwapperHistory();
             fetchInfluencerFaces();
+            fetchVideoQueue();
+        }
+
+        async function fetchAutoPosterRuns() {
+            const data = await githubRequest('/actions/runs?workflow=auto_faceswap_post.yml&per_page=5');
+            const container = document.getElementById('autopost-runs-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (data && data.workflow_runs && data.workflow_runs.length > 0) {
+                data.workflow_runs.forEach(run => {
+                    const runItem = document.createElement('div');
+                    runItem.className = 'run-item';
+
+                    const conclusion = run.conclusion || run.status;
+                    const statusClass = conclusion === 'success' ? 'status-success' : (conclusion === 'failure' ? 'status-danger' : 'status-running');
+                    
+                    const timeString = new Date(run.created_at).toLocaleString();
+                    const durationMins = run.run_started_at ? Math.round((new Date(run.updated_at) - new Date(run.run_started_at)) / 60000) : 0;
+
+                    runItem.innerHTML = `
+                        <div class="run-info">
+                            <div class="run-title">
+                                #${run.run_number} - ${run.head_commit.message.split('\n')[0]}
+                            </div>
+                            <div class="run-meta">
+                                Triggered via ${run.event} • ${timeString} (${durationMins} mins duration)
+                            </div>
+                        </div>
+                        <div class="run-status ${statusClass}">
+                            ● ${conclusion.toUpperCase()}
+                        </div>
+                    `;
+                    container.appendChild(runItem);
+                });
+            } else {
+                container.innerHTML = `<p style="color: var(--text-secondary); text-align:center;">No auto poster runs found.</p>`;
+            }
+        }
+
+        async function fetchVideoQueue() {
+            const container = document.getElementById('queue-list-container');
+            if (!container) return;
+            container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Loading queue items...</p>';
+
+            const data = await githubRequest('/contents/faceswapper/video_queue.json');
+            if (data) {
+                try {
+                    const contentBase64 = data.content.replace(/\s/g, '');
+                    const contentJson = decodeURIComponent(escape(atob(contentBase64)));
+                    const queue = JSON.parse(contentJson);
+
+                    container.innerHTML = '';
+                    if (!queue || queue.length === 0) {
+                        container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">Video queue is empty.</p>';
+                        return;
+                    }
+
+                    queue.forEach((item, index) => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'run-item';
+                        
+                        let url = '';
+                        let target = 'All Influencers';
+                        
+                        if (typeof item === 'string') {
+                            url = item;
+                        } else if (typeof item === 'object') {
+                            url = item.url;
+                            target = item.influencer || 'All Influencers';
+                        }
+
+                        itemDiv.innerHTML = `
+                            <div class="run-info" style="flex: 1;">
+                                <div class="run-title" style="font-size: 14px; word-break: break-all;">
+                                    <strong>#${index + 1}</strong>: <a href="${url}" target="_blank" style="color: var(--primary); text-decoration: none;">${url}</a>
+                                </div>
+                                <div class="run-meta" style="margin-top: 5px;">
+                                    <strong>Target Influencer:</strong> <span class="badge badge-image">${target.toUpperCase()}</span>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(itemDiv);
+                    });
+                } catch (e) {
+                    console.error("Error parsing video queue:", e);
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Error parsing queue file.</p>';
+                }
+            } else {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No queue database found.</p>';
+            }
         }
 
         async function fetchFaceSwapperRuns() {
@@ -2040,11 +2179,15 @@
 
         async function fetchInfluencerFaces() {
             const dropdown = document.getElementById('faceswap-influencer');
+            const queueDropdown = document.getElementById('queue-influencer');
             if (!dropdown) return;
             
             const data = await githubRequest('/contents/influencer_faces');
             if (data && Array.isArray(data)) {
                 dropdown.innerHTML = '';
+                if (queueDropdown) {
+                    queueDropdown.innerHTML = '<option value="">All Influencers (General Queue)</option>';
+                }
                 
                 // Filter images
                 const images = data.filter(file => {
@@ -2058,10 +2201,20 @@
                 }
                 
                 images.forEach(img => {
+                    // Manual dropdown
                     const opt = document.createElement('option');
                     opt.value = img.name;
                     opt.innerText = img.name;
                     dropdown.appendChild(opt);
+                    
+                    // Queue dropdown
+                    if (queueDropdown) {
+                        const nameOnly = img.name.split('.')[0];
+                        const optQ = document.createElement('option');
+                        optQ.value = nameOnly;
+                        optQ.innerText = nameOnly.toUpperCase();
+                        queueDropdown.appendChild(optQ);
+                    }
                 });
             } else {
                 dropdown.innerHTML = '<option value="">Failed to load face images. Upload images inside influencer_faces/ first.</option>';
@@ -2111,6 +2264,85 @@
                 setTimeout(fetchFaceSwapperRuns, 5000);
             } else {
                 showNotification("Failed to trigger Face Swapper. Check connection or secrets.", true);
+            }
+        }
+
+        async function addVideoToQueue() {
+            const urls = document.getElementById('queue-urls').value.trim();
+            const influencer = document.getElementById('queue-influencer').value;
+            const btn = document.getElementById('btn-add-queue');
+
+            if (!urls) {
+                showNotification("Please paste at least one Reels URL to queue.", true);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Adding to queue...";
+
+            const payload = {
+                ref: 'main',
+                inputs: {
+                    action: 'add_to_queue',
+                    urls: urls,
+                    influencer: influencer
+                }
+            };
+
+            const result = await githubRequest('/actions/workflows/auto_faceswap_post.yml/dispatches', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            btn.disabled = false;
+            btn.innerText = "Add to Queue ➔";
+
+            if (result === true) {
+                showNotification("Successfully triggered Add to Queue action!");
+                document.getElementById('queue-urls').value = '';
+                setTimeout(() => {
+                    fetchAutoPosterRuns();
+                    fetchVideoQueue();
+                }, 5000);
+            } else {
+                showNotification("Failed to add to queue. Check connection or workflow setup.", true);
+            }
+        }
+
+        async function triggerAutoPosterCycle() {
+            const btn = document.getElementById('btn-trigger-autopost');
+
+            if (!confirm("Are you sure you want to run the Auto Poster cycle now? This will process 1 video for any scheduled influencer.")) {
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Running...";
+
+            const payload = {
+                ref: 'main',
+                inputs: {
+                    action: 'run_poster',
+                    force: 'true'
+                }
+            };
+
+            const result = await githubRequest('/actions/workflows/auto_faceswap_post.yml/dispatches', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            btn.disabled = false;
+            btn.innerText = "Run Auto Poster ⚡";
+
+            if (result === true) {
+                showNotification("Auto Poster workflow cycle triggered successfully!");
+                setTimeout(() => {
+                    fetchAutoPosterRuns();
+                    fetchVideoQueue();
+                }, 5000);
+            } else {
+                showNotification("Failed to trigger Auto Poster cycle.", true);
             }
         }
 
