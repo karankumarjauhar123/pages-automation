@@ -100,6 +100,27 @@ def run_auto_poster(dry_run=False, force=False):
         caption = f"Dance performance! 💃🔥\n\n{hashtags}"
         title = f"Dance Reel - {name}"
         
+        # Check if AI is enabled for this profile and API keys are set
+        ai_enabled = inf.get("ai_caption_enabled", False)
+        has_api_keys = os.getenv("OPENROUTER_API_KEY") or os.getenv("NVIDIA_API_KEY")
+        
+        if ai_enabled and has_api_keys:
+            try:
+                print(f"[AutoPoster] 🤖 Generating AI caption ({inf.get('ai_caption_vibe', 'energetic')} vibe, {inf.get('ai_caption_language', 'Hinglish')} language)...")
+                from reposter.ai_helper import AIHelper
+                ai = AIHelper()
+                ai_caption = ai.generate_faceswap_caption(
+                    influencer_name=name,
+                    vibe=inf.get("ai_caption_vibe", "energetic"),
+                    language=inf.get("ai_caption_language", "Hinglish"),
+                    hashtags=hashtags
+                )
+                if ai_caption:
+                    caption = ai_caption
+                    print(f"[AutoPoster] AI Caption generated: {caption}")
+            except Exception as ai_err:
+                print(f"[AutoPoster] ⚠️ Failed to generate AI caption, falling back to default: {ai_err}")
+        
         try:
             if dry_run:
                 print(f"[AutoPoster] 🧪 [DRY RUN] Would swap face using influencer photo: {face_img}")

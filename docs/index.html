@@ -954,6 +954,31 @@
                         <label for="inf-hashtags">Default Hashtags</label>
                         <input type="text" class="form-control" id="inf-hashtags" value="#dance #reels #viral #trending">
                     </div>
+                    <div class="form-group" style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; color: var(--text-primary);">
+                            <input type="checkbox" id="inf-enable-ai" onchange="toggleFormSection('ai')"> Integrate AI Caption Generator
+                        </label>
+                        <div id="inf-section-ai" style="display: none; padding-left: 20px; gap: 10px; flex-direction: column; margin-top: 10px;">
+                            <div class="form-group">
+                                <label for="inf-ai-vibe">AI Caption Vibe / Style</label>
+                                <select class="form-control" id="inf-ai-vibe" style="background-color: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; width: 100%;">
+                                    <option value="energetic">Energetic & Hyped (Dance/Party)</option>
+                                    <option value="funny">Funny & Witty</option>
+                                    <option value="cool">Cool & Swag</option>
+                                    <option value="aesthetic">Aesthetic & Elegant</option>
+                                    <option value="motivational">Motivational & Inspiring</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="inf-ai-lang">AI Caption Language</label>
+                                <select class="form-control" id="inf-ai-lang" style="background-color: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; width: 100%;">
+                                    <option value="Hinglish">Hinglish (Hindi written in English alphabets)</option>
+                                    <option value="English">English</option>
+                                    <option value="Hindi">Hindi (Devnagari Script)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
                         <button class="btn btn-primary" id="btn-save-influencer" onclick="saveInfluencerProfile()" style="flex: 1;">
                             Save Profile ➔
@@ -2547,6 +2572,13 @@
             document.getElementById('inf-ig-token').value = inf.ig_access_token_env || 'FB_PAGE_TOKEN';
 
             document.getElementById('inf-hashtags').value = inf.hashtags || '#dance #reels #viral #trending';
+
+            // AI Section
+            const enableAI = !!inf.ai_caption_enabled;
+            document.getElementById('inf-enable-ai').checked = enableAI;
+            document.getElementById('inf-section-ai').style.display = enableAI ? 'flex' : 'none';
+            document.getElementById('inf-ai-vibe').value = inf.ai_caption_vibe || 'energetic';
+            document.getElementById('inf-ai-lang').value = inf.ai_caption_language || 'Hinglish';
         }
 
         async function deleteInfluencer(index) {
@@ -2592,6 +2624,12 @@
             document.getElementById('inf-ig-token').value = 'FB_PAGE_TOKEN';
 
             document.getElementById('inf-hashtags').value = '#dance #reels #viral #trending';
+
+            // AI Section
+            document.getElementById('inf-enable-ai').checked = false;
+            document.getElementById('inf-section-ai').style.display = 'none';
+            document.getElementById('inf-ai-vibe').value = 'energetic';
+            document.getElementById('inf-ai-lang').value = 'Hinglish';
         }
 
         async function saveInfluencerProfile() {
@@ -2642,12 +2680,25 @@
                 }
             }
 
+            // Gather AI Config
+            let ai_caption_enabled = false;
+            let ai_caption_vibe = "energetic";
+            let ai_caption_language = "Hinglish";
+            if (document.getElementById('inf-enable-ai').checked) {
+                ai_caption_enabled = true;
+                ai_caption_vibe = document.getElementById('inf-ai-vibe').value;
+                ai_caption_language = document.getElementById('inf-ai-lang').value;
+            }
+
             const profile = {
                 name: name,
                 face_image: face,
                 schedule: schedule,
                 max_posts_per_day: schedule.length || 3,
-                hashtags: hashtags
+                hashtags: hashtags,
+                ai_caption_enabled: ai_caption_enabled,
+                ai_caption_vibe: ai_caption_vibe,
+                ai_caption_language: ai_caption_language
             };
 
             if (facebook_page_id) {

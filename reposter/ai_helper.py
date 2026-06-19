@@ -223,6 +223,74 @@ class AIHelper:
                     "banner_cta": "Follow for more! 🔥"
                 }
 
+    def generate_faceswap_caption(self, influencer_name, vibe="energetic", language="Hinglish", hashtags=""):
+        """
+        Generates an AI-powered viral caption for a face-swapped video.
+        """
+        vibe_guidelines = {
+            "energetic": "Tone should be high-energy, exciting, and hype-filled (dance, party, fun). Use exclamation marks and hype emojis like 💃🔥⚡.",
+            "funny": "Tone should be lighthearted, humorous, witty, and relate to dance struggles, funny expressions, or situational humor.",
+            "cool": "Tone should be swagger-filled, cool, relaxed, and confident. Use smooth phrasing and emojis like 😎✨🤙.",
+            "aesthetic": "Tone should be elegant, graceful, beautiful, and poetic. Focus on flow and vibes. Use emojis like 🌸✨🌊.",
+            "motivational": "Tone should be inspiring, focus on passion, hard work, learning, and chasing dreams. Use emojis like 💯🎯🚀."
+        }
+        
+        vibe_instruction = vibe_guidelines.get(vibe, vibe_guidelines["energetic"])
+        
+        lang_instruction = ""
+        example_output = ""
+        if language == "Hinglish":
+            lang_instruction = (
+                "Write the entire caption in Hinglish (Hindi language written using the English/Latin alphabet, common in chat/social media).\n"
+                "Do NOT write in Devnagari Hindi characters. Write phonetically."
+            )
+            example_output = "Aaj ka mood full on energetic hai! 💃🔥 Ye dance step kaisa laga comment me batao! 👇 #dance #viral #trending"
+        elif language == "Hindi":
+            lang_instruction = (
+                "Write the entire caption in pure/conversational Hindi using Devnagari script (Hindi alphabet).\n"
+                "Do NOT write in English script."
+            )
+            example_output = "आज का डांस परफॉरमेंस! 💃🔥 कमेंट करके बताएं आपको कैसा लगा! 👇 #dance #reels #trending"
+        else:
+            lang_instruction = "Write the caption in highly engaging conversational English."
+            example_output = "Crushing this choreography! 💃🔥 What do you think of this routine? Drop a comment! 👇 #dance #reels"
+
+        system_prompt = (
+            "You are a professional social media manager and growth expert specialized in viral reels.\n"
+            "Your task is to generate a highly engaging, punchy, and viral caption for a dance reel post.\n"
+            "Respond ONLY with the generated caption text. Do not include quotes, markdown formatting, code blocks, or preamble."
+        )
+
+        user_prompt = (
+            f"Influencer Name: '{influencer_name}'\n"
+            f"Style/Vibe: '{vibe}'\n"
+            f"Language: '{language}'\n"
+            f"Default Hashtags to include: '{hashtags}'\n\n"
+            f"GUIDELINES:\n"
+            f"- {vibe_instruction}\n"
+            f"- {lang_instruction}\n"
+            f"- Caption should start with an extremely catchy scroll-stopping hook (first line) using emojis.\n"
+            f"- Add a call to action asking viewers to comment, share, or tag their friends.\n"
+            f"- Include a mix of the default hashtags and some extra trending dance/reels hashtags.\n"
+            f"- Keep it relatively short and readable.\n\n"
+            f"Example format:\n{example_output}"
+        )
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+
+        try:
+            response = self._completion_with_fallback(messages, temperature=0.85)
+            caption = response.choices[0].message.content.strip()
+            if caption.startswith('"') and caption.endswith('"'):
+                caption = caption[1:-1].strip()
+            return caption
+        except Exception as e:
+            print(f"[AIHelper] ⚠️ Error generating faceswap caption: {e}")
+            return None
+
 if __name__ == "__main__":
     # Test script if run directly
     helper = AIHelper()
