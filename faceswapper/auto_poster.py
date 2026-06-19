@@ -38,38 +38,6 @@ def save_json_file(file_path, data):
 def get_utc_hour():
     return datetime.datetime.utcnow().hour
 
-def is_recent_post(history, influencer_name, window_minutes=45):
-    """Checks if a post was made for this influencer in the last window_minutes."""
-    now = datetime.datetime.utcnow()
-    for entry in history:
-        if entry.get("influencer_image", "").lower().startswith(influencer_name.lower()):
-            posted_at_str = entry.get("timestamp")
-            if posted_at_str:
-                try:
-                    clean_ts = posted_at_str.replace("Z", "")
-                    if "." in clean_ts:
-                        clean_ts = clean_ts.split(".")[0]
-                    posted_at = datetime.datetime.strptime(clean_ts, "%Y-%m-%dT%H:%M:%S")
-                    if (now - posted_at).total_seconds() < (window_minutes * 60):
-                        return True
-                except Exception:
-                    pass
-    return False
-
-def find_queue_video(queue, influencer_name):
-    """
-    Finds the first video in the queue suitable for the influencer.
-    Supports either string URLs or object formats.
-    """
-    for index, item in enumerate(queue):
-        if isinstance(item, str):
-            return index, item
-        elif isinstance(item, dict):
-            target = item.get("influencer", "all").lower()
-            if target == "all" or target == influencer_name.lower() or target.startswith(influencer_name.lower()):
-                return index, item.get("url")
-    return None, None
-
 def run_auto_poster(dry_run=False, force=False):
     print(f"[AutoPoster] 🚀 Starting Auto Poster at {datetime.datetime.now().isoformat()}")
     
@@ -82,70 +50,50 @@ def run_auto_poster(dry_run=False, force=False):
         print("[AutoPoster] ❌ No influencers configured in influencers.json. Exiting.")
         return
         
+    if not queue:
+        print("[AutoPoster] ❌ Video queue is empty. Please add video URLs to faceswapper/video_queue.json. Exiting.")
+        return
+
+    # Check scheduling
     utc_hour = get_utc_hour()
     print(f"[AutoPoster] Current UTC Hour: {utc_hour}")
     
-    # Filter active influencers scheduled for this hour
-    active_influencers = []
+    # If not forced, check if this hour is in any influencer's schedule
+    is_scheduled_hour = False
     for inf in influencers:
-        name = inf["name"]
-        schedule = inf.get("schedule", [])
-        
-        if force:
-            active_influencers.append(inf)
-            continue
+        if utc_hour in inf.get("schedule", []):
+            is_scheduled_hour = True
+            break
             
-        # Check scheduling
-        max_posts = inf.get("max_posts_per_day", 3)
-        today_str = datetime.datetime.utcnow().strftime("%Y-%m-%d")
-        
-        # Count posts made today
-        posts_today = 0
-        for entry in history:
-            img = entry.get("influencer_image", "")
-            if img.lower().startswith(name.lower()) or inf.get("face_image", "").lower() == img.lower():
-                ts = entry.get("timestamp", "")
-                if ts.startswith(today_str):
-                    posts_today += 1
-                    
-        target_posts = len([h for h in schedule if h <= utc_hour])
-        target_posts = min(target_posts, max_posts)
-        
-        if posts_today >= target_posts:
-            print(f"[AutoPoster] Influencer '{name}' has posted {posts_today} times today, target is {target_posts} posts by hour {utc_hour} UTC. Skipping.")
-            continue
-            
-        # Rate limit check (min 45 mins between posts)
-        if is_recent_post(history, name, window_minutes=45):
-            print(f"[AutoPoster] Influencer '{name}' has posted too recently (within 45 mins). Skipping.")
-            continue
-            
-        active_influencers.append(inf)
-
-    if not active_influencers:
-        print("[AutoPoster] No influencers scheduled for this hour.")
+    if not is_scheduled_hour and not force:
+        print(f"[AutoPoster] UTC Hour {utc_hour} is not in any influencer's posting schedule. Skipping.")
         return
-
-    print(f"[AutoPoster] Active influencers to process: {[inf['name'] for inf in active_influencers]}")
+        
+    # Get the first video URL from the queue
+    video_item = queue[0]
+    video_url = ""
+    if isinstance(video_item, str):
+        video_url = video_item.strip()
+    elif isinstance(video_item, dict):
+        video_url = video_item.get("url", "").strip()
+        
+    if not video_url:
+        print("[AutoPoster] ❌ Invalid video item in queue. Removing it and stopping.")
+        queue.pop(0)
+        save_json_file(QUEUE_FILE, queue)
+        return
+        
+    print(f"[AutoPoster] 🎬 Selected video for this cycle: {video_url}")
     
     # Initialize uploaders
     fb_uploader = FBUploader()
     ig_uploader = IGUploader()
     
-    changes_made = False
-    
-    for inf in active_influencers:
+    # Process for all influencers
+    for inf in influencers:
         name = inf["name"]
         face_img = inf["face_image"]
         print(f"\n[AutoPoster] ────────── Processing Influencer: {name} ──────────")
-        
-        # Find next video in queue
-        q_idx, video_url = find_queue_video(queue, name)
-        if video_url is None:
-            print(f"[AutoPoster] ⚠️ No video in queue for {name}. Queue size is {len(queue)}.")
-            continue
-            
-        print(f"[AutoPoster] Found video to post: {video_url}")
         
         # Prepare caption
         hashtags = inf.get("hashtags", "#dance #reels #viral #trending")
@@ -153,14 +101,9 @@ def run_auto_poster(dry_run=False, force=False):
         title = f"Dance Reel - {name}"
         
         try:
-            # 1. Run face swap locally
-            # We wrap it in a list as run_face_swap_pipeline expects a list of URLs
             if dry_run:
                 print(f"[AutoPoster] 🧪 [DRY RUN] Would swap face using influencer photo: {face_img}")
                 print(f"[AutoPoster] 🧪 [DRY RUN] Caption: \n{caption}\n")
-                # Remove from queue for dry run testing to verify queue behavior
-                queue.pop(q_idx)
-                changes_made = True
                 continue
                 
             print(f"[AutoPoster] 🤖 Running Face Swapper pipeline...")
@@ -168,7 +111,7 @@ def run_auto_poster(dry_run=False, force=False):
                 urls=[video_url],
                 influencer_filename=face_img,
                 enhance=True,
-                force=True # Force swap since we already checked history and scheduler
+                force=True # Force swap since we are managing the queue ourselves
             )
             
             if not swapped_results:
@@ -180,7 +123,7 @@ def run_auto_poster(dry_run=False, force=False):
             fb_video_id = None
             ig_media_id = None
             
-            # 2. Upload to Facebook Page
+            # 1. Upload to Facebook Page
             fb_page_id = inf.get("facebook_page_id")
             fb_token_env = inf.get("fb_access_token_env")
             fb_token = os.getenv(fb_token_env) if fb_token_env else None
@@ -200,7 +143,7 @@ def run_auto_poster(dry_run=False, force=False):
             else:
                 print(f"[AutoPoster] ⚠️ Facebook config missing or token env var not set. Skipping Facebook upload.")
                 
-            # 3. Upload to Instagram
+            # 2. Upload to Instagram
             ig_user_id = inf.get("instagram_business_id")
             ig_token_env = inf.get("ig_access_token_env")
             ig_token = os.getenv(ig_token_env) if ig_token_env else None
@@ -219,13 +162,9 @@ def run_auto_poster(dry_run=False, force=False):
             else:
                 print(f"[AutoPoster] ⚠️ Instagram config missing, token env var not set, or using default placeholder. Skipping Instagram upload.")
 
-            # If at least one upload succeeded (or we attempted uploads)
+            # If at least one upload succeeded
             if fb_video_id or ig_media_id:
-                print(f"[AutoPoster] 🎉 Reel posted successfully! FB ID: {fb_video_id}, IG ID: {ig_media_id}")
-                
-                # Remove from queue
-                queue.pop(q_idx)
-                changes_made = True
+                print(f"[AutoPoster] 🎉 Reel posted successfully for {name}! FB ID: {fb_video_id}, IG ID: {ig_media_id}")
                 
                 # Update history log entry with upload IDs
                 history = load_json_file(HISTORY_FILE, [])
@@ -236,16 +175,16 @@ def run_auto_poster(dry_run=False, force=False):
                         break
                 save_json_file(HISTORY_FILE, history)
             else:
-                raise RuntimeError("Failed to publish video on both Facebook and Instagram.")
+                print(f"[AutoPoster] ❌ Failed to publish video for {name} on both platforms.")
                 
         except Exception as e:
             print(f"[AutoPoster] ❌ Error processing post for {name}: {e}")
-            
-    if changes_made:
-        save_json_file(QUEUE_FILE, queue)
-        print("[AutoPoster] Queue updated and saved.")
-        
-    print("[AutoPoster] 🏁 Auto Poster cycle finished.")
+
+    # Remove the video from the queue after processing for all influencers
+    print(f"[AutoPoster] 🏁 Finished processing cycle for video: {video_url}")
+    queue.pop(0)
+    save_json_file(QUEUE_FILE, queue)
+    print(f"[AutoPoster] Video removed from queue. Remaining queue size: {len(queue)}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Auto Poster Face Swapped Reels Suite")
