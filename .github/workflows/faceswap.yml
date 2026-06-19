@@ -1,30 +1,42 @@
-name: Manual Face Swapper
+name: Auto Face Swap & Reels Poster
 
 on:
+  schedule:
+    # Runs on the 0th minute of every hour, 24/7
+    - cron: '0 * * * *'
   workflow_dispatch:
     inputs:
+      action:
+        description: 'Choose action to perform'
+        required: true
+        type: choice
+        default: 'run_poster'
+        options:
+          - 'run_poster'
+          - 'add_to_queue'
       urls:
-        description: 'Paste Reels/Shorts/TikTok URLs (one URL per line)'
-        required: true
+        description: 'Dance video URLs (one per line, for add_to_queue)'
+        required: false
         type: string
-      influencer_image:
-        description: 'Influencer face photo filename (e.g. karan.jpg - must be uploaded in influencer_faces/ folder)'
-        required: true
+        default: ''
+      influencer:
+        description: 'Restrict URLs to this influencer name (leave empty for all)'
+        required: false
         type: string
-        default: 'karan.jpg'
-      enhance:
-        description: 'Enable GFPGAN Face Enhancement (highly recommended for natural/sharp look)'
+        default: ''
+      force:
+        description: 'Force post ignoring schedule and limit checks (for run_poster)'
         type: boolean
         required: false
-        default: true
-      force:
-        description: 'Force process even if URLs already exist in history'
+        default: false
+      dry_run:
+        description: 'Dry run (simulate but do not swap or upload)'
         type: boolean
         required: false
         default: false
 
 jobs:
-  face-swap:
+  auto-process:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -39,55 +51,107 @@ jobs:
         python-version: '3.10'
         cache: 'pip'
 
+    # --- ACTION: ADD TO QUEUE ---
+    - name: Add URLs to Video Queue
+      if: github.event.inputs.action == 'add_to_queue'
+      run: |
+        python -c '
+        import os, json
+        
+        urls_input = """${{ github.event.inputs.urls }}"""
+        influencer = "${{ github.event.inputs.influencer }}".strip()
+        
+        urls = [u.strip() for u in urls_input.split("\n") if u.strip()]
+        if not urls:
+            print("No URLs to add.")
+            exit(0)
+            
+        queue_path = "faceswapper/video_queue.json"
+        queue = []
+        if os.path.exists(queue_path):
+            try:
+                with open(queue_path, "r", encoding="utf-8") as f:
+                    queue = json.load(f)
+            except Exception:
+                queue = []
+                
+        added_count = 0
+        for u in urls:
+            # Check if url already in queue to prevent duplicates
+            exists = False
+            for item in queue:
+                if isinstance(item, str) and item == u:
+                    exists = True
+                    break
+                elif isinstance(item, dict) and item.get("url") == u:
+                    exists = True
+                    break
+            if exists:
+                continue
+                
+            if influencer:
+                queue.append({"url": u, "influencer": influencer})
+            else:
+                queue.append(u)
+            added_count += 1
+            
+        with open(queue_path, "w", encoding="utf-8") as f:
+            json.dump(queue, f, indent=2, ensure_ascii=False)
+            
+        print(f"Successfully added {added_count} new video(s) to queue!")
+        '
+
+    # --- ACTION: RUN POSTER (Default/Cron) ---
     - name: Install System Dependencies
+      if: github.event.inputs.action != 'add_to_queue'
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
     - name: Install Python Dependencies
+      if: github.event.inputs.action != 'add_to_queue'
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel
         pip install -r faceswapper/requirements.txt
 
-    - name: Run Face Swapper Pipeline
+    - name: Run Auto Poster Cycle
+      if: github.event.inputs.action != 'add_to_queue'
+      env:
+        # Load all potential secrets into environment variables
+        FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        FB_PAGE_TOKEN_FACTS: ${{ secrets.FB_PAGE_TOKEN_FACTS }}
+        FB_PAGE_TOKEN_MOTIVATION: ${{ secrets.FB_PAGE_TOKEN_MOTIVATION }}
+        FB_PAGE_TOKEN_3: ${{ secrets.FB_PAGE_TOKEN_3 }}
+        FB_PAGE_TOKEN_4: ${{ secrets.FB_PAGE_TOKEN_4 }}
+        FB_PAGE_TOKEN_5: ${{ secrets.FB_PAGE_TOKEN_5 }}
+        FB_PAGE_TOKEN_6: ${{ secrets.FB_PAGE_TOKEN_6 }}
+        FB_PAGE_TOKEN_7: ${{ secrets.FB_PAGE_TOKEN_7 }}
+        FB_PAGE_TOKEN_8: ${{ secrets.FB_PAGE_TOKEN_8 }}
+        FB_PAGE_TOKEN_9: ${{ secrets.FB_PAGE_TOKEN_9 }}
+        FB_PAGE_TOKEN_10: ${{ secrets.FB_PAGE_TOKEN_10 }}
       run: |
-        # Write the list of URLs from inputs to a temporary file to avoid shell argument escaping issues
-        echo "${{ github.event.inputs.urls }}" > temp_urls_list.txt
+        CMD="python faceswapper/auto_poster.py"
         
-        # Build command flags
-        ENHANCE_FLAG="--enhance"
-        if [ "${{ github.event.inputs.enhance }}" = "false" ]; then
-          ENHANCE_FLAG="--no-enhance"
+        # Build command flags if triggered manually
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            CMD="$CMD --force"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
         fi
         
-        FORCE_FLAG=""
-        if [ "${{ github.event.inputs.force }}" = "true" ]; then
-          FORCE_FLAG="--force"
-        fi
-        
-        python faceswapper/run_faceswap.py \
-          --urls temp_urls_list.txt \
-          --influencer "${{ github.event.inputs.influencer_image }}" \
-          $ENHANCE_FLAG \
-          $FORCE_FLAG
-          
-        # Clean up the temp URL file
-        rm -f temp_urls_list.txt
+        echo "Running command: $CMD"
+        eval $CMD
 
-    - name: Commit and Push Updated Swaps and History
+    # --- COMMIT AND PUSH STATE CHANGES (Always run to save queue/history) ---
+    - name: Commit and Push State Changes
       if: always()
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add faceswapper/history.json swapped_reels/ || true
-        git commit -m "Update swapped reels and history logs [skip ci]" || true
+        git add faceswapper/video_queue.json faceswapper/history.json || true
+        git commit -m "Update video queue and posting history logs [skip ci]" || true
         git push origin main || true
-
-    - name: Upload Swapped Reels as Workflow Artifacts
-      if: success()
-      uses: actions/upload-artifact@v4
-      with:
-        name: swapped-reels
-        path: swapped_reels/
-        retention-days: 14
