@@ -1996,6 +1996,8 @@
             fetchFaceSwapperHistory();
             fetchInfluencerFaces();
             fetchVideoQueue();
+            fetchInfluencersConfig();
+            renderHoursGrid();
         }
 
         async function fetchAutoPosterRuns() {
@@ -2344,6 +2346,272 @@
             } else {
                 showNotification("Failed to trigger Auto Poster cycle.", true);
             }
+        }
+
+        // 6. Influencer Profiles Management
+        let influencersConfig = [];
+        let influencersSHA = '';
+
+        async function fetchInfluencersConfig() {
+            const container = document.getElementById('influencer-list-container');
+            if (!container) return;
+            container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Loading influencers...</p>';
+
+            const data = await githubRequest('/contents/faceswapper/influencers.json');
+            if (data) {
+                influencersSHA = data.sha;
+                try {
+                    const contentBase64 = data.content.replace(/\s/g, '');
+                    const contentJson = decodeURIComponent(escape(atob(contentBase64)));
+                    influencersConfig = JSON.parse(contentJson);
+                    
+                    container.innerHTML = '';
+                    if (!influencersConfig || influencersConfig.length === 0) {
+                        container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No influencers configured yet.</p>';
+                        return;
+                    }
+
+                    influencersConfig.forEach((inf, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'run-item';
+                        div.style = 'display: flex; justify-content: space-between; align-items: center; padding: 15px;';
+                        
+                        const schedule = inf.schedule && inf.schedule.length > 0 ? inf.schedule.map(h => (h < 10 ? '0' + h : h) + ':00').join(', ') : 'None';
+                        
+                        let fbText = 'Disabled';
+                        if (inf.facebook_page_id) {
+                            fbText = `Page ID: ${inf.facebook_page_id}`;
+                        }
+                        let igText = 'Disabled';
+                        if (inf.instagram_business_id) {
+                            igText = `IG ID: ${inf.instagram_business_id}`;
+                        }
+
+                        div.innerHTML = `
+                            <div class="run-info" style="flex: 1; margin-right: 15px;">
+                                <div class="run-title" style="font-size: 16px;">
+                                    <strong>${inf.name}</strong> 
+                                    <span style="font-size: 12px; color: var(--text-secondary);">(${inf.face_image})</span>
+                                </div>
+                                <div class="run-meta" style="margin-top: 5px; color: var(--text-secondary); line-height: 1.4;">
+                                    ⏰ <strong>Schedule (UTC):</strong> ${schedule}<br>
+                                    📘 <strong>Facebook:</strong> ${fbText}<br>
+                                    📸 <strong>Instagram:</strong> ${igText}
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" onclick="editInfluencer(${index})">Edit</button>
+                                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px; color: var(--status-danger);" onclick="deleteInfluencer(${index})">Delete</button>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    });
+                } catch(e) {
+                    console.error("Error parsing influencers config:", e);
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Error parsing config file.</p>';
+                }
+            } else {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No config file found. Saving a new profile will create it.</p>';
+            }
+        }
+
+        function renderHoursGrid() {
+            const grid = document.getElementById('inf-hours-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (let h = 0; h < 24; h++) {
+                const hourStr = h < 10 ? '0' + h : h;
+                const label = document.createElement('label');
+                label.className = 'checkbox-label';
+                label.style = 'font-size: 13px; display: flex; align-items: center; gap: 4px;';
+                label.innerHTML = `<input type="checkbox" name="inf-hour" value="${h}"> ${hourStr}h`;
+                grid.appendChild(label);
+            }
+        }
+
+        function editInfluencer(index) {
+            const inf = influencersConfig[index];
+            document.getElementById('influencer-edit-index').value = index;
+            document.getElementById('influencer-form-title').innerText = `Edit Profile: ${inf.name}`;
+            
+            document.getElementById('inf-name').value = inf.name || '';
+            document.getElementById('inf-face').value = inf.face_image || '';
+            
+            // Hours
+            const hours = inf.schedule || [];
+            const checkboxes = document.getElementsByName('inf-hour');
+            checkboxes.forEach(cb => {
+                cb.checked = hours.includes(parseInt(cb.value));
+            });
+
+            // FB Section
+            const enableFB = !!inf.facebook_page_id;
+            document.getElementById('inf-enable-fb').checked = enableFB;
+            document.getElementById('inf-section-fb').style.display = enableFB ? 'flex' : 'none';
+            document.getElementById('inf-fb-page').value = inf.facebook_page_id || '';
+            document.getElementById('inf-fb-token').value = inf.fb_access_token_env || 'FB_PAGE_TOKEN';
+
+            // IG Section
+            const enableIG = !!inf.instagram_business_id;
+            document.getElementById('inf-enable-ig').checked = enableIG;
+            document.getElementById('inf-section-ig').style.display = enableIG ? 'flex' : 'none';
+            document.getElementById('inf-ig-id').value = inf.instagram_business_id || '';
+            document.getElementById('inf-ig-token').value = inf.ig_access_token_env || 'FB_PAGE_TOKEN';
+
+            document.getElementById('inf-hashtags').value = inf.hashtags || '#dance #reels #viral #trending';
+        }
+
+        async function deleteInfluencer(index) {
+            const inf = influencersConfig[index];
+            if (!confirm(`Are you sure you want to delete influencer profile: ${inf.name}?`)) {
+                return;
+            }
+
+            influencersConfig.splice(index, 1);
+            const success = await commitInfluencersConfig(`Delete influencer: ${inf.name}`);
+            if (success) {
+                showNotification("Influencer profile deleted!");
+                fetchInfluencersConfig();
+                resetInfluencerForm();
+            } else {
+                showNotification("Failed to delete influencer profile.", true);
+            }
+        }
+
+        function toggleFormSection(section) {
+            const checked = document.getElementById(`inf-enable-${section}`).checked;
+            document.getElementById(`inf-section-${section}`).style.display = checked ? 'flex' : 'none';
+        }
+
+        function resetInfluencerForm() {
+            document.getElementById('influencer-edit-index').value = "-1";
+            document.getElementById('influencer-form-title').innerText = "Add Influencer Profile";
+            
+            document.getElementById('inf-name').value = '';
+            document.getElementById('inf-face').value = '';
+            
+            const checkboxes = document.getElementsByName('inf-hour');
+            checkboxes.forEach(cb => cb.checked = false);
+
+            document.getElementById('inf-enable-fb').checked = false;
+            document.getElementById('inf-section-fb').style.display = 'none';
+            document.getElementById('inf-fb-page').value = '';
+            document.getElementById('inf-fb-token').value = 'FB_PAGE_TOKEN';
+
+            document.getElementById('inf-enable-ig').checked = false;
+            document.getElementById('inf-section-ig').style.display = 'none';
+            document.getElementById('inf-ig-id').value = '';
+            document.getElementById('inf-ig-token').value = 'FB_PAGE_TOKEN';
+
+            document.getElementById('inf-hashtags').value = '#dance #reels #viral #trending';
+        }
+
+        async function saveInfluencerProfile() {
+            const editIndex = parseInt(document.getElementById('influencer-edit-index').value);
+            const name = document.getElementById('inf-name').value.trim();
+            const face = document.getElementById('inf-face').value;
+            const hashtags = document.getElementById('inf-hashtags').value.trim();
+
+            if (!name) {
+                showNotification("Please enter a name.", true);
+                return;
+            }
+            if (!face) {
+                showNotification("Please select a face image.", true);
+                return;
+            }
+
+            // Gather hours
+            const schedule = [];
+            const checkboxes = document.getElementsByName('inf-hour');
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    schedule.push(parseInt(cb.value));
+                }
+            });
+
+            // Gather FB Config
+            let facebook_page_id = "";
+            let fb_access_token_env = "";
+            if (document.getElementById('inf-enable-fb').checked) {
+                facebook_page_id = document.getElementById('inf-fb-page').value.trim();
+                fb_access_token_env = document.getElementById('inf-fb-token').value.trim();
+                if (!facebook_page_id) {
+                    showNotification("Please enter Facebook Page ID.", true);
+                    return;
+                }
+            }
+
+            // Gather IG Config
+            let instagram_business_id = "";
+            let ig_access_token_env = "";
+            if (document.getElementById('inf-enable-ig').checked) {
+                instagram_business_id = document.getElementById('inf-ig-id').value.trim();
+                ig_access_token_env = document.getElementById('inf-ig-token').value.trim();
+                if (!instagram_business_id) {
+                    showNotification("Please enter Instagram Business Account ID.", true);
+                    return;
+                }
+            }
+
+            const profile = {
+                name: name,
+                face_image: face,
+                schedule: schedule,
+                max_posts_per_day: schedule.length || 3,
+                hashtags: hashtags
+            };
+
+            if (facebook_page_id) {
+                profile.facebook_page_id = facebook_page_id;
+                profile.fb_access_token_env = fb_access_token_env || "FB_PAGE_TOKEN";
+            }
+            if (instagram_business_id) {
+                profile.instagram_business_id = instagram_business_id;
+                profile.ig_access_token_env = ig_access_token_env || "FB_PAGE_TOKEN";
+            }
+
+            const btn = document.getElementById('btn-save-influencer');
+            btn.disabled = true;
+            btn.innerText = "Saving profile...";
+
+            if (editIndex === -1) {
+                // Add new profile
+                influencersConfig.push(profile);
+            } else {
+                // Update existing profile
+                influencersConfig[editIndex] = profile;
+            }
+
+            const msg = editIndex === -1 ? `Add influencer: ${name}` : `Update influencer: ${name}`;
+            const success = await commitInfluencersConfig(msg);
+
+            btn.disabled = false;
+            btn.innerText = "Save Profile ➔";
+
+            if (success) {
+                showNotification("Influencer profile saved successfully!");
+                fetchInfluencersConfig();
+                resetInfluencerForm();
+            } else {
+                showNotification("Failed to save influencer profile to repository.", true);
+            }
+        }
+
+        async function commitInfluencersConfig(message) {
+            const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(influencersConfig, null, 2))));
+            const payload = {
+                message: message,
+                content: contentBase64,
+                sha: influencersSHA
+            };
+
+            const result = await githubRequest('/contents/faceswapper/influencers.json', {
+                method: 'PUT',
+                body: JSON.stringify(payload)
+            });
+
+            return result !== null;
         }
 
         // Initialize Page
