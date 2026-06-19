@@ -877,6 +877,94 @@
 
         <!-- ================= FACESWAPPER VIEW ================= -->
         <section id="view-faceswapper" class="view">
+            <!-- Influencer Profiles Manager -->
+            <div class="grid-2" style="margin-bottom: 30px;">
+                <!-- Influencer List Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            Influencer Accounts & Schedules
+                        </h2>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Manage your active influencer profiles, their schedules, and active Facebook/Instagram posting accounts.
+                    </p>
+                    <div id="influencer-list-container" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto;">
+                        <p style="color: var(--text-secondary);">Loading influencers...</p>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Influencer Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg>
+                            <span id="influencer-form-title">Add Influencer Profile</span>
+                        </h2>
+                    </div>
+                    <input type="hidden" id="influencer-edit-index" value="-1">
+                    <div class="form-group">
+                        <label for="inf-name">Name</label>
+                        <input type="text" class="form-control" id="inf-name" placeholder="e.g. Karan">
+                    </div>
+                    <div class="form-group">
+                        <label for="inf-face">Face Image Filename</label>
+                        <select class="form-control" id="inf-face">
+                            <option value="">Select uploaded face...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Schedule Posting Hours (UTC)</label>
+                        <div id="inf-hours-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 8px;">
+                            <!-- Checkboxes for 0 to 23 hours will be rendered here dynamically -->
+                        </div>
+                    </div>
+                    <div class="form-group" style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <label class="checkbox-label" style="font-weight: bold; margin-bottom: 10px;">
+                            <input type="checkbox" id="inf-enable-fb" onchange="toggleFormSection('fb')"> Facebook Posting
+                        </label>
+                        <div id="inf-section-fb" style="display: none; padding-left: 20px; gap: 10px; flex-direction: column;">
+                            <div class="form-group">
+                                <label for="inf-fb-page">Facebook Page ID</label>
+                                <input type="text" class="form-control" id="inf-fb-page" placeholder="e.g. 1095541136986840">
+                            </div>
+                            <div class="form-group">
+                                <label for="inf-fb-token">Access Token Env Name</label>
+                                <input type="text" class="form-control" id="inf-fb-token" value="FB_PAGE_TOKEN">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <label class="checkbox-label" style="font-weight: bold; margin-bottom: 10px;">
+                            <input type="checkbox" id="inf-enable-ig" onchange="toggleFormSection('ig')"> Instagram Posting
+                        </label>
+                        <div id="inf-section-ig" style="display: none; padding-left: 20px; gap: 10px; flex-direction: column;">
+                            <div class="form-group">
+                                <label for="inf-ig-id">Instagram Business Account ID</label>
+                                <input type="text" class="form-control" id="inf-ig-id" placeholder="e.g. 17841400000000000">
+                            </div>
+                            <div class="form-group">
+                                <label for="inf-ig-token">Access Token Env Name</label>
+                                <input type="text" class="form-control" id="inf-ig-token" value="FB_PAGE_TOKEN">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inf-hashtags">Default Hashtags</label>
+                        <input type="text" class="form-control" id="inf-hashtags" value="#dance #reels #viral #trending">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn btn-primary" id="btn-save-influencer" onclick="saveInfluencerProfile()" style="flex: 1;">
+                            Save Profile ➔
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetInfluencerForm()" style="flex: 0.5;">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid-2" style="margin-bottom: 30px;">
                 <!-- Controller Card -->
                 <div class="card">
