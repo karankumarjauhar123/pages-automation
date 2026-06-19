@@ -22,7 +22,13 @@ INFLUENCER_DIR = "influencer_faces"
 OUTPUT_DIR = "swapped_reels"
 MODEL_DIR = "faceswapper/models"
 MODEL_PATH = os.path.join(MODEL_DIR, "inswapper_128.onnx")
-MODEL_URL = "https://huggingface.co/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx"
+
+# Resilient fallback URLs for the inswapper model (public, no auth needed)
+MODEL_URLS = [
+    "https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx",
+    "https://huggingface.co/thebiglaskowski/inswapper_128.onnx/resolve/main/inswapper_128.onnx",
+    "https://huggingface.co/Aitrepreneur/insightface/resolve/main/inswapper_128.onnx",
+]
 
 # Ensure folders exist
 os.makedirs(INFLUENCER_DIR, exist_ok=True)
@@ -30,36 +36,52 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(MODEL_DIR, exist_ok=True)
 
 # ─────────────────────────────────────────────────────────────
-#  MODEL DOWNLOAD
+#  MODEL DOWNLOAD (Resilient - tries multiple mirrors)
 # ─────────────────────────────────────────────────────────────
 
 def download_model():
-    """Downloads the inswapper_128.onnx model if not already present."""
+    """Downloads the inswapper_128.onnx model if not already present. Tries multiple mirrors."""
     if os.path.exists(MODEL_PATH):
         print(f"[FaceSwapper] ✅ Model already exists at {MODEL_PATH}")
         return True
     
-    print(f"[FaceSwapper] 📥 Downloading inswapper_128.onnx model (one-time download ~500MB)...")
-    try:
-        r = requests.get(MODEL_URL, stream=True, timeout=300)
-        r.raise_for_status()
-        total_size = int(r.headers.get('content-length', 0))
-        downloaded = 0
-        with open(MODEL_PATH, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-                downloaded += len(chunk)
-                if total_size > 0:
-                    pct = (downloaded / total_size) * 100
-                    if int(pct) % 20 == 0:
-                        print(f"[FaceSwapper] 📥 Download progress: {pct:.0f}%")
-        print(f"[FaceSwapper] ✅ Model downloaded successfully!")
-        return True
-    except Exception as e:
-        print(f"[FaceSwapper] ❌ Failed to download model: {e}")
-        if os.path.exists(MODEL_PATH):
-            os.remove(MODEL_PATH)
-        return False
+    print(f"[FaceSwapper] 📥 Downloading inswapper_128.onnx model (one-time download ~554MB)...")
+    
+    for idx, url in enumerate(MODEL_URLS, 1):
+        print(f"[FaceSwapper] 🔗 Trying mirror {idx}/{len(MODEL_URLS)}: {url[:80]}...")
+        try:
+            r = requests.get(url, stream=True, timeout=600, allow_redirects=True)
+            r.raise_for_status()
+            total_size = int(r.headers.get('content-length', 0))
+            downloaded = 0
+            last_pct_logged = -1
+            with open(MODEL_PATH, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=65536):
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    if total_size > 0:
+                        pct = int((downloaded / total_size) * 100)
+                        if pct >= last_pct_logged + 20:
+                            last_pct_logged = pct
+                            print(f"[FaceSwapper] 📥 Download progress: {pct}% ({downloaded // (1024*1024)}MB / {total_size // (1024*1024)}MB)")
+            
+            # Verify file size is reasonable (at least 500MB for inswapper_128)
+            file_size = os.path.getsize(MODEL_PATH)
+            if file_size < 500_000_000:
+                print(f"[FaceSwapper] ⚠️ Downloaded file is too small ({file_size} bytes), trying next mirror...")
+                os.remove(MODEL_PATH)
+                continue
+            
+            print(f"[FaceSwapper] ✅ Model downloaded successfully! ({file_size // (1024*1024)}MB)")
+            return True
+        except Exception as e:
+            print(f"[FaceSwapper] ⚠️ Mirror {idx} failed: {e}")
+            if os.path.exists(MODEL_PATH):
+                os.remove(MODEL_PATH)
+            continue
+    
+    print(f"[FaceSwapper] ❌ All {len(MODEL_URLS)} mirrors failed. Cannot download the model.")
+    return False
 
 # ─────────────────────────────────────────────────────────────
 #  FACE SWAP ENGINE (LOCAL - NO API NEEDED)
