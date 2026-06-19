@@ -47,11 +47,10 @@ jobs:
     - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install setuptools wheel
         pip install -r faceswapper/requirements.txt
 
     - name: Run Face Swapper Pipeline
-      env:
-        REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
       run: |
         # Write the list of URLs from inputs to a temporary file to avoid shell argument escaping issues
         echo "${{ github.event.inputs.urls }}" > temp_urls_list.txt
