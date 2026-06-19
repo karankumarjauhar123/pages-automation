@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Karan",
+    "face_image": "karan.jpg",
+    "schedule": [3, 8, 13],
+    "max_posts_per_day": 3,
+    "facebook_page_id": "1095541136986840",
+    "fb_access_token_env": "FB_PAGE_TOKEN",
+    "instagram_business_id": "YOUR_INSTAGRAM_BUSINESS_ACCOUNT_ID",
+    "ig_access_token_env": "FB_PAGE_TOKEN"
+  }
+]

@@ -327,6 +327,7 @@ def run_face_swap_pipeline(urls, influencer_filename, enhance=True, force=False)
     history = load_history()
     processed_count = 0
     failed_count = 0
+    processed_results = []
 
     print(f"[FaceSwapper] 🚀 Starting Face Swapper Pipeline for {len(urls)} URLs...")
     print(f"[FaceSwapper] Influencer face: {influencer_filename}")
@@ -372,7 +373,10 @@ def run_face_swap_pipeline(urls, influencer_filename, enhance=True, force=False)
                 "output_file": output_path
             })
             save_history(history)
-
+            processed_results.append({
+                "url": url,
+                "output_file": output_path
+            })
             processed_count += 1
             print(f"[FaceSwapper] 🎉 Successfully finished processing Reel: {output_filename}")
 
@@ -384,6 +388,7 @@ def run_face_swap_pipeline(urls, influencer_filename, enhance=True, force=False)
             cleanup_files(local_target_path, local_swapped_temp_path)
 
     print(f"\n[FaceSwapper] 🏁 Pipeline completed. Processed: {processed_count}, Failed: {failed_count}")
+    return processed_results
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="World-class Face Swapper Suite (100% FREE - No API needed)")
