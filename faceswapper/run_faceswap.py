@@ -22,7 +22,7 @@ INFLUENCER_DIR = "influencer_faces"
 OUTPUT_DIR = "swapped_reels"
 MODEL_DIR = "faceswapper/models"
 MODEL_PATH = os.path.join(MODEL_DIR, "inswapper_128.onnx")
-MODEL_URL = "https://github.com/facefusion/facefusion-assets/releases/download/models/inswapper_128.onnx"
+MODEL_URL = "https://huggingface.co/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx"
 
 # Ensure folders exist
 os.makedirs(INFLUENCER_DIR, exist_ok=True)
