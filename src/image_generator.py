@@ -28,7 +28,7 @@ class ImageGenerator:
         else:
             self.invoke_url = f"https://ai.api.nvidia.com/v1/genai/{model}"
 
-    def generate_image(self, prompt, output_path, aspect_ratio="9:16", model=None, retries=3):
+    def generate_image(self, prompt, output_path, aspect_ratio="9:16", model=None, retries=3, timeout=120):
         """
         Generates an image from prompt and saves it to output_path.
         Supports 9:16 vertical ratio for video scenes, and 1:1 square for standard posts.
@@ -72,7 +72,7 @@ class ImageGenerator:
 
         for attempt in range(retries):
             try:
-                response = requests.post(invoke_url, headers=headers, json=payload, timeout=60)
+                response = requests.post(invoke_url, headers=headers, json=payload, timeout=timeout)
                 
                 if response.status_code != 200:
                     print(f"Attempt {attempt + 1} failed. Code {response.status_code}: {response.text}")
