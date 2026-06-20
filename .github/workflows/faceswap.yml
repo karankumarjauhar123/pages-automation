@@ -130,6 +130,8 @@ jobs:
         FB_PAGE_TOKEN_8: ${{ secrets.FB_PAGE_TOKEN_8 }}
         FB_PAGE_TOKEN_9: ${{ secrets.FB_PAGE_TOKEN_9 }}
         FB_PAGE_TOKEN_10: ${{ secrets.FB_PAGE_TOKEN_10 }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
       run: |
         CMD="python faceswapper/auto_poster.py"
         
