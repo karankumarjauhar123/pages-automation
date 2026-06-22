@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260622_231235_6025",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260622_231235.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति: क्रोध को काबू में रखें",
+    "caption": "एक ऐसी कहानी जो आपको सोचने पर मजबूर कर देगी... क्या आपका गुस्सा आपका सबसे बड़ा दुश्मन हो सकता है? चाणक्य नीति के अनुसार, हाँ यह हो सकता है! तो क्या आप अपने गुस्से को काबू में रख सकते हैं? जानिए इस वीडियो में और साझा करें अपने दोस्तों के साथ! 🤯💡 #चाणक्यनीति #गुस्साकाबूमें #जीवनकीसफलता",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-22T23:12:35.859559Z"
+  },
+  {
+    "id": "pending_20260622_225922_8772",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260622_225922.mp4",
+    "post_type": "video",
+    "title": "The 5-Second Fear Loop",
+    "caption": "He stood at the edge of the crowd, heart hammering against his ribs, convinced the world was closing in. Then, he whispered one word: 'Excited.' ⚡️\n\nPsychology reveals that anxiety and excitement are the same physical sensation—the only difference is the label your brain gives it. By renaming your fear, you hijack your nervous system and reclaim your power. \n\nHave you ever tried renaming your fear to conquer it? 👇\n\n#BrainHacks #PsychologyFacts #OvercomeFear #MindsetShift #UrbanDarkness",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-22T22:59:22.860689Z"
+  },
+  {
     "id": "pending_20260622_175152_5185",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
