@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260623_125723_4692",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260623_125723.mp4",
+    "post_type": "video",
+    "title": "The Power of Solitude - Chanakya Niti",
+    "caption": "Stop fearing loneliness and start embracing solitude! ⚡️ Learn the secret of the 'Lone Wolf' mindset from Chanakya Niti. 🦁✨ Save this for later and tag someone who needs this wake-up call! 👇 #ChanakyaNiti #SuccessMindset #SelfGrowth #CyberpunkVibes #SolitudePower #HinglishMotivation",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-23T12:57:23.502839Z"
+  },
+  {
+    "id": "pending_20260623_124802_7277",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260623_124802.mp4",
+    "post_type": "video",
+    "title": "The Power of the Mirror Effect",
+    "caption": "Unlock the secret to instant connection! ⚡️ Master the art of mirroring and transform how the world sees you. Stop blending in and start leading. 🚀 Save this for later and tag someone who needs this energy! 💎 #PsychologyHacks #MagneticPersonality #GrowthMindset #HumanBehavior #ConfidenceBoost",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-23T12:48:02.731593Z"
+  },
+  {
     "id": "pending_20260623_101133_5396",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
