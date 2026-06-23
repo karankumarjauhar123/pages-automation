@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260623_232030_7275",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260623_232030.mp4",
+    "post_type": "video",
+    "title": "The Memory Palace Secret",
+    "caption": "I used to spend hours staring at textbooks until the words blurred into nothing. Then I discovered the 'Memory Palace.' I stopped studying and started 'placing' information in a ghost version of my own home. Now, I can recall data like a machine. 🧠✨ The secret is in the strangeness. Would you trust your mind if it could remember everything? 👇 #BrainHacks #PsychologySecrets #MemoryPalace #SubconsciousMind #StudyHacks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-23T23:20:30.409756Z"
+  },
+  {
     "id": "pending_20260623_211849_2810",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
