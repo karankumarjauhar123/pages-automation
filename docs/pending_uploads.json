@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260623_161218_3894",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260623_161218.mp4",
+    "post_type": "video",
+    "title": "Chanakya's Secret to Reading People",
+    "caption": "क्या आप लोगों के अनकहे शब्दों को पढ़ सकते हैं? 🧠 आपकी लाइफ का सबसे बड़ा सबक क्या रहा है? नीचे कमेंट्स में बताएं! 👇 #ChanakyaNiti #EmotionalIntelligence #MindsetMatters #SmartBehavior #LifeLessons",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-23T16:12:18.226086Z"
+  },
+  {
+    "id": "pending_20260623_160356_1705",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260623_160356.mp4",
+    "post_type": "video",
+    "title": "The Memory Erasure Hack",
+    "caption": "He spent ten hours straight staring at the books, yet remembered nothing. He thought he was failing, but he was just fighting his own biology. 🧠\n\nThe secret isn't more effort; it's strategic interruption. By leaving a task unfinished, you trick your subconscious into keeping the information active. Stop the grind and start the glitch. ⚡️\n\nDo you prefer studying for hours or in short, chaotic bursts? 👇\n\n#BrainHacks #PsychologyFacts #SubconsciousMind #StudySecrets #CyberpunkVibes #MemoryTricks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-23T16:03:56.084871Z"
+  },
+  {
     "id": "pending_20260623_125723_4692",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
