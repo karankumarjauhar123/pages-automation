@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260624_120628_1232",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260624_120628.mp4",
+    "post_type": "video",
+    "title": "Chanakya's Secret to Attraction",
+    "caption": "Unpopular Opinion: Being 'too nice' and 'always available' is actually the fastest way to lose someone's respect. 🚩 Logic is simple: humans value what is rare, not what is abundant. Chanakya Niti teaches us that mystery creates attraction, while over-sharing creates boredom. Stop being an open book. 📖✨ #ChanakyaNiti #PsychologyFacts #DarkPsychology #SuccessMindset #RelationshipWisdom #Stoicism #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-24T12:06:28.131199Z"
+  },
+  {
+    "id": "pending_20260624_115928_6481",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260624_115928.mp4",
+    "post_type": "video",
+    "title": "The Silence Power Hack",
+    "caption": "He thought he could break me with a few words in front of everyone. I didn't fight back, I didn't shout, and I didn't explain. I just looked at him and stayed silent. The look of panic on his face when the silence became too heavy was the only victory I needed. 🤫\n\nMaster the art of the 'Silent Vacuum' to reclaim your power. When you stop reacting, you start controlling. \n\nHave you ever used silence to win an argument? Let me know in the comments. 👇\n\n#PsychologyHacks #DarkPsychology #HumanBehavior #MindsetMatters #CyberpunkVibes #PowerDynamics",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-24T11:59:28.674187Z"
+  },
+  {
     "id": "pending_20260624_084307_8887",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
