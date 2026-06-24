@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260624_042536_5354",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260624_042536.mp4",
+    "post_type": "video",
+    "title": "The Art of Conversation Control",
+    "caption": "Stop being an open book. Control the frame, control the power. 🌑 Save this for later and tag someone who needs this wake-up call. 🚩 #ChanakyaNiti #DarkPsychology #PowerDynamics #SuccessMindset #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-24T04:25:36.249253Z"
+  },
+  {
+    "id": "pending_20260624_041750_5018",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260624_041750.mp4",
+    "post_type": "video",
+    "title": "The Unseen Genius",
+    "caption": "Controversial take: Intelligence isn't just about being book-smart, it's about being quietly observant, empathetic, and willing to challenge the status quo. 🤯💡 Let's redefine what it means to be intelligent, and unleash our inner genius upon the world! 💥 #QuietIntelligence #GeniusMindset #RethinkIntelligence",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-24T04:17:50.816078Z"
+  },
+  {
     "id": "pending_20260623_232030_7275",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
