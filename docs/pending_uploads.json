@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260624_172432_8378",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260624_172432.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Handling Disrespect",
+    "caption": "क्या आप भी गुस्से में अपनी वैल्यू खो देते हैं? 🤫 क्या खामोशी सच में सबसे बड़ा हथियार है? अपनी राय कमेंट्स में बताएं। 👇 #ChanakyaNiti #MindsetMatters #Stoicism #SelfRespect #PsychologyHacks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-24T17:24:32.386719Z"
+  },
+  {
+    "id": "pending_20260624_171712_3833",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260624_171712.mp4",
+    "post_type": "video",
+    "title": "The Power of Quiet Intelligence",
+    "caption": "Unpopular opinion: Being 'socially awkward' is actually a sign of a superior processing brain. 🧠 Most people mistake silence for lack of confidence, but in reality, it's the mark of a strategic mind analyzing the environment. Stop forcing yourself to be loud just to feel seen. Your depth is your strength. ⚡️ #BrainHacks #QuietIntelligence #WarriorMindset #PsychologyFacts #GrowthMindset",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-24T17:17:12.878506Z"
+  },
+  {
     "id": "pending_20260624_150609_9338",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
