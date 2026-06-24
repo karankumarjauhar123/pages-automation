@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260624_232814_6404",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260624_232814.mp4",
+    "post_type": "video",
+    "title": "The Dark Truth of Attraction",
+    "caption": "Unpopular Opinion: Being 'too nice' is actually the fastest way to lose someone's respect. 🚫 Logic simple है: scarcity creates value. जब तक आप खुद की कदर नहीं करेंगे, दुनिया आपको सिर्फ एक ऑप्शन समझेगी। Stop chasing, start building. ⚡️ #ChanakyaNiti #PsychologyFacts #SelfRespect #RelationshipWisdom #GrowthMindset",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-24T23:28:14.536145Z"
+  },
+  {
+    "id": "pending_20260624_231938_8048",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260624_231938.mp4",
+    "post_type": "video",
+    "title": "The Ego Trap",
+    "caption": "He stayed for three years, convinced that 'fighting for love' meant enduring the disrespect. He thought he was being loyal, but he was actually just feeding his ego's need to 'win' the person back. 🥀\n\nReal self-respect is knowing when the table is no longer serving you—and having the courage to leave without looking back. 🕯️\n\nAre you holding on out of love, or out of pride? Let's be honest in the comments. 👇\n\n#PsychologyFacts #HumanBehavior #SelfRespect #DarkPsychology #RelationshipTruths #MindsetShift",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-24T23:19:38.886618Z"
+  },
+  {
     "id": "pending_20260624_213552_5044",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
