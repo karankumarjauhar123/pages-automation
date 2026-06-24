@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260624_201244_7861",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260624_201244.mp4",
+    "post_type": "video",
+    "title": "Chanakya's Secret to Attraction",
+    "caption": "Stop chasing, start attracting! ⚡\n\n🔥 Key Takeaways:\n🔹 Stop being too available 🚫\n🔹 Create a sense of mystery 🤫\n🔹 Prioritize self-growth over validation 📈\n🔹 Respect is earned, not begged for 👑\n\nSave this to remind yourself of your worth! 📌\n\n#ChanakyaNiti #PsychologyFacts #SuccessMindset #RelationshipWisdom #SelfRespect #HinglishMotivation",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-24T20:12:44.718146Z"
+  },
+  {
+    "id": "pending_20260624_200400_5464",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260624_200400.mp4",
+    "post_type": "video",
+    "title": "Master the Hidden Language",
+    "caption": "I used to let people walk all over me because I believed every word I heard. I felt blind until I learned that the body never lies, even when the tongue does. 👁️\n\nLearning to read micro-expressions is like gaining a superpower—you see the truth before it's even spoken. Stop guessing and start observing. ⚡️\n\nWhich one will you look for first: the eyes or the tone? Let me know below! 👇 #PsychologyHacks #ReadPeople #WarriorMindset #HumanBehavior #GrowthMindset",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-24T20:04:00.115393Z"
+  },
+  {
     "id": "pending_20260624_172432_8378",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
