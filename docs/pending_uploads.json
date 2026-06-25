@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260625_175844_3352",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260625_175844.mp4",
+    "post_type": "video",
+    "title": "The Dopamine Trap & Chanakya Niti",
+    "caption": "Stop being a slave to your impulses! 🧠 Master your mind with this Chanakya Niti wisdom on breaking dopamine loops. 🚀 Save this for later and tag someone who needs to wake up! 👇 #ChanakyaNiti #SuccessMindset #MindsetMatters #HinglishWisdom #HabitStacking",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-25T17:58:44.802999Z"
+  },
+  {
+    "id": "pending_20260625_173456_5978",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260625_173456.mp4",
+    "post_type": "video",
+    "title": "The Secret of Micro-Expressions",
+    "caption": "Stop listening to what they say and start watching what they feel. 🧠✨ Master the science of micro-expressions to unlock the truth. Save this for later so you don't forget! 📌 #PsychologyHacks #EmotionalIntelligence #HumanBehavior #MindsetSecrets",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-25T17:34:56.223142Z"
+  },
+  {
     "id": "pending_20260625_152432_9375",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
