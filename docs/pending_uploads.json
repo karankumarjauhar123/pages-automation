@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260625_122011_9176",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260625_122011.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Secret of Attraction",
+    "caption": "Unpopular Opinion: Being 'too nice' is actually a weakness, not a strength. 🚩 जब आप हर किसी के लिए हर वक्त अवेलेबल रहते हैं, तो आप अपनी वैल्यू खो देते हैं। Logic simple है— scarcity creates value. चाणक्य नीति और साइकोलॉजी दोनों यही सिखाते हैं कि अपनी बाउंड्रीज़ बनाना ज़रूरी है। 🧠✨ #ChanakyaNiti #PsychologyFacts #SelfValue #RelationshipWisdom #SuccessMindset #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-25T12:20:11.122305Z"
+  },
+  {
+    "id": "pending_20260625_115725_1958",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260625_115725.mp4",
+    "post_type": "video",
+    "title": "The Truth Behind the Gaze",
+    "caption": "Trust is a liability. 🚩 Most people think honesty is a choice, but the body reveals the truth long before the mouth does. Logic tells us that biology always beats a lie. Stop listening to what they say and start watching how they move. 👁️⚡ #PsychologyHacks #HumanBehavior #DarkPsychology #ReadingPeople #CyberpunkVibes",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-25T11:57:25.902592Z"
+  },
+  {
     "id": "pending_20260625_091205_5900",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
