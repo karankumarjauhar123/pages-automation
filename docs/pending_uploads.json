@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260625_073531_8941",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260625_073531.mp4",
+    "post_type": "video",
+    "title": "The Power of Solitude - Chanakya Niti",
+    "caption": "Unpopular Opinion: Being lonely is actually a luxury. 🤫 Most people are terrified of their own company because they can't handle the truth. But according to Chanakya Niti, solitude is where the strongest version of you is built. Stop chasing crowds and start chasing your own growth. 🚀🔥 #ChanakyaNiti #SelfGrowth #MindsetShift #SolitudePower #SuccessSecrets",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-25T07:35:31.405844Z"
+  },
+  {
     "id": "pending_20260625_055606_8332",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
