@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260625_091205_5900",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260625_091205.mp4",
+    "post_type": "video",
+    "title": "Handling Disrespect like Chanakya",
+    "caption": "Stop begging for respect! 🚫 Use the power of silence and reverse psychology to dominate the game. ⚡ Save this for later and tag someone who needs to wake up! 🚩 #ChanakyaNiti #SuccessMindset #PsychologyHacks #PowerMoves #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-25T09:12:05.488587Z"
+  },
+  {
+    "id": "pending_20260625_084353_6492",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260625_084353.mp4",
+    "post_type": "video",
+    "title": "The Silence Secret",
+    "caption": "Unpopular opinion: Words are actually a distraction. 🤫 Logic tells us that language is for communication, but psychology proves that the brain often uses words to hide the truth while the body leaks it. If you want to actually understand people, stop listening and start observing. 👁️✨ #PsychologyHacks #EmotionalIntelligence #BodyLanguage #HumanBehavior #RelationshipSecrets",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-25T08:43:53.484976Z"
+  },
+  {
     "id": "pending_20260625_073531_8941",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
