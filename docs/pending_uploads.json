@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260626_122858_2876",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260626_122858.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Control the Frame",
+    "caption": "Stop being a follower in your own conversations! 🚩 Master the art of power dynamics with Chanakya Niti. 🧠 Save this for later and tag someone who needs to wake up! 🚀 #ChanakyaNiti #PowerDynamics #SuccessMindset #SmartBehavior #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-26T12:28:58.324400Z"
+  },
+  {
+    "id": "pending_20260626_122320_4358",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260626_122320.mp4",
+    "post_type": "video",
+    "title": "The Power of the Void",
+    "caption": "The most powerful way to win a fight is to stop fighting your own mind. 🌑 Master your reactions. Save this for the next time you feel the heat rising. 🧠✨ #PsychologyHacks #Stoicism #MindsetShift #EmotionalIntelligence #InnerPeace",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-26T12:23:20.071509Z"
+  },
+  {
     "id": "pending_20260626_100145_9735",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
