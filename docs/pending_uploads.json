@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260626_223304_4848",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260626_223304.mp4",
+    "post_type": "video",
+    "title": "The Secret of Quiet Intelligence",
+    "caption": "एक समय की बात है, एक युवक ने आचार्य चाणक्य से पूछा कि दुनिया में सबसे शक्तिशाली कौन है? जवाब मिला—वह जो अपनी भावनाओं और शब्दों पर नियंत्रण रखता है। 🤫\n\nअक्सर हम सोचते हैं कि ज़्यादा बोलने वाला ही स्मार्ट है, लेकिन असल बुद्धिमत्ता उस शांति में है जो दूसरों को सोचने पर मजबूर कर दे। अपनी चुप्पी को अपनी कमज़ोरी नहीं, बल्कि अपनी स्ट्रेटेजी बनाइए। ✨\n\nक्या आप भी मानते हैं कि खामोशी सबसे बड़ा हथियार है? कमेंट्स में बताएं! 👇\n\n#ChanakyaNiti #SuccessMindset #QuietIntelligence #LifeLessons #Wisdom #MentalStrength #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-26T22:33:04.142869Z"
+  },
+  {
+    "id": "pending_20260626_222522_2633",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260626_222522.mp4",
+    "post_type": "video",
+    "title": "The 5-Second Fear Loop",
+    "caption": "Your fear is a lie told by your own brain. 🌑 Break the loop. 🧠 Save this for the next time you feel paralyzed. #PsychologyHacks #OvercomeFear #MindsetShift #BrainSecrets #ZenMind",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-26T22:25:22.956262Z"
+  },
+  {
     "id": "pending_20260626_202454_2194",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
