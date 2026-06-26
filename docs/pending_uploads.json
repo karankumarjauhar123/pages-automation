@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260626_052611_1182",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260626_052611.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Secret of Attraction",
+    "caption": "एक छोटी सी कहानी: एक राजा ने हीरे को तब फेंका जब वह आम हो गया। 💎 सबक यही है कि जब आप ज़रूरत से ज़्यादा उपलब्ध रहते हैं, तो लोग आपकी कद्र करना बंद कर देते हैं। अपनी वैल्यू बढ़ाएं, अपनी ग्रोथ पर ध्यान दें और दुनिया आपके पीछे आएगी। ✨\n\nक्या आप भी किसी के लिए अपनी सेल्फ-रिस्पेक्ट खो रहे हैं? 👇\n\n#ChanakyaNiti #RelationshipWisdom #SelfRespect #MindsetMatters #PsychologyFacts #GrowthMindset #HinglishMotivation",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-26T05:26:11.480824Z"
+  },
+  {
+    "id": "pending_20260626_052032_1327",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260626_052032.mp4",
+    "post_type": "video",
+    "title": "The Cost of Your Anger",
+    "caption": "He spent three days hating her for a lie she didn't even remember telling. While he burned his own peace, she was sleeping soundly. 🥀 The hardest pill to swallow is realizing that your anger is a gift you give to people who don't deserve your energy. Stop letting others rent space in your head for free. \n\nWho are you still holding a grudge against? 👇\n\n#PsychologyHacks #Stoicism #EmotionalIntelligence #MindsetShift #DarkPsychology",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-26T05:20:32.684517Z"
+  },
+  {
     "id": "pending_20260625_232027_2670",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
