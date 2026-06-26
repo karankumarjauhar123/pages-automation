@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260626_100145_9735",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260626_100145.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Power of First Impression",
+    "caption": "Stop being invisible! ⚡️ Master the art of first impressions with Chanakya Niti. 🧠✨ Save this for later and tag someone who needs this boost! 🚀 #ChanakyaNiti #SuccessMindset #FirstImpression #WarriorMindset #SelfGrowth",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-26T10:01:45.244112Z"
+  },
+  {
+    "id": "pending_20260626_094923_5446",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260626_094923.mp4",
+    "post_type": "video",
+    "title": "The Power of the Silent Pause",
+    "caption": "I used to spend hours arguing, trying to convince people of my worth, only to leave feeling drained. Then I discovered the 'Psychology of the Pause.' By choosing silence over noise, I stopped fighting for respect and started receiving it. ⚡️ The secret isn't in the words you say, but in the energy you hold. \n\nLesson: Silence is the ultimate tool of the emotionally strong. \n\nDo you have the courage to stay silent when everyone expects you to react? 👇\n\n#MindsetWarrior #PsychologyHacks #SocialDynamics #InnerStrength #VintageVibes",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-26T09:49:23.200215Z"
+  },
+  {
     "id": "pending_20260626_052611_1182",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
