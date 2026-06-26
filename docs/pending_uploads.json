@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260626_202454_2194",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260626_202454.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Power of Solitude",
+    "caption": "Stop chasing people and start chasing your goals! 🦁 Learn the secret of solitude from Chanakya Niti. ⚡ Save this for later and tag someone who needs this wake-up call! 👇 #ChanakyaNiti #SuccessMindset #SelfGrowth #WarriorMindset #SolitudePower",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-26T20:24:54.287681Z"
+  },
+  {
+    "id": "pending_20260626_201306_9751",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260626_201306.mp4",
+    "post_type": "video",
+    "title": "The Gap of Control",
+    "caption": "Can you hold your peace for just 90 seconds? ⏳ Why do we often let one moment of anger ruin an entire day? Do you control your emotions, or do they control you? 👇 #PsychologyHacks #Stoicism #EmotionalIntelligence #BrainFacts #MindsetShift",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-26T20:13:06.388091Z"
+  },
+  {
     "id": "pending_20260626_182025_5016",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
