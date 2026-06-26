@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260626_182025_5016",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260626_182025.mp4",
+    "post_type": "video",
+    "title": "The Secret of Quiet Intelligence",
+    "caption": "Unpopular Opinion: Being the loudest person in the room is a sign of insecurity, not confidence. 🤫 Real power lies in strategic silence and observation. When you stop explaining yourself, you start winning. Do you agree or are you still trying to prove everyone wrong? 👇 #ChanakyaNiti #DarkPsychology #SuccessMindset #QuietIntelligence #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-26T18:20:25.253212Z"
+  },
+  {
+    "id": "pending_20260626_181123_4279",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260626_181123.mp4",
+    "post_type": "video",
+    "title": "The Lie in Their Eyes",
+    "caption": "Have you ever caught someone lying to you? 🤥 It's not just about what they say, but how their eyes betray them. 🕵️‍♀️ Learn the art of reading people instantly and discover the uncomfortable truth about deception. 🤔 Can you handle the truth? 💔 #PsychologyFacts #BrainHacks #RelationshipGoals",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-26T18:11:23.089515Z"
+  },
+  {
     "id": "pending_20260626_154712_6455",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
