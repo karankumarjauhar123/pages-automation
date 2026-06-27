@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260627_103025_2914",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260627_103025.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Power of Solitude",
+    "caption": "भीड़ का हिस्सा मत बनो, अपनी खुद की पहचान बनाओ। 🦁 Stop fearing solitude and start building your empire. ⚡ Save this for later and tag someone who needs this wake-up call! 🚀 #ChanakyaNiti #SuccessMindset #SelfGrowth #SolitudePower #MindsetShift",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-27T10:30:25.729464Z"
+  },
+  {
+    "id": "pending_20260627_102226_3309",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260627_102226.mp4",
+    "post_type": "video",
+    "title": "The Truth in the Eyes",
+    "caption": "Who is lying to you right now? 👁️ Can you trust the words people say, or do you trust what their eyes reveal? Tell us your most intuitive moment in the comments. 👇 #PsychologySecrets #HumanBehavior #BodyLanguage #MindGames",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-27T10:22:26.904334Z"
+  },
+  {
     "id": "pending_20260627_080932_9482",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
