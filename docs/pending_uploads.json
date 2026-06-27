@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260627_080932_9482",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260627_080932.mp4",
+    "post_type": "video",
+    "title": "The Power of Silence - Chanakya Niti",
+    "caption": "Stop being an open book! 📖❌\n\nHere is why silence is your superpower:\n🤫 Mystery creates attraction\n📉 Less talking = Less mistakes\n⚡ Results speak louder than words\n🛡️ Protect your energy and secrets\n\nSave this to remind yourself every day! 💾🔥\n#ChanakyaNiti #SuccessMindset #PsychologySecrets #GrowthMindset #SilentPower",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-27T08:09:32.271179Z"
+  },
+  {
+    "id": "pending_20260627_080127_1148",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260627_080127.mp4",
+    "post_type": "video",
+    "title": "The Psychology of Abundance",
+    "caption": "Unpopular opinion: Hard work is actually a symptom of a scarcity mindset. 🧠 If you believe you have to 'grind' until you break, you're telling your brain that wealth is rare and difficult. Logic: True wealth comes from strategic alignment and a mindset of abundance, where you solve problems because you enjoy the process, not because you're afraid of being broke. Shift your frequency. ✨ #WealthPsychology #MindsetShift #AbundanceMindset #StoicWisdom #BrainHacks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-27T08:01:27.526779Z"
+  },
+  {
     "id": "pending_20260627_052121_7443",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
