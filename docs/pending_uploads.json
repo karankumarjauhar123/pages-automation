@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260627_052121_7443",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260627_052121.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Master Your Emotions",
+    "caption": "एक बार एक योद्धा ने अपना सब कुछ सिर्फ एक पल के गुस्से में खो दिया। 📉 सबक यह है कि आपकी सबसे बड़ी जीत दूसरों पर नहीं, बल्कि अपने खुद के इमोशन्स पर काबू पाना है। 🧠 जब आप रिएक्ट करना बंद करते हैं, तब आप वास्तव में शक्तिशाली बनते हैं। \n\nक्या आप अपने गुस्से को कंट्रोल कर पाते हैं या गुस्सा आपको कंट्रोल करता है? 👇 कमेंट में बताएं! \n\n#ChanakyaNiti #SuccessMindset #EmotionalIntelligence #WarriorMindset #HinglishMotivation #SelfGrowth",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/videos",
+    "timestamp": "2026-06-27T05:21:21.637841Z"
+  },
+  {
+    "id": "pending_20260627_051244_7219",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260627_051244.mp4",
+    "post_type": "video",
+    "title": "The Anger Paradox",
+    "caption": "Are you suppressing anger that's silently destroying your relationships? 🤯💔 Can you find the courage to face your darkest emotions? 💪🌟 What's the most challenging emotion you've had to confront? Share your story in the comments below! 💬 #MentalHealthMatters #EmotionalIntelligence #RelationshipGoals",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/videos",
+    "timestamp": "2026-06-27T05:12:44.220224Z"
+  },
+  {
     "id": "pending_20260626_223304_4848",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
