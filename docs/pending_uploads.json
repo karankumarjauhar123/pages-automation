@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260812_211350_9748",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260812_211350.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति: अमीर बनने का राज",
+    "caption": "चाणक्य नीति के अनुसार, अमीर बनने के लिए आपको अपने दिमाग को बदलना होगा! 🤯💡 यह सच है कि पैसे की तंगी से जूझने वाले लोगों को अपने दिमाग की समस्या होती है। 🤔 तो क्या आप तैयार हैं अपने दिमाग को बदलने के लिए और सच्चा धन प्राप्त करने के लिए? 💸📚 #चाणक्यनीति #अमीरबनन #धनप्राप्ति #ज्ञानऔरसमझ",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-12T21:13:50.691548Z"
+  },
+  {
+    "id": "pending_20260812_210403_4427",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260812_210403.mp4",
+    "post_type": "video",
+    "title": "Converse Like a Boss",
+    "caption": "Who's controlling the conversation? 🤔 Take back the power and converse like a boss! 💪 Tag someone who needs to see this, and save it for later 📚 #FrameControl #ConversationHacks #EmpowerYourself",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-12T21:04:03.025899Z"
+  },
+  {
     "id": "pending_20260812_192831_7613",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
