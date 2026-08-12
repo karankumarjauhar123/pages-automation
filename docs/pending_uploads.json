@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260812_172718_9620",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260812_172718.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति: अमीर लोग कैसे सोचते हैं",
+    "caption": "क्या आप जानते हैं कि अमीर लोग कैसे सोचते हैं? 🤔💸 जानिए चाणक्य नीति के महत्वपूर्ण सिद्धांतों के बारे में और अपने विचारों से अमीर बनें! 💡 #चाणक्यनीति #अमीरलोग #धनकीमानसिकता",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-12T17:27:18.116555Z"
+  },
+  {
+    "id": "pending_20260812_171338_2448",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260812_171338.mp4",
+    "post_type": "video",
+    "title": "Unlocking Human Emotions",
+    "caption": "Want to unlock the secrets of human behavior? 🤫 Save this for later and learn how to read people like a pro! 💡 Tag someone who needs to improve their social skills 🤗 #HumanBehavior #Psychology #RelationshipGoals #EmotionalIntelligence",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-12T17:13:38.021469Z"
+  },
+  {
     "id": "pending_20260627_103025_2914",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
