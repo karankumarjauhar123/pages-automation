@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260813_152516_2106",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260813_152516.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति का सबसे बड़ा रहस्य",
+    "caption": "चाणक्य नीति के सबसे बड़े रहस्य को जानें! 🤫👀💡\n* लोगों की माइक्रो-एक्सप्रेशंस को पढ़ना सीखें 🤔\n* उनकी आंखों की हरकत और आवाज़ के स्वर को समझें 👂\n* जीवन में सफलता पाने के लिए एक कदम आगे बढ़ जाएं 🚀\n#चाणक्यनीति #जीवनमेंसफलता #लोगोंकोपढ़ना",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-13T15:25:16.475529Z"
+  },
+  {
+    "id": "pending_20260813_151328_7861",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260813_151328.mp4",
+    "post_type": "video",
+    "title": "The Hidden Signal of Attraction",
+    "caption": "What's the secret signal that reveals if someone is interested in you? 🤔💘 Do you believe in the 'triangle gaze'? 📊💬 Share your thoughts and experiences in the comments below! #LoveSignals #Attraction #PsychologyFacts",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-13T15:13:28.649590Z"
+  },
+  {
     "id": "pending_20260813_134322_7165",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
