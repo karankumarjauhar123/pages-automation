@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260813_103431_1838",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260813_103431.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति का रहस्य",
+    "caption": "ज़िंदगी में सबसे बड़ा दुश्मन आपका अपना विश्वास हो सकता है! 🤯 चाणक्य नीति के इस सूत्र को अपने जीवन में लागू करें, और देखें कि यह आपको कैसे मदद करता है 🙏 #चाणक्यनीति #ज़िंदगीकीसूत्र #विश्वास #जागृत",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-13T10:34:31.369410Z"
+  },
+  {
+    "id": "pending_20260813_102338_5274",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260813_102338.mp4",
+    "post_type": "video",
+    "title": "Wealth Mindset Myth",
+    "caption": "Controversial take: thinking positively about money won't make you rich 🤑💸! It's time to debunk the abundance mindset and embrace the scarcity mindset instead 🤯! Join the conversation and share your thoughts - do you think scarcity is the key to unlocking wealth and success? Let us know in the comments! #WealthMindset #ScarcityMindset #FinancialFreedom #SuccessMindset",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-13T10:23:38.449445Z"
+  },
+  {
     "id": "pending_20260813_090908_5355",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
