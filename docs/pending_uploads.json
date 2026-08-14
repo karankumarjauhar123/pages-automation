@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260814_205216_5357",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260814_205216.mp4",
+    "post_type": "video",
+    "title": "The Power of Silence - Chanakya Niti",
+    "caption": "Unpopular Opinion: Being an 'open book' is a recipe for failure. 📖❌\n\nMost people think transparency is a virtue, but in the real world, mystery is power. When you reveal everything, you give people the map to destroy you. Chanakya Niti teaches us that strategic silence is the ultimate weapon for success and respect. Stop oversharing. Start observing. 🤫🔥\n\n#ChanakyaNiti #DarkPsychology #SuccessMindset #PowerOfSilence #HumanBehavior #GrowthHacks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-14T20:52:16.991879Z"
+  },
+  {
+    "id": "pending_20260814_204500_6665",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260814_204500.mp4",
+    "post_type": "video",
+    "title": "Dopamine Detox: Unlock Success",
+    "caption": "Ready to unlock your true potential? 🚀💡 Discover the secret to overcoming laziness and procrastination by trying a dopamine detox for 30 days! 📆💻 What's the one thing you can give up today to start your journey to success? Share with a friend who needs to see this! 👫 #DopamineDetox #SuccessMindset #DisciplineOverMotivation",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-14T20:45:00.157143Z"
+  },
+  {
     "id": "pending_20260814_200316_1780",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
