@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260815_074859_1336",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260815_074859.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Fear to Power",
+    "caption": "Unpopular opinion: Fear is actually your best mentor, not your enemy. 🚫 Most people try to avoid anxiety, but the logic is simple: the more you run, the stronger it grows. Chanakya's wisdom teaches us that mastery comes through confrontation, not avoidance. Stop seeking comfort and start seeking growth. 🧠🔥 #ChanakyaNiti #MindsetShift #OvercomeFear #SuccessSecrets #MentalToughness",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-15T07:48:59.378427Z"
+  },
+  {
+    "id": "pending_20260815_074449_7729",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260815_074449.mp4",
+    "post_type": "video",
+    "title": "Frame Control",
+    "caption": "Controversial take: being a good listener is not about being passive, but about being in control 🗣️💡. It's time to flip the script and take the lead in your conversations. Share with someone who needs to hear this! #FrameControl #ConversationHacks #Empowerment",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-15T07:44:49.914099Z"
+  },
+  {
     "id": "pending_20260815_070149_1872",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
