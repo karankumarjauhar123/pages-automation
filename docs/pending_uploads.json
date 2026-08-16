@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260816_045216_9158",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260816_045216.mp4",
+    "post_type": "video",
+    "title": "The Shadow in Your Circle",
+    "caption": "Controversial take: Not everyone in your circle is rooting for you 🚨💔. Some 'friends' might be secretly manipulating you using dark psychology tactics 🤯. Learn the signs, trust your instincts, and don't be afraid to cut ties 🚫. Your mental health is worth it 🧘‍♀️. Share if you've ever been in a similar situation and found the strength to move forward 🤗 #MentalHealthMatters #ToxicFriendships #SelfCare",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-16T04:52:16.407824Z"
+  },
+  {
     "id": "pending_20260816_032627_4326",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
