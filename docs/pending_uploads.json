@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260816_054907_7787",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260816_054907.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति का रहस्यमयी सबक",
+    "caption": "चाणक्य नीति का रहस्यमयी सबक! 🤫 क्या आप जानते हैं कि लोग आपके साथ क्या कहते हैं और क्या छुपाते हैं? 🤔 यह जानने के लिए आपको उनकी बातों के बीच की रेखाओं को पढ़ना होगा! 📚 #चाणक्यनीति #ज़िंदगीकेसबक #रहस्यमयी #सक्सेसमाइंडसेट",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-16T05:49:07.632027Z"
+  },
+  {
+    "id": "pending_20260816_054158_3336",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260816_054158.mp4",
+    "post_type": "video",
+    "title": "The Silence Paradox",
+    "caption": "What secrets do you hide behind your silence? 🤐💭 Do you think the less you say, the more powerful you become? 🚀💥 Can you handle the truth about the power of silence? 🤔 #TheSilenceParadox #PowerOfSilence #MysteryAndIntrigue",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-16T05:41:58.554112Z"
+  },
+  {
     "id": "pending_20260816_045216_9158",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
