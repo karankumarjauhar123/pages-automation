@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260819_090232_2300",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260819_090232.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति का जादू",
+    "caption": "सक्सेस पाने के लिए चाणक्य नीति की यह तकनीक आजमाएं! 🤯💡 Save this for later और अपने दोस्तों को टैग करें जिन्हें यह जरूर पढ़ना चाहिए! 👉 #चाणक्यनीति #सक्सेस #मोटिवेशन",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-19T09:02:32.496900Z"
+  },
+  {
+    "id": "pending_20260819_085329_4591",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260819_085329.mp4",
+    "post_type": "video",
+    "title": "Unleash Calm Confidence",
+    "caption": "Controversial take: Being disrespected isn't about you, it's about the other person's insecurity 🌃💡. Learn how to use psychological reverse psychology hacks to stay calm and confident in the face of disrespect, and rise above the negativity 🌟💪. Share with someone who needs to hear this! #CalmConfidence #PsychologicalHacks #RespectYourself #Empowerment",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-19T08:53:29.349643Z"
+  },
+  {
     "id": "pending_20260819_081312_2897",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
