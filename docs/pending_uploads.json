@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260819_100652_6811",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260819_100652.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति: गुस्सा को कंट्रोल करने का राज",
+    "caption": "गुस्सा आपकी ज़िंदगी को बर्बाद कर सकता है? 🤯 चाणक्य नीति के अनुसार गुस्से को कंट्रोल करने का राज जानिए और अपनी ज़िंदगी को सफल बनाएं! 💡 #चाणक्यनीति #गुस्साकोकंट्रोलकरनेकाराज #ज़िंदगीकोसफलबनाना",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-19T10:06:52.616758Z"
+  },
+  {
+    "id": "pending_20260819_095505_8568",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260819_095505.mp4",
+    "post_type": "video",
+    "title": "The Power of Strategic Solitude",
+    "caption": "The uncomfortable truth about your circle: 🌑\n\n• Attention $\\neq$ Connection ❌\n• Solitude is a filter for fake people 🛡️\n• Silence is your greatest weapon 🤫\n• Self-growth happens in the dark ⚡\n\nStop running from the loneliness. Own it. #PsychologyFacts #DarkTruths #SelfGrowth #MindsetShift #Solitude",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-19T09:55:05.718848Z"
+  },
+  {
     "id": "pending_20260819_090232_2300",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
