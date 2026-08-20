@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260820_141519_2342",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260820_141519.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Discipline vs Motivation",
+    "caption": "Stop waiting for motivation! 🚫\n\nKey Lessons for a Winner Mindset:\n• Motivation is temporary, Discipline is permanent ⏳\n• Avoid the Dopamine Trap 📱\n• Conquer laziness to conquer the world 🌍\n• Build a routine that works for you 🛠️\n\nSave this to remind yourself daily! 📌\n#ChanakyaNiti #MindsetShift #SuccessTips #Discipline #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-20T14:15:19.103931Z"
+  },
+  {
+    "id": "pending_20260820_140858_6997",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260820_140858.mp4",
+    "post_type": "video",
+    "title": "The Lie Detector in Your Eyes",
+    "caption": "Think you can spot a lie? 🤔💡 Contrary to popular opinion, it's NOT about looking for overt signs of deception, but about paying attention to the tiny, almost imperceptible cues that reveal the truth 📚👀. Learn the art of reading people and uncover the secrets behind their words 💬🔍 #BodyLanguage #Psychology #RelationshipGoals #TruthRevealed",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-20T14:08:58.717108Z"
+  },
+  {
     "id": "pending_20260820_131712_9917",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
