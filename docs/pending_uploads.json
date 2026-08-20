@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260820_225240_2203",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260820_225240.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति: डर और चिंता से मुक्ति",
+    "caption": "क्या आप अपने डर और चिंता से मुक्ति पाने के लिए तैयार हैं? 🤔💡 चाणक्य नीति कहती है कि जो व्यक्ति अपने डर और चिंता को नियंत्रित कर सकता है, वह ज़िंदगी में कभी भी सफल हो सकता है! 🌟💪 #चाणक्यनीति #डरऔरचिंता #ज़िंदगीमेंसफलता",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-20T22:52:40.161145Z"
+  },
+  {
+    "id": "pending_20260820_224543_6621",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260820_224543.mp4",
+    "post_type": "video",
+    "title": "The Dark Side of Attraction",
+    "caption": "Controversial take: your attraction to toxic partners is not a sign of love, but a symptom of unresolved trauma 🚨💔. Here's the uncomfortable truth: our brains are wired to seek out familiarity, even if it's detrimental to our well-being. #TraumaBonding #ToxicRelationships #MentalHealthMatters",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-20T22:45:43.187553Z"
+  },
+  {
     "id": "pending_20260820_214812_3703",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
