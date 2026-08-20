@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260820_103119_7851",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260820_103119.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति: खामोशी की ताकत",
+    "caption": "क्या आप जानते हैं कि खामोशी की ताकत क्या है? यह एक ऐसी ताकत है जो आपको अपने दुश्मनों से बचा सकती है और आपको ज़िंदगी में सक्सेस दिला सकती है! 🤫💡 #चाणक्यनीति #खामोशीताकत #ज़िंदगीमेंसक्सेस",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-20T10:31:19.637238Z"
+  },
+  {
+    "id": "pending_20260820_102123_3915",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260820_102123.mp4",
+    "post_type": "video",
+    "title": "The 4-Second Pause: A Stoic Secret to Mastering Anger",
+    "caption": "🔥 Master your anger with the 4-second pause! 💡 Here are 3 key takeaways to help you respond to situations more mindfully: 🌟 Take a deep breath and feel your feet on the ground. 🌟 Remind yourself that your emotions are fleeting. 🌟 Respond thoughtfully, rather than reacting impulsively. #StoicSecrets #AngerManagement #Mindfulness",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-20T10:21:23.595802Z"
+  },
+  {
     "id": "pending_20260820_093331_8153",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
