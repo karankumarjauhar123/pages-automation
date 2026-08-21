@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260821_115836_6993",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260821_115836.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति का सबसे बड़ा रहस्य",
+    "caption": "चाणक्य नीति का सबसे बड़ा रहस्य! 🤫💡 क्या आप जानते हैं कि लोगों को पढ़ने की कला से आप ज़िंदगी में आगे बढ़ सकते हैं? 📚💭 #चाणक्यनीति #ज़िंदगीकीसक्सेस #लोगोंकोपढ़ना",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-21T11:58:36.413822Z"
+  },
+  {
+    "id": "pending_20260821_114210_1793",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260821_114210.mp4",
+    "post_type": "video",
+    "title": "Rewire Your Cravings",
+    "caption": "Controversial take: your cravings are not your own 🤖💡. What if I told you that your brain is being hijacked by dopamine loops and habit patterns? 🚨💥 It's time to take back control and rewire your cravings for a better life. Share with a friend who needs to break free from their bad habits and let's start a revolution of self-awareness! 🤝 #RewireYourCravings #HabitStacking #DopamineLoops #SelfAwareness #PersonalGrowth",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-21T11:42:10.215466Z"
+  },
+  {
     "id": "pending_20260821_104435_4359",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
