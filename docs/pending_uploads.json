@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260821_094732_5182",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260821_094732.mp4",
+    "post_type": "video",
+    "title": "The 7-Second Power Play",
+    "caption": "Stop being invisible! ⚡️ Here is how to own any room:\n\n• The 7-Second Rule ⏱️\n• Use the 'Power Pause' ⏸️\n• Eye contact = High Status 👁️\n• Claim your space 🦁\n\nSave this to level up your social game! 🚀 #PsychologyHacks #Charisma #FirstImpressions #MindsetWarrior #HumanBehavior",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-21T09:47:32.474455Z"
+  },
+  {
     "id": "pending_20260821_092824_8593",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
