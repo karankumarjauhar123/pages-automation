@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260821_161653_6979",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260821_161653.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Art of Silence",
+    "caption": "Master the Art of Social Dynamics 🧠\n\n✨ Stop being too available\n✨ Read body language, not words\n✨ Maintain a mysterious silence\n✨ Control your emotions to lead\n\nSave this for your success mindset! 🚀\n#ChanakyaNiti #SuccessMindset #HumanBehavior #Wisdom #LifeLessons #SmartLiving",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-21T16:16:53.723020Z"
+  },
+  {
+    "id": "pending_20260821_161052_5609",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260821_161052.mp4",
+    "post_type": "video",
+    "title": "The Frame Controller: Who Really Holds the Power in Conversations?",
+    "caption": "🚨 Controversial take: You're not as in control of your conversations as you think you are. 🤯 In fact, there's a 70% chance that someone else is secretly controlling your thoughts and actions. 😱 Want to take back the power? Learn how to identify and challenge frame control in our latest video! 💡 #FrameControl #PowerDynamics #ConversationHacks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-21T16:10:52.437184Z"
+  },
+  {
     "id": "pending_20260821_145721_7374",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
