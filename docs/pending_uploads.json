@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260822_055318_1962",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260822_055318.mp4",
+    "post_type": "video",
+    "title": "The Hidden Pattern Behind Your Darkest Habits",
+    "caption": "🔥 Controversial take: your darkest habits are not a sign of weakness, but a sign of a deeper pattern. 💡 Learn how to break free from the dopamine loop and take control of your life. 🚀 #dopamineloop #habitstacking #selfimprovement",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-22T05:53:18.511363Z"
+  },
+  {
     "id": "pending_20260822_050943_1385",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
