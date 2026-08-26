@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260826_145606_8252",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260826_145606.mp4",
+    "post_type": "video",
+    "title": "The Intelligence of Silence",
+    "caption": "The secret of the quiet genius. 🧠✨ Your need for solitude might actually be a sign of high cognitive processing. Tag someone who is a 'quiet observer'! 👇 #PsychologyFacts #BrainHacks #Intelligence #HumanBehavior #SaveForLater",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-26T14:56:06.317370Z"
+  },
+  {
     "id": "pending_20260826_114037_8375",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
