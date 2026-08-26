@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260826_104958_4339",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260826_104958.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Read Minds",
+    "caption": "stop being naive! 🚫\n\nMaster these secrets of human behavior: \n🔹 Words lie, behavior doesn't 👁️\n🔹 Read the silence, not the speech 🤐\n🔹 Control the game, don't be the pawn ♟️\n🔹 Emotional Intelligence = Power 💪\n\nSave this before you get manipulated again! 💾\n\n#ChanakyaNiti #MindsetMatters #EmotionalIntelligence #SuccessSecrets #HumanBehavior #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-26T10:49:58.724727Z"
+  },
+  {
     "id": "pending_20260826_085613_5239",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
