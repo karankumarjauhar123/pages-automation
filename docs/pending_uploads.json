@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260826_055036_3920",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260826_055036.mp4",
+    "post_type": "video",
+    "title": "चाणक्य नीति का सबसे बड़ा रहस्य",
+    "caption": "क्या आप जानते हैं कि ज़िंदगी में सबसे बड़ा दुश्मन कौन है? 🤔 क्या आप अपने डर को दूर करने के लिए तैयार हैं? 💡 क्या आप अपने जीवन को बदलने के लिए तैयार हैं? 🌟 #चाणक्यनीति #ज़िंदगीकीरहस्यमयी #डरकोदूरकरें",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-08-26T05:50:36.248130Z"
+  },
+  {
+    "id": "pending_20260826_054449_7688",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260826_054449.mp4",
+    "post_type": "video",
+    "title": "The Hidden Frame",
+    "caption": "Controversial take: the person who initiates a conversation has an unfair advantage in controlling the narrative 🤯💡. But what if you could flip the script and reclaim power? 📚💪 Share your thoughts and let's dive into the psychology of power dynamics! #PowerDynamics #ConversationHacks #PsychologyFacts",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-26T05:44:49.954425Z"
+  },
+  {
     "id": "pending_20260826_050255_6579",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
