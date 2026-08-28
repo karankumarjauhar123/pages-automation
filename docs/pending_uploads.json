@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260828_172843_3101",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260828_172843.mp4",
+    "post_type": "video",
+    "title": "The Power of the Silence Gap",
+    "caption": "Are you afraid of silence or are you using it as a weapon? 🤫 Who is the one person in your life who always talks too much to hide the truth? 👇 #PsychologyHacks #SocialDynamics #HumanBehavior #MindGames",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-08-28T17:28:43.756983Z"
+  },
+  {
     "id": "pending_20260826_145606_8252",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
