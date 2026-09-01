@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260901_082053_2179",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260901_082053.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Power of Silence",
+    "caption": "Master your emotions, master your life. 🧘‍♂️\n\nKey Takeaways:\n• Control your reaction, control the situation 🛡️\n• Silence is the most powerful answer 🤫\n• Emotional intelligence = Success mindset 🧠\n• Don't let others trigger your peace ☮️\n\n#ChanakyaNiti #SuccessMindset #EmotionalIntelligence #Stoicism #SelfGrowth #HinglishWisdom",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-09-01T08:20:53.040041Z"
+  },
+  {
+    "id": "pending_20260901_075351_8127",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260901_075351.mp4",
+    "post_type": "video",
+    "title": "The Price of Your Anger",
+    "caption": "Your anger is a weapon that only wounds the one holding it. 🥀 Stop letting others control your internal peace. Save this for the next time you feel the rage rising. 🕯️ #Stoicism #PsychologyFacts #MindsetShift #EmotionalIntelligence #LetGo",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-09-01T07:53:51.401871Z"
+  },
+  {
     "id": "pending_20260829_182307_9353",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
