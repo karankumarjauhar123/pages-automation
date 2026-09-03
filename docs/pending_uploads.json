@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260903_085722_1722",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260903_085722.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: The Power of Solitude",
+    "caption": "Stop chasing people and start chasing your growth. 🌑 The truth about solitude is uncomfortable but necessary. Save this for later and tag someone who needs this wake-up call! ⚡ #ChanakyaNiti #SuccessMindset #SelfGrowth #DarkTruths #SolitudePower",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-09-03T08:57:22.614676Z"
+  },
+  {
     "id": "pending_20260902_175333_1190",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
