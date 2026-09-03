@@ -1,5 +1,29 @@
 [
   {
+    "id": "pending_20260903_175520_5769",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260903_175520.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Money Mindset",
+    "caption": "पैसों का खेल दिमाग से खेला जाता है! 💰 अपना माइंडसेट बदलो और सफलता को अपनी आदत बनाओ। 🔥\n\nSave this for later and tag someone who needs this motivation! 🚀\n\n#ChanakyaNiti #MoneyMindset #SuccessQuotes #WealthPsychology #MotivationalHinglish #WarriorMindset",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-09-03T17:55:20.504092Z"
+  },
+  {
+    "id": "pending_20260903_174949_9540",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20260903_174949.mp4",
+    "post_type": "video",
+    "title": "The Gaslighting Trap",
+    "caption": "Stop letting them rewrite your reality. 🚩\n\n• Trust your gut over their words 🧠\n• 'Too sensitive' is a manipulation tactic 🚫\n• Boundaries aren't attacks, they're filters 🛡️\n• Your memory is not the enemy ⚡\n\nSave this to remind yourself of the truth. #DarkPsychology #Gaslighting #MentalStrength #HumanBehavior #RelationshipRedFlags",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-09-03T17:49:49.284377Z"
+  },
+  {
     "id": "pending_20260903_085722_1722",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
