@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260907_103434_6446",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260907_103434.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti: Fear vs Courage",
+    "caption": "🚀 Master Your Mind with Chanakya Niti:\n\n🔹 Fear is a signal, not a stop sign 🚩\n🔹 Action is the only cure for anxiety ⚡\n🔹 Rewire your brain through exposure 🧠\n🔹 Courage = Fear + Action 💪\n\nSave this for your daily dose of wisdom! 📌\n#ChanakyaNiti #SuccessMindset #OvercomeFear #HinglishWisdom #GrowthHacks",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-09-07T10:34:34.693606Z"
+  },
+  {
     "id": "pending_20260906_133710_5491",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
