@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20260920_212918_8573",
+    "page_name": "Chanakya Niti",
+    "page_id": "1116090798261509",
+    "access_token_env": "FB_PAGE_TOKEN_3",
+    "file_path": "docs/pending_uploads/Chanakya_Niti_video_20260920_212918.mp4",
+    "post_type": "video",
+    "title": "Chanakya Niti on Dopamine Loops",
+    "caption": "Unpopular Opinion: Discipline is not a restriction, it is the only way to be truly free. 🧠 Most people are just slaves to their dopamine loops without even knowing it. Chanakya's wisdom combined with modern psychology proves that if you can't control your impulses, you can't control your life. Stop chasing cheap thrills and start building a legacy. 🔥 #ChanakyaNiti #MindsetShift #DopamineDetox #SuccessSecrets #HumanBehavior",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1116090798261509/video_reels?upload_phase=start&access_token=EAAgGSjYSlfkBRtJMuVDYuZCqK7pgZBHs316kwCuMR2A6vqDy5nB0eQkX9KoxLdOc8JXEeHmOsFyj0us93vEHpZCZBFIPfo1QzJpPWFbGmj2f7PzEPaWHZC6bqU5odlAQ2kRH7TrChGI01ELqtFUjecN3d76pZAwpb8RsIkLpZArUZAvpW2ob4oBIH61fKrHMX9LoGIAx5rb5",
+    "timestamp": "2026-09-20T21:29:18.645315Z"
+  },
+  {
     "id": "pending_20260920_190456_7123",
     "page_name": "Chanakya Niti",
     "page_id": "1116090798261509",
