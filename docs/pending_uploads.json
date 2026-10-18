@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20261018_105018_8650",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20261018_105018.mp4",
+    "post_type": "video",
+    "title": "The Invisible Line of Respect",
+    "caption": "Are you staying because of love, or because your ego can't handle the defeat? 🌑 When does loyalty become self-destruction? Let me know your thoughts below. 👇 #PsychologyFacts #SelfRespect #DarkPsychology #MindsetShift",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-10-18T10:50:18.544492Z"
+  },
+  {
     "id": "pending_20261017_130329_6411",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
