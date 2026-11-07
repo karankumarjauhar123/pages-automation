@@ -1,5 +1,17 @@
 [
   {
+    "id": "pending_20261107_135912_1395",
+    "page_name": "mindhack",
+    "page_id": "1095541136986840",
+    "access_token_env": "FB_PAGE_TOKEN",
+    "file_path": "docs/pending_uploads/mindhack_video_20261107_135912.mp4",
+    "post_type": "video",
+    "title": "The Silence of Power",
+    "caption": "Master the unspoken language of power 🤫✨\n\n• Silence is a tool, not a void 😶\n• Eye contact creates psychological pressure 👁️\n• Let others reveal the truth naturally 🗝️\n• Control the pause, control the room 🏛️\n\n#PsychologyHacks #HumanBehavior #SocialDynamics #StoicWisdom #BodyLanguage",
+    "error_message": "400 Client Error: Bad Request for url: https://graph.facebook.com/v19.0/1095541136986840/video_reels?upload_phase=start&access_token=EAAV7929By9gBRnWNNL89twoG0IXzjheZAaB7qYdotftdUPndRH0fjEeHDptZCIatZADaGwOtjPphUWoObs1FCgW1CrVSoX4A7JaorLv7hWQtetR8xEZAHxB9ZBgojZC7YB3y9mRMwTmsgg1DKOQzUfwJlUZAr0P1hHr74PmIm5bPFuRblszqN1ZASghavZCZAkDS3MSfOr",
+    "timestamp": "2026-11-07T13:59:12.056133Z"
+  },
+  {
     "id": "pending_20261018_105018_8650",
     "page_name": "mindhack",
     "page_id": "1095541136986840",
